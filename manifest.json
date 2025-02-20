@@ -1,0 +1,11 @@
+{
+	"id": "sync-vault-ce",
+	"name": "Sync Vault CE",
+	"version": "0.6.0",
+	"minAppVersion": "0.15.0",
+	"description": "sync with cloud disk fast and safely",
+	"author": "Camus Qiu",
+	"authorUrl": "https://kqiu.top/",
+	"fundingUrl": "https://kqiu.top/welcome-to-sync-vault/",
+	"isDesktopOnly": false
+}
