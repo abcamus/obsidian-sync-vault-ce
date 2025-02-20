@@ -9,18 +9,18 @@ export class DebugManager {
     /* default debug configuration */
     private readonly DEFAULT_CONFIG: DebugConfig = {
         'smart-queue': false,
-        'cloud-disk-model': true,
+        'cloud-disk-model': false,
         'content-view': false,
         'local-file-browser': false,
         'metaop-queue': false,
-        'auth': true,
+        'auth': false,
 
         'setting-tab': false,
         'file-tree': false,
         'snapshot': false,
-        'service.info': true,
+        'service.info': false,
 
-        'aliyun.info': true,
+        'aliyun.info': false,
         'aliyun.upload': false,
         'aliyun.file-mng': false,
     };

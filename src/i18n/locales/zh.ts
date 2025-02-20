@@ -47,7 +47,9 @@ export default {
                 "title": "切换同步模式",
                 "desc": "支持受控同步模式，可扩展其他同步模式",
             },
-
+            "mode": {
+                "selfControlled": "受控",
+            },
             "uploadStrategy": {
                 "title": "上传模式",
                 "desc": "受控上传：只有已经上传过的文件才会自动上传",

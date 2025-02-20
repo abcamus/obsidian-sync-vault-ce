@@ -93,7 +93,7 @@ export class CloudDiskSettingTab extends PluginSettingTab {
       .setDesc(i18n.t('settingTab.menuSyncConfig.switchSyncMode.desc'))
       .addDropdown(dropdown => {
         dropdown
-          .addOption('restricted', i18n.t('settingTab.menuSyncConfig.mode.restricted'))
+          .addOption('restricted', i18n.t('settingTab.menuSyncConfig.mode.selfControlled'))
           .setValue('restricted')
           .onChange(async (value) => {
             await this.plugin.saveSettings();

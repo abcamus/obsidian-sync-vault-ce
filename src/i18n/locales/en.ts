@@ -33,6 +33,9 @@ export default {
         "menuSyncConfig": {
             "title": "Sync Settings",
             "desc": "Configure upload, download strategies and encryption mode",
+            "mode": {
+                "selfControlled": "Self Controlled",
+            },
             "uploadStrategy": {
                 "title": "Upload Mode",
                 "desc": "Full auto upload (not available yet); Controlled upload: only previously uploaded files will be auto-uploaded",

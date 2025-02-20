@@ -87,7 +87,7 @@ export default class SyncVaultPlugin extends Plugin {
 		this.addRibbonIcon('cloud', i18n.t('plugin.title'), async (evt) => {
 			const { workspace } = this.app;
 			this.toggleView(workspace);
-		})
+		});
 
 		this.registerView(
 			CLOUD_DISK_VIEW,
