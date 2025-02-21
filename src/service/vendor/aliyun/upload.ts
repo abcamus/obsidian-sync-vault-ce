@@ -159,9 +159,12 @@ async function uploadFile(localPath: string, remotePath: string, shouldEncrypt: 
         return await uploadContent(dataToUpload, remotePath, params, async (created_at: number, updated_at: number) => {
             if (updated_at !== params?.mtime) {
                 logger.debug(`expected mtime: ${params?.mtime}, actual mtime: ${updated_at}`);
-                const file = cloudDiskModel.vault.getAbstractFileByPath(localPath);
+                const file = cloudDiskModel.vault.getFileByPath(localPath);
+                if (!file) {
+                    return;
+                }
                 ignoreModify = true;
-                await cloudDiskModel.vault.modifyBinary(file! as TFile, content, {
+                await cloudDiskModel.vault.modifyBinary(file, content, {
                     ctime: created_at,
                     mtime: updated_at
                 })

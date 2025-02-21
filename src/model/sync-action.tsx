@@ -69,8 +69,8 @@ export async function downloadFileNodes(
                 continue;
             }
             const file = await cloudDiskModel.ensureFileExists(item.path);
-            if (file) {
-                await vault.modifyBinary(file as TFile, content, { mtime: item.node.mtime });
+            if (file && (file instanceof TFile)) {
+                await vault.modifyBinary(file, content, { mtime: item.node.mtime });
             }
 
             const newLocalNode = {

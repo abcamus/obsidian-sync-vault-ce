@@ -313,7 +313,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
             }
 
             /* 文件夹更新名字，文件更新名字和修改时间 */
-            logger.debug(`[onFileModify] ${file instanceof TFile ? 'file' : 'folder'} modify: ${file.name}, at: ${file.path}, mtime: ${file instanceof TFile ? (file as TFile).stat.mtime : null}`);
+            logger.debug(`[onFileModify] ${file instanceof TFile ? 'file' : 'folder'} modify: ${file.name}, at: ${file.path}, mtime: ${file instanceof TFile ? file.stat.mtime : null}`);
 
             /* Step 1: 先处理local */
             if (!fileState.rootNode) {
@@ -330,8 +330,8 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
 
             const newLocalNode: LocalFileNode = {
                 ...localNode,
-                mtime: (file instanceof TFile) ? new Date((file as TFile).stat.mtime) : localNode.mtime,
-                size: (file instanceof TFile) ? (file as TFile).stat.size : localNode.size,
+                mtime: (file instanceof TFile) ? new Date(file.stat.mtime) : localNode.mtime,
+                size: (file instanceof TFile) ? file.stat.size : localNode.size,
             };
 
             const remoteNode = fileState.remoteMeta!.children?.find(child => child.name === file.name);
@@ -396,15 +396,15 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                 return;
             }
 
-            logger.debug(`[onFileCreate] ${file instanceof TFile ? 'file' : 'folder'} create: ${file.name}, at: ${file.path}, mtime: ${file instanceof TFile ? (file as TFile).stat.mtime : null}`);
+            logger.debug(`[onFileCreate] ${file instanceof TFile ? 'file' : 'folder'} create: ${file.name}, at: ${file.path}, mtime: ${file instanceof TFile ? file.stat.mtime : null}`);
 
             insertNodeAt(fileState.rootNode!, file.path, {
                 name: file.name,
                 type: file instanceof TFile ? 'file' : 'directory',
                 syncStatus: SyncStatus.LocalCreated,
                 md5: '',
-                size: file instanceof TFile ? (file as TFile).stat.size : 0,
-                mtime: file instanceof TFile ? new Date((file as TFile).stat.mtime) : new Date(),
+                size: file instanceof TFile ? file.stat.size : 0,
+                mtime: file instanceof TFile ? new Date(file.stat.mtime) : new Date(),
                 children: [],
             });
             loadFolderContents();

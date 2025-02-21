@@ -111,11 +111,11 @@ class CloudDiskModel {
 	}
 
 	async getLocalFileContent(localPath: string): Promise<Uint8Array | null> {
-		const file = this.vault.getAbstractFileByPath(localPath);
-		if (file === null || file instanceof TFolder) {
+		const file = this.vault.getFileByPath(localPath);
+		if (file === null) {
 			return null;
 		}
-		return new Uint8Array(await this.vault.readBinary(file as TFile));
+		return new Uint8Array(await this.vault.readBinary(file));
 	}
 
 	async ensureFileExists(filePath: string): Promise<TAbstractFile | null> {
