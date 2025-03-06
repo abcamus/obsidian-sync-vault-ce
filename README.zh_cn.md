@@ -1,10 +1,10 @@
 [English](README.md) | [中文](README.zh_cn.md)
 
-# 🌟 Obsidian Sync Vault 社区版
+# 🌟 Sync Vault 社区版
 
 Sync Vault是一个以网盘为存储设施，用户完全自主控制同步的保险库同步插件。旨在以用户友好的方式，连接不同设备的数据孤岛，同时保障用户数据隐私和数据安全。
 
-Obsidian Sync Vault社区版，是Sync Vault在Obsidian上的实现，用于为广大的Obsidian用户提供好用的同步方案，同时和广大用户和爱好者一起构建一个更加优秀的Obsidian生态。
+Sync Vault社区版，是Sync Vault在Obsidian上的实现，用于为广大的Obsidian用户提供好用的同步方案，同时和广大用户和爱好者一起构建一个更加优秀的Obsidian生态。
 
 ## 🎯 愿景与特性
 

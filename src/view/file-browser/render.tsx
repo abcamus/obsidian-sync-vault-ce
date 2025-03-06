@@ -1,6 +1,5 @@
 import { LocalFileNode } from '../../model/file-tree-node';
-import { SyncStatus } from '../../model/sync-status';
-import { cloudDiskModel } from '../../model/cloud-disk-model';
+import { SyncStatus, getSyncButtonText } from '../../model/sync-status';
 import {
     FolderOutlined,
     DescriptionOutlined,
@@ -104,27 +103,28 @@ export const getSyncStatusIcon = (syncStatus: SyncStatus, remoteEncrypt: boolean
     const uploadEncrypt = false;
     /* 远程文件加密，下载的时候需要解密 */
     const downloadEncrypt = remoteEncrypt || false;
+    const buttonText = getSyncButtonText(syncStatus);
     switch (syncStatus) {
         case SyncStatus.Syncing:
-            return renderIcon(statusIcon(<Sync />, false), "正在同步", 'stop');
+            return renderIcon(statusIcon(<Sync />, false), buttonText, 'stop');
         case SyncStatus.FullySynced:
-            return renderIcon(statusIcon(<CloudDone />, false), "已完全同步", null);
+            return renderIcon(statusIcon(<CloudDone />, false),buttonText, null);
         case SyncStatus.RemoteCreated:
-            return renderIcon(statusIcon(<CloudDownloadOutlined />, downloadEncrypt), "远程创建，点击下载", 'download');
+            return renderIcon(statusIcon(<CloudDownloadOutlined />, downloadEncrypt), buttonText, 'download');
         case SyncStatus.RemoteDeleted:
-            return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt), "远程删除，点击重新上传", 'upload');
+            return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt), buttonText, 'upload');
         case SyncStatus.RemoteModified:
-            return renderIcon(statusIcon(<CloudDownloadOutlined />, downloadEncrypt), "远程版本更新，点击下载", 'download');
+            return renderIcon(statusIcon(<CloudDownloadOutlined />, downloadEncrypt), buttonText, 'download');
         case SyncStatus.Conflict:
-            return renderIcon(<StyledIcon><ErrorOutline /></StyledIcon>, "同步冲突", null);
+            return renderIcon(<StyledIcon><ErrorOutline /></StyledIcon>, buttonText, null);
         case SyncStatus.LocalCreated:
-            return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt), "本地新文件，点击上传", 'upload');
+            return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt), buttonText, 'upload');
         case SyncStatus.LocalModified:
-            return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt), "本地已修改，点击上传", 'upload');
+            return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt),buttonText, 'upload');
         case SyncStatus.LocalDeleted:
-            return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt), "本地已删除，点击上传", 'upload');
+            return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt), buttonText, 'upload');
         default:
-            return renderIcon(statusIcon(<HourglassEmpty />, false), "未知状态", null);
+            return renderIcon(statusIcon(<HourglassEmpty />, false), buttonText, null);
     }
 };
 

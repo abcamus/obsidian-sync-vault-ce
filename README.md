@@ -1,10 +1,10 @@
 [English](README.md) | [中文](README.zh_cn.md)
 
-# 🌟 Obsidian Sync Vault CE (Community Edition)
+# 🌟 Sync Vault CE (Community Edition)
 
 Sync Vault is a vault synchronization plugin that uses cloud storage as its storage facility, allowing users to fully control synchronization autonomously. It aims to connect data islands across different devices in a user-friendly manner while ensuring data privacy and security.
 
-The Obsidian Sync Vault CE is the implementation of Sync Vault on Obsidian, designed to provide a user-friendly synchronization solution for the vast community of Obsidian users, while collaboratively building a better Obsidian ecosystem with users and enthusiasts.
+The Sync Vault CE is the implementation of Sync Vault on Obsidian, designed to provide a user-friendly synchronization solution for the vast community of Obsidian users, while collaboratively building a better Obsidian ecosystem with users and enthusiasts.
 
 ## 🎯 Vision and Features
 

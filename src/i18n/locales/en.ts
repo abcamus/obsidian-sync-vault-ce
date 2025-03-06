@@ -3,6 +3,24 @@ export default {
         "cancel": "Cancel",
         "confirm": "Confirm",
     },
+    "sync": {
+        "message": {
+            "loadingRemoteMeta": "Loading remote file information...",
+            "loading": "Loading...",
+        },
+        "toolTip": {
+            "fullySynced": "Fully Synced",
+            "localModified": "Local Modified, Click to Upload",
+            "remoteModified": "Remote Modified, Click to Download",
+            "localCreated": "Local Created, Click to Upload",
+            "remoteCreated": "Remote Created, Click to Download",
+            "localDeleted": "Local Deleted, Click to Upload",
+            "remoteDeleted": "Remote Deleted, Click to Download",
+            "conflict": "Conflict",
+            "unknown": "Unknown",
+            "syncing": "Syncing",
+        }
+    },
     "plugin": {
         "name": "Sync Vault",
         "title": "Open/Close Sync Vault View",
@@ -41,7 +59,7 @@ export default {
                 "desc": "Full auto upload (not available yet); Controlled upload: only previously uploaded files will be auto-uploaded",
                 "userControl": "Controlled Upload",
             },
-          
+
             "downloadStrategy": {
                 "title": "Download Mode",
                 "desc": "Full auto update (not available yet); Update on load: auto download files from cloud when plugin loads; Manual only: requires clicking download button",

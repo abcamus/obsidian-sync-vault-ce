@@ -1,6 +1,7 @@
 import { LocalFileNode } from './file-tree-node';
 import { RemoteMeta, findRemoteFile, insertRemoteFile } from './meta-info';
 import { createLogger } from '../util/logger';
+import { i18n } from 'src/i18n';
 
 const logger = createLogger('sync-status');
 
@@ -83,27 +84,25 @@ export const getSyncButtonClass = (status: SyncStatus): string => {
 export const getSyncButtonText = (status: SyncStatus): string => {
     switch (status) {
         case SyncStatus.FullySynced:
-            return '已同步';
+            return i18n.t('sync.toolTip.fullySynced');
         case SyncStatus.LocalModified:
-            return '本地修改，点击上传';
+            return i18n.t('sync.toolTip.localModified');
         case SyncStatus.RemoteModified:
-            return '远程最新，点击下载';
+            return i18n.t('sync.toolTip.remoteModified');
         case SyncStatus.LocalCreated:
-            return '本地创建，点击上传';
+            return i18n.t('sync.toolTip.localCreated');
         case SyncStatus.RemoteCreated:
-            return '远程创建，点击下载';
+            return i18n.t('sync.toolTip.remoteCreated');
         case SyncStatus.LocalDeleted:
-            return '本地删除，点击上传';
+            return i18n.t('sync.toolTip.localDeleted');
         case SyncStatus.RemoteDeleted:
-            return '远程删除，点击下载';
+            return i18n.t('sync.toolTip.remoteDeleted');
         case SyncStatus.Conflict:
-            return '所有文件需同步，点击同步';
-        case SyncStatus.Unknown:
-            return '未知';
+            return i18n.t('sync.toolTip.conflict');
         case SyncStatus.Syncing:
-            return '同步中';
+            return i18n.t('sync.toolTip.syncing');
         default:
-            return '未知';
+            return i18n.t('sync.toolTip.unknown');
     }
 };
 

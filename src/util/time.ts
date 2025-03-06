@@ -1,7 +1,3 @@
-export async function delay(ms: number): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export function msToSec(time: number): number {
     return Math.floor(time / 1000);
 }

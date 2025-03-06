@@ -116,8 +116,6 @@ export default class SyncVaultPlugin extends Plugin {
 
 		cloudDiskModel.vault = this.app.vault;
 
-		this.refreshView(this.app.workspace);
-
 		util.LogService.init(this.app, this.manifest.dir!);
 	}
 
@@ -140,28 +138,13 @@ export default class SyncVaultPlugin extends Plugin {
 		if (leaves.length === 0) {
 			this.openView(workspace);
 		} else {
-			leaves.forEach(leaf => leaf.detach());
-		}
-	}
-
-	async closeView(workspace: Workspace) {
-		const leaves = workspace.getLeavesOfType(this.currentView);
-		leaves.forEach(leaf => leaf.detach());
-	}
-
-	async refreshView(workspace: Workspace) {
-		const leaves = workspace.getLeavesOfType(this.currentView);
-		leaves.forEach(leaf => leaf.detach());
-
-		if (leaves.length > 0) {
-			await this.openView(workspace);
+			/* focus on current view */
+			workspace.revealLeaf(leaves[0]);
 		}
 	}
 
 	async onunload() {
 		logger.info('exiting...');
-		const leaves = this.app.workspace.getLeavesOfType(this.currentView);
-		leaves.forEach(leaf => leaf.detach());
 
 		try {
 			const queue = util.SmartQueue.getInstance();

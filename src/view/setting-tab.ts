@@ -61,7 +61,6 @@ export class CloudDiskSettingTab extends PluginSettingTab {
             this.plugin.settings.selectedCloudDisk = value as CloudDiskType;
             cloudDiskModel.reset();
             await this.plugin.saveSettings();
-            await this.plugin.refreshView(this.app.workspace);
           }
         })
       )

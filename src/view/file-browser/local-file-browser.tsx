@@ -7,6 +7,7 @@ import { renderFileItem } from "./render";
 import * as util from '../../util';
 import { Snapshot } from '../../sync/snapshot';
 import { isFolderNodeEmpty } from '../../model/file-tree-node';
+import { i18n } from '../../i18n';
 
 import * as metaInfo from '../../model/meta-info';
 
@@ -549,8 +550,6 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
             if (syncResult) {
                 /* 更新目录的同步状态 */
                 currentNode.syncStatus = SyncStatus.FullySynced;
-                // insertNodeAt(fileState.rootNode!, localPath, currentNode);
-                // updateRemoteMetaAfterSync(currentNode, localPath, fileState.remoteMeta!, CloudDiskModel.deviceName);
 
                 // 强制更新当前视图
                 await loadFolderContents();
@@ -710,10 +709,10 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
     return (
         <div className="file-browser">
             {loadingState.isLoadingRemoteMeta && (
-                <div className="loading">加载远程文件信息...</div>
+                <div className="loading">{i18n.t('sync.message.loadingRemoteMeta')}</div>
             )}
             {!loadingState.isLoadingRemoteMeta && loadingState.isLoading && (
-                <div className="loading">加载中...</div>
+                <div className="loading">{i18n.t('sync.loading')}</div>
             )}
             {!loadingState.isLoadingRemoteMeta && !loadingState.isLoading && (
                 <div className="file-list">

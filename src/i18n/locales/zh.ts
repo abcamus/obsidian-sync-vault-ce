@@ -3,6 +3,24 @@ export default {
         "cancel": "取消",
         "confirm": "确认",
     },
+    "sync": {
+        "message": {
+            "loadingRemoteMeta": "正在加载远程文件信息...",
+            "loading": "加载中...",
+        },
+        "toolTip": {
+            "fullySynced": "已同步",
+            "localModified": "本地修改，点击上传",
+            "remoteModified": "远程修改，点击下载",
+            "localCreated": "本地创建，点击上传",
+            "remoteCreated": "远程创建，点击下载",
+            "localDeleted": "本地删除，点击上传",
+            "remoteDeleted": "远程删除，点击下载",
+            "conflict": "冲突",
+            "unknown": "未知",
+            "syncing": "同步中",
+        }
+    },
     "plugin": {
         "name": "Sync Vault",
         "title": "打开/关闭Sync Vault视图",
