@@ -1,6 +1,6 @@
 {
 	"name": "sync-vault-community",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"description": "Sync with cloud disk safely",
 	"main": "main.js",
 	"scripts": {

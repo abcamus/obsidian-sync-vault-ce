@@ -1,7 +1,7 @@
 {
 	"id": "sync-vault-ce",
 	"name": "Sync Vault CE",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"minAppVersion": "0.15.0",
 	"description": "sync with cloud disk fast and safely",
 	"author": "Camus Qiu",
