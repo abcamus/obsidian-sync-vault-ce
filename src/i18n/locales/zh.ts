@@ -106,10 +106,43 @@ export default {
             "desc": "在插件启动的时候自动从云盘同步",
         },
 
-        "log": {
-            "title": "日志模式",
-            "desc": "记录插件运行日志",
-            "openLogFile": "查看日志",
+        "menuUpgradeAndHelp": {
+            "title": "升级和帮助",
+            "upgrade": {
+                "title": "升级到pro版",
+                "checkUpdate": "检查更新",
+                "checking": "检查中...",
+                "updateAvailable": "发现新版本",
+                "latestVersion": "版本已最新",
+                "checkFailed": "检查失败",
+                "newVersion": "发现新版本",
+                "version": "新版本: %{version}",
+                "releaseNotes": "更新内容",
+                "noReleaseNotes": "暂无更新说明",
+                "autoUpdateWarning": {
+                    "title": "⚠️ 自动更新注意事项：",
+                    "items": [
+                        "更新过程中请勿关闭 Obsidian",
+                        "更新完成后需要重启 sync vault",
+                        "如果自动更新失败，请使用手动更新"
+                    ]
+                },
+                "autoUpdate": "自动更新",
+                "manualUpdate": "手动更新",
+                "cancel": "取消",
+                "autoUpdateFailed": "自动更新失败，请尝试手动更新",
+                "downloading": "下载中...",
+                "updating": "更新中...",
+                "updateInstalled": "更新安装完成，请重启 sync vault 以应用更新",
+                "updateInstallFailed": "下载更新失败:",
+                "clickToOpen": "点击打开",
+                "helpNotFound": "无法找到 README.md 文件",
+            },
+            "log": {
+                "title": "日志模式",
+                "desc": "记录插件运行日志",
+                "openLogFile": "查看日志",
+            },
         },
     }
 };

@@ -51,8 +51,12 @@ export default {
         "menuSyncConfig": {
             "title": "Sync settings",
             "desc": "Configure upload, download strategies and encryption mode",
+            "switchSyncMode": {
+                "title": "Switch Sync Mode",
+                "desc": "Support controlled sync mode, extensible for other sync modes",
+            },
             "mode": {
-                "selfControlled": "Self controlled",
+                "selfControlled": "Controlled",
             },
             "uploadStrategy": {
                 "title": "Upload mode",
@@ -86,10 +90,43 @@ export default {
             "title": "Auto sync on load",
             "desc": "Automatically sync from cloud when plugin starts",
         },
-        "log": {
-            "title": "Log mode",
-            "desc": "Record plugin running logs",
-            "openLogFile": "View logs",
+        "menuUpgradeAndHelp": {
+            "title": "Upgrade & Help",
+            "upgrade": {
+                "title": "Upgrade to Pro",
+                "checkUpdate": "Check for updates",
+                "checking": "Checking...",
+                "updateAvailable": "New version available",
+                "latestVersion": "Already up to date",
+                "checkFailed": "Check failed",
+                "newVersion": "New version available",
+                "version": "New version: %{version}",
+                "releaseNotes": "Release Notes",
+                "noReleaseNotes": "No release notes available",
+                "autoUpdateWarning": {
+                    "title": "⚠️ Auto Update Notice:",
+                    "items": [
+                        "Do not close Obsidian during the update",
+                        "Restart sync vault after update",
+                        "If auto update fails, please update manually"
+                    ]
+                },
+                "autoUpdate": "Auto Update",
+                "manualUpdate": "Manual Update",
+                "cancel": "Cancel",
+                "autoUpdateFailed": "Auto update failed, please try manual update",
+                "downloading": "Downloading...",
+                "updating": "Updating...",
+                "updateInstalled": "Update installed, please restart sync vault to apply changes",
+                "updateInstallFailed": "Update download failed:",
+                "clickToOpen": "Click to open",
+                "helpNotFound": "README.md file not found",
+            },
+            "log": {
+                "title": "Log Mode",
+                "desc": "Record plugin runtime logs",
+                "openLogFile": "View Logs",
+            },
         }
     },
 };

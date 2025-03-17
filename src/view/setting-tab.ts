@@ -1,10 +1,11 @@
-import { App, PluginSettingTab, Setting, ButtonComponent, Modal, Notice, PluginManifest, ProgressBarComponent } from 'obsidian';
+import { App, PluginSettingTab, Setting, Notice } from 'obsidian';
 import SyncVaultPlugin from '../../main';
 import { CloudDiskType } from '../service/cloud-interface';
 import { cloudDiskModel } from '../model/cloud-disk-model';
 import { i18n } from '../i18n';
 import { LogService } from 'src/util/file-log';
 import * as util from '../util';
+import { checkVersion, UpgradeModal } from '../util/upgrade';
 
 const logger = util.logger.createLogger('setting-tab');
 
@@ -107,8 +108,47 @@ export class CloudDiskSettingTab extends PluginSettingTab {
 
   private addUpgradeAndHelpSetting() {
     new Setting(this.containerEl)
-      .setName(i18n.t('settingTab.log.title'))
-      .setDesc(i18n.t('settingTab.log.desc'))
+      .setHeading()
+      .setName(i18n.t('settingTab.menuUpgradeAndHelp.title'));
+
+    new Setting(this.containerEl)
+      .setName(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.title'))
+      .addButton(button => {
+        button.buttonEl.style.cursor = 'pointer';
+        return button
+          .setButtonText(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.checkUpdate'))
+          .onClick(async () => {
+            const originalText = button.buttonEl.textContent;
+            button.setButtonText(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.checking'));
+            button.buttonEl.disabled = true;
+
+            try {
+              const currentVersion = this.plugin.manifest.version;
+              logger.debug(`当前版本: ${currentVersion}`);
+              const { hasUpdate, releaseInfo } = await checkVersion(currentVersion);
+              logger.debug(releaseInfo);
+
+              if (hasUpdate && releaseInfo) {
+                new Notice(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.updateAvailable'));
+                new UpgradeModal(this.app, releaseInfo, this.plugin.manifest).open();
+              } else {
+                new Notice(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.latestVersion'));
+              }
+            } catch (error) {
+              logger.error('检查更新失败:', error);
+              new Notice(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.checkFailed'));
+            } finally {
+              // 恢复按钮状态
+              button.setButtonText(originalText || '');
+              button.buttonEl.disabled = false;
+            }
+          });
+      })
+      .descEl.createEl('a', { text: 'click to view sync vault pro', attr: { href: 'https://kqiu.top/docs/', target: '_blank' } });
+
+    new Setting(this.containerEl)
+      .setName(i18n.t('settingTab.menuUpgradeAndHelp.log.title'))
+      .setDesc(i18n.t('settingTab.menuUpgradeAndHelp.log.desc'))
       .addToggle(toggle => toggle
         .setValue(this.plugin.settings.logMode)
         .onChange(async (value) => {
@@ -117,7 +157,7 @@ export class CloudDiskSettingTab extends PluginSettingTab {
         })
       )
       .addButton(button => button
-        .setButtonText(i18n.t('settingTab.log.openLogFile'))
+        .setButtonText(i18n.t('settingTab.menuUpgradeAndHelp.log.openLogFile'))
         .onClick(() => {
           LogService.instance().openLogFile();
         })
