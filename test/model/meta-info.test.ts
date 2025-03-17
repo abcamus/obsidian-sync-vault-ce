@@ -1,3 +1,4 @@
+import '../mock/global-mock';
 import {
     RemoteMeta,
     RemoteFileNode,

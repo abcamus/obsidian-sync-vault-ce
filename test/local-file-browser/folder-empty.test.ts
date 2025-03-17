@@ -1,18 +1,6 @@
+import '../mock/global-mock';
 import { LocalFileNode, isFolderNodeEmpty } from '../../src/model/file-tree-node';
 import { SyncStatus } from '../../src/model/sync-status';
-
-console.error = jest.fn();
-
-jest.mock('../../src/util/debug-config', () => ({
-    DebugManager: {
-        getInstance: jest.fn().mockReturnValue({
-            config: {
-                debug: false
-            },
-            isDebugEnabled: jest.fn().mockReturnValue(false),
-        }),
-    }
-}));
 
 describe('isFolderNodeEmpty', () => {
     it('should return false if the node is not a directory', () => {

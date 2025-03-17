@@ -1,7 +1,6 @@
-import { isEncrypted, encrypt, decrypt, generateMagicBytes } from '../../src/util/encryption';
+import { isEncrypted, encrypt, decrypt, generateCodeChallenge } from '../../src/util/encryption';
 import { cloudDiskModel } from '../../src/model/cloud-disk-model';
-import * as util from '../../src/util';
-import * as fs from 'fs';
+import { sha256 } from '@noble/hashes/sha256';
 
 console.error = jest.fn();
 console.warn = jest.fn();
@@ -188,4 +187,53 @@ describe('isEncrypted', () => {
     });
 
 
+});
+
+function base64UrlEncode(buffer: Uint8Array): string {
+    // 将二进制数据转换为 base64 字符串
+    const base64 = Buffer.from(buffer).toString('base64');
+    // 转换为 base64url 格式
+    return base64
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+}
+
+describe('generateCodeChallenge', () => {
+    it('should generate code verifier with correct length', async () => {
+        const { codeVerifier } = await generateCodeChallenge();
+        expect(codeVerifier.length).toBeGreaterThanOrEqual(43);
+        expect(codeVerifier.length).toBeLessThanOrEqual(128);
+    });
+
+    it('should generate valid characters for code verifier', async () => {
+        const { codeVerifier } = await generateCodeChallenge();
+        expect(codeVerifier).toMatch(/^[A-Za-z0-9\-._~]+$/);
+    });
+
+    it('should return same challenge as verifier in plain mode', async () => {
+        const { codeVerifier, codeChallenge } = await generateCodeChallenge('plain');
+        expect(codeChallenge).toBe(codeVerifier);
+    });
+
+    it('should generate different challenge in S256 mode', async () => {
+        const { codeVerifier, codeChallenge } = await generateCodeChallenge('S256');
+        expect(codeChallenge).not.toBe(codeVerifier);
+        // base64url 格式验证
+        expect(codeChallenge).toMatch(/^[A-Za-z0-9\-_]+$/);
+        // base64url 编码的 SHA256 哈希长度应该是 43 个字符
+        expect(codeChallenge.length).toBe(43);
+    });
+
+    it('should generate correct challenge in S256 mode', async () => {
+        const codeVerifier = 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk';
+        const hash = sha256(codeVerifier);
+        const codeChallenge = base64UrlEncode(hash);
+        expect(codeChallenge).toBe('E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM');
+    });
+
+    it('should throw error for unsupported method', async () => {
+        // @ts-ignore
+        await expect(generateCodeChallenge('invalid')).rejects.toThrow('Unsupported code_challenge_method');
+    });
 });

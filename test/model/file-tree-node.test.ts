@@ -1,3 +1,4 @@
+import '../mock/global-mock';
 import { LocalFileNode, renameNode, findNodeAt } from '../../src/model/file-tree-node';
 import { SyncStatus } from '../../src/model/sync-status';
 

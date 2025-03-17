@@ -63,13 +63,16 @@ class CloudAuthAPI {
             "user:base,file:all:read,file:all:write"
         );
 
+        /* plain mode */
+        const codeChallengeMethod: 'plain' | 'S256' = 'plain';
         url.searchParams.append("response_type", "code");
         if (codeVerifier === '' || codeChallenge === '') {
-            const result = await util.encryption.generateCodeChallenge('S256');
+            const result = await util.encryption.generateCodeChallenge(codeChallengeMethod);
             codeVerifier = result.codeVerifier;
             codeChallenge = result.codeChallenge;
+            logger.debug(`codeVerifier: ${codeVerifier}, codeChallenge: ${codeChallenge}`);
         }
-        url.searchParams.append("code_challenge_method", "S256");
+        url.searchParams.append("code_challenge_method", codeChallengeMethod);
         url.searchParams.append("code_challenge", codeChallenge);
         currentAuthState = util.generateRandomString();
         url.searchParams.append("state", currentAuthState);
@@ -98,6 +101,9 @@ async function authorize(method: oauthMethod, params?: Record<string, any>): Pro
         if (!params?.code) {
             throw new Error('code is required');
         }
+        if (!codeVerifier) {
+            throw new Error('code_verifier is empty, please authorize first');
+        }
         try {
             logger.info(`try to get access token, url: ${cloudAuth.baseUrls[method]}, code: ${params.code}`);
             const response = await requestUrl({
@@ -116,6 +122,9 @@ async function authorize(method: oauthMethod, params?: Record<string, any>): Pro
             });
 
             logger.debug(`response: ${JSON.stringify(response)}`);
+            if (response.status !== 200) {
+                throw new Error(`status: ${response.status}, body: ${response.text}`);
+            }
             const data = response.json;
             return {
                 status: 'success',
