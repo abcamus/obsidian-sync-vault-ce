@@ -1,55 +1,89 @@
 [English](README.md) | [中文](README.zh_cn.md)
 
-# 🌟 Sync Vault CE (Community Edition)
+# 🌟 Sync Vault Community Edition
 
-Sync Vault is a vault synchronization plugin that uses cloud storage as its storage facility, allowing users to fully control synchronization autonomously. It aims to connect data islands across different devices in a user-friendly manner while ensuring data privacy and security.
+Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. It provides a user-friendly interface that gives you complete control over the synchronization process while ensuring data privacy and security.
 
-The Sync Vault CE is the implementation of Sync Vault on Obsidian, designed to provide a user-friendly synchronization solution for the vast community of Obsidian users, while collaboratively building a better Obsidian ecosystem with users and enthusiasts.
+## ✨ Features
 
-## 🎯 Vision and Features
+- End-to-end encryption for data security
+- Precise file synchronization control
+- Intuitive file status display
 
-Sync Vault aims to become a universal synchronization solution in the field of knowledge management. Its main features include:
+## 📱 Supported Cloud Storage
 
-- **Controllability**: Every file upload and download is controlled by the user.
-- **User-friendly**: View the synchronization status of each file.
-- **Stability**: Concurrent access control enhances the stability of cloud storage services.
-- **Extensibility**: Easily integrate new cloud disks.
-- **Security**: Supports AES-GCM encryption.
-- **Cross-platform support**: Compatible with Windows, MacOS, Linux, iOS, iPadOS, and Android.
+- Aliyun Drive (Supported)
+- More platforms coming soon...
 
-## ⚙️ Installation and Usage
-Open the Obsidian third-party plugin market, search for the Sync Vault plugin, and click install. Usage is as follows:
+## ⚙️ Installation & Usage
 
-1. In Obsidian, open the Sync Vault plugin settings.
-2. Click authorize to enter the authorization process, with success or failure displayed in the top right corner.
-3. After successful authorization, click the cloud icon in the sidebar to view the sync view.
-4. Click the upload or download button.
+### Install from Plugin Market
 
-## 🔧 Configuration Options
+1. Open Obsidian Settings > Third-party plugins
+2. Search for "Sync Vault"
+3. Click install and enable the plugin
 
-The plugin offers the following configuration options:
+### Basic Setup
 
-- **Automatic Sync on Load**: If enabled, the plugin will automatically sync once on startup.
-- **Encryption**: If enabled, the plugin will encrypt the files in the vault before syncing to the remote; if disabled, the files will be synced as-is.
-- **Remember Your Encryption Password**: If forgotten, you will not be able to decrypt the files in the vault.
+1. Open plugin settings
+2. Select cloud storage platform and authorize
+3. Configure sync options (encryption, auto-sync, etc.)
+4. Click the cloud icon in the sidebar to start using
 
-## 🛠️ Build and Test
+<div align="center">
+  <img src="assets/user%20interface.png" alt="Sync Vault Interface Preview" width="800" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+  <p><em>Sync Vault Interface: File list view with sync status</em></p>
+</div>
 
+## 🔧 Configuration
+
+### Basic Settings
+- **Cloud Storage**: Choose your cloud storage platform
+- **Auto Sync**: Automatically sync when plugin starts
+- **Sync Mode**: Supports manual and automatic modes
+
+### Security Settings
+- **Encryption**: Files will be encrypted before syncing when enabled
+- **Password Management**: Set and safely store your encryption password (⚠️ Data cannot be recovered if password is lost)
+
+## 🛠️ Development Guide
+
+### Environment Setup
 ```bash
-$ git clone git@github.com:abcamus/obsidian-sync-vault-ce.git
-$ cd obsidian-sync-vault-ce
-$ npm install
-$ npm run dev   # watch changes
-$ npm run build # build
-$ npm run deploy # deploy plugin to a default vault (see `deploy.sh`)
+git clone git@github.com:abcamus/obsidian-sync-vault-ce.git
+cd obsidian-sync-vault-ce
+npm install
+npm run dev    # Watch for changes
+npm run build  # Build
+npm run deploy # Deploy to default vault (see `deploy.sh`)
 ```
 
-## 📬 Contact and Acknowledgments
+## 🗺️ Roadmap
 
-- **My homepage** - [@KQ Digital Garden](https://kqiu.top/about/)
-- **Project link**: [GitHub](https://github.com/abcamus/obsidian-sync-vault-ce)
+- 🌐 More Cloud Storage Platforms
+    - WebDAV
+    - OneDrive
+    - Dropbox
 
-Thanks to the following projects for their support:
+- 🏠 Self-hosted Sync Service
+    - Docker deployment
+    - Private cloud storage
+
+- ⚡️ Sync Engine Optimization
+    - Concurrent synchronization
+    - Resume broken transfers
+
+- 🎨 User Experience Improvements
+    - Sync conflict resolution
+    - File version management
+    - Sync status monitoring
+
+## 📬 Contact & Acknowledgments
+
+- **My Homepage** - [@KQ Digital Garden](https://kqiu.top/about/)
+- **Project Link**: [GitHub](https://github.com/abcamus/obsidian-sync-vault-ce)
+
+Special thanks to：
 
 - [Obsidian](https://obsidian.md/)
 - [React](https://react.dev/)
