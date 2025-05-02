@@ -45,6 +45,10 @@ class CloudDiskModel {
 	encryptMode: boolean = false;
 	password: string;
 
+	/* ignore files */
+	ignorePattern: string = '';
+	fileSizeLimit: number = 100; // in MB
+
 	private constructor() {
 		this.info = { user: {} as UserInfo, storage: {} as StorageInfo };
 	}

@@ -259,5 +259,31 @@ export class CloudDiskSettingTab extends PluginSettingTab {
           await this.plugin.saveSettings();
         })
       );
+
+    new Setting(this.syncModeSettingContainer)
+      .setName('Skip large files (unit: MB)')
+      .addText(text => text
+        .setValue(">=")
+        .setDisabled(true)
+        .then(t => {
+          t.inputEl.style.textAlign = "right";
+          t.inputEl.style.border = "none";
+          t.inputEl.style.backgroundColor = "transparent";
+        })
+      )
+      .addText(text => text
+        .setValue(String(this.plugin.settings.fileSizeLimit))
+        .setPlaceholder('100')
+        .onChange(async (value) => {
+          let newLimit = parseInt(value);
+          if (isNaN(newLimit) || newLimit <= 0) {
+            logger.info('invalid file size limit, use default value 100');
+            newLimit = 100;
+          }
+          this.plugin.settings.fileSizeLimit = newLimit;
+          cloudDiskModel.fileSizeLimit = newLimit;
+          await this.plugin.saveSettings();
+        })
+      );
   }
 }

@@ -10,6 +10,7 @@ export interface SyncVaultPluginSetting {
 	logMode: boolean;
 	encryptMode: boolean;
 	password: string;
+	fileSizeLimit: number; // in MB
 }
 
 export const DEFAULT_SETTINGS: SyncVaultPluginSetting = {
@@ -21,5 +22,6 @@ export const DEFAULT_SETTINGS: SyncVaultPluginSetting = {
 	expiryAt: '',
 	logMode: false,
 	encryptMode: false,
-	password: ''
+	password: '',
+	fileSizeLimit: 100, // 100MB
 }

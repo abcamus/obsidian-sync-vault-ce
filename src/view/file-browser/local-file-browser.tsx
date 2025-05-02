@@ -31,6 +31,7 @@ import {
 import { Service } from '../../service';
 import { ignoreModify } from '../../service/vendor/aliyun/upload';
 import { CloudDiskType } from 'src/service/cloud-interface';
+import { shouldIgnore } from 'src/sync/ignore';
 
 const logger = util.logger.createLogger('local-file-browser');
 
@@ -285,12 +286,20 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
     /* 处理自动同步 */
     useEffect(() => {
         const asyncHandleAutoSync = async () => {
-            logger.debug('[handleAutoSync] check, loadingState: ', loadingState, ', syncState: ', syncState, ', fileState: ', fileState);
+            logger.debug('[handleAutoSync]', {
+                loadingState: 'loadingState',
+                syncState: 'syncState',
+                fileState: 'fileState'
+            });
             if (!syncState.isAutoSync) {
                 return;
             }
             logger.debug('[handleAutoSync] start');
-            const nodes = fileStateRef.current.currentFiles.filter(node => shouldDownload(node.syncStatus));
+            const nodes = fileStateRef.current.currentFiles.filter(node => {
+                const nodePath = util.path.join(currentPathRef.current.join('/'), node.name);
+                return shouldDownload(node.syncStatus) && !shouldIgnore(nodePath, node);
+            });
+
             for (const node of nodes) {
                 await handleSync('download', node);
             }
@@ -718,7 +727,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                 <div className="file-list">
                     {fileState.currentFiles.map(file => {
                         const filePath = util.path.join(currentPath.join('/'), file.name);
-                        return renderFileItem(file, handleItemClick,
+                        return renderFileItem(filePath, file, handleItemClick,
                             syncState.syncingFiles.has(filePath),
                             handleSync,
                             syncState.syncProgress[filePath] ? { 'completed': syncState.syncProgress[filePath]?.completed, 'total': syncState.syncProgress[filePath]?.total } : undefined)

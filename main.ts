@@ -25,6 +25,7 @@ export default class SyncVaultPlugin extends Plugin {
 		cloudDiskModel.remoteRootPath = this.settings.syncPath;
 		cloudDiskModel.accessToken = this.settings.accessToken;
 		cloudDiskModel.encryptMode = this.settings.encryptMode;
+		cloudDiskModel.fileSizeLimit = this.settings.fileSizeLimit;
 		this.currentView = CLOUD_DISK_VIEW;
 	}
 

@@ -9,13 +9,15 @@ import {
     CloudDownloadOutlined,
     CloudUploadOutlined,
     ErrorOutline,
-    HourglassEmpty
+    HourglassEmpty,
+    BlockOutlined
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { createLogger } from '../../util/logger';
 
 import React from 'react';
 import Tooltip from '@mui/material/Tooltip';
+import { shouldIgnore } from 'src/sync/ignore';
 
 const logger = createLogger('render');
 
@@ -108,7 +110,7 @@ export const getSyncStatusIcon = (syncStatus: SyncStatus, remoteEncrypt: boolean
         case SyncStatus.Syncing:
             return renderIcon(statusIcon(<Sync />, false), buttonText, 'stop');
         case SyncStatus.FullySynced:
-            return renderIcon(statusIcon(<CloudDone />, false),buttonText, null);
+            return renderIcon(statusIcon(<CloudDone />, false), buttonText, null);
         case SyncStatus.RemoteCreated:
             return renderIcon(statusIcon(<CloudDownloadOutlined />, downloadEncrypt), buttonText, 'download');
         case SyncStatus.RemoteDeleted:
@@ -120,7 +122,7 @@ export const getSyncStatusIcon = (syncStatus: SyncStatus, remoteEncrypt: boolean
         case SyncStatus.LocalCreated:
             return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt), buttonText, 'upload');
         case SyncStatus.LocalModified:
-            return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt),buttonText, 'upload');
+            return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt), buttonText, 'upload');
         case SyncStatus.LocalDeleted:
             return renderIcon(statusIcon(<CloudUploadOutlined />, uploadEncrypt), buttonText, 'upload');
         default:
@@ -184,6 +186,7 @@ const renderFileSyncStatus = (file: LocalFileNode, onClick: (action: 'upload' | 
 };
 
 export function renderFileItem(
+    filePath: string,
     file: LocalFileNode,
     onItemClick: (item: LocalFileNode) => void,
     isSyncing: boolean,
@@ -191,6 +194,25 @@ export function renderFileItem(
     syncProgress?: SyncProgress,
 ) {
     logger.debug(`[renderFileItem] ${file.name}, isSyncing: ${isSyncing}`);
+
+    if (shouldIgnore(filePath, file)) {
+        return (
+            <div key={file.name} className="file-item">
+                {renderFileIcon(file, onItemClick)}
+                {renderFileName(file, onItemClick)}
+                <div className='file-sync-status-ignored'>
+                    <Tooltip title="Ignored" arrow>
+                        <StyledIcon $hoverable={false} style={{ color: 'var(--text-muted)' }} aria-label={undefined}>
+                            <BlockOutlined />
+                        </StyledIcon>
+                    </Tooltip>
+                </div>
+                {renderFileSize(file)}
+                {renderFileModified(file)}
+            </div>
+        );
+    }
+
     return (
         <div key={file.name} className="file-item">
             {renderFileIcon(file, onItemClick)}
