@@ -4,7 +4,7 @@
 
 [![GitHub Stars](https://img.shields.io/github/stars/abcamus/obsidian-sync-vault-ce?style=social)](https://github.com/abcamus/obsidian-sync-vault-ce)
 [![License](https://img.shields.io/badge/license-AGPL3.0-green?style=flat-square)](LICENSE)
-[![Obsidian Plugin](https://img.shields.io/badge/Obsidian-Plugin-purple?style=flat-square&logo=obsidian)](https://obsidian.md)
+[![Obsidian Sync Vault](https://img.shields.io/badge/Obsidian-Plugin-purple?style=flat-square&logo=obsidian)](https://kqiu.top)
 [![Latest Release](https://img.shields.io/github/v/release/abcamus/obsidian-sync-vault-ce?include_prereleases&style=flat-square)](https://github.com/abcamus/obsidian-sync-vault-ce/releases)
 
 Sync Vault 是一个基于云存储的 Obsidian 保险库同步插件。它提供用户友好的界面，可以完全掌控同步过程，同时确保数据隐私和安全。

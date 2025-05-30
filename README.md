@@ -4,7 +4,7 @@
 
 [![GitHub Stars](https://img.shields.io/github/stars/abcamus/obsidian-sync-vault-ce?style=social)](https://github.com/abcamus/obsidian-sync-vault-ce)
 [![License](https://img.shields.io/badge/license-AGPL3.0-green?style=flat-square)](LICENSE)
-[![Obsidian Plugin](https://img.shields.io/badge/Obsidian-Plugin-purple?style=flat-square&logo=obsidian)](https://obsidian.md)
+[![Obsidian Sync Vault](https://img.shields.io/badge/Obsidian-Plugin-purple?style=flat-square&logo=obsidian)](https://kqiu.top)
 [![Latest Release](https://img.shields.io/github/v/release/abcamus/obsidian-sync-vault-ce?include_prereleases&style=flat-square)](https://github.com/abcamus/obsidian-sync-vault-ce/releases)
 
 Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. It provides a user-friendly interface that gives you complete control over the synchronization process while ensuring data privacy and security.
@@ -104,7 +104,6 @@ npm run deploy # Deploy to default vault (see `deploy.sh`)
 - [💬 Discussions](https://github.com/abcamus/obsidian-sync-vault-ce/discussions)
 - [🐛 Report Bug](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=bug_report.md)
 - [✨ Request Feature](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=feature_request.md)
-- [☕ Buy Me a Coffee](https://buymeacoffee.com/yourusername)
 
 Special thanks to：
 
