@@ -2,6 +2,11 @@
 
 # 🌟 Sync Vault Community Edition
 
+[![GitHub Stars](https://img.shields.io/github/stars/abcamus/obsidian-sync-vault-ce?style=social)](https://github.com/abcamus/obsidian-sync-vault-ce)
+[![License](https://img.shields.io/badge/license-AGPL3.0-green?style=flat-square)](LICENSE)
+[![Obsidian Plugin](https://img.shields.io/badge/Obsidian-Plugin-purple?style=flat-square&logo=obsidian)](https://obsidian.md)
+[![Latest Release](https://img.shields.io/github/v/release/abcamus/obsidian-sync-vault-ce?include_prereleases&style=flat-square)](https://github.com/abcamus/obsidian-sync-vault-ce/releases)
+
 Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. It provides a user-friendly interface that gives you complete control over the synchronization process while ensuring data privacy and security.
 
 ## ✨ Features
@@ -14,6 +19,22 @@ Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. I
 
 - Aliyun Drive (Supported)
 - More platforms coming soon...
+
+## Free vs. Paid Edition
+
+| Feature               | Free Edition       | Paid Edition              |
+|-----------------------|--------------------|---------------------------|
+| **Cloud Drives**      | Aliyun             | ✅ Baidu, OneDrive, 115 (Soon) |
+| **Auto-Sync**         | Manual Only     | ✅ Scheduled & Real-Time  |
+| **Sync Modes**        | Basic           | ✅ Auto, P2P, Plugin Sync       |
+| **File Filtering**    | No              | ✅ Regex Ignore Rules     |
+| **Sync Reports**      | No              | ✅ Detailed Logs          |
+| **Conflict Resolution** | Keep recent        | ✅ Keep recent, Mannual merge, Increment merge             |
+| **Video Playback**    | Download Only   | ✅ Stream (Baidu/Aliyun)  |
+| **File History**      | No         | ✅ Unlimited             |
+| **Customer Support**  | Community       | ✅ Priority Response      |
+
+**Upgrade now → [Sync Vault](https://kqiu.top)**
 
 ## ⚙️ Installation & Usage
 
@@ -78,10 +99,12 @@ npm run deploy # Deploy to default vault (see `deploy.sh`)
     - File version management
     - Sync status monitoring
 
-## 📬 Contact & Acknowledgments
-
-- **My Homepage** - [@KQ Digital Garden](https://kqiu.top/about/)
-- **Project Link**: [GitHub](https://github.com/abcamus/obsidian-sync-vault-ce)
+## 🔗 Quick Links
+- [📖 Documentation](https://kqiu.top/docs/)
+- [💬 Discussions](https://github.com/abcamus/obsidian-sync-vault-ce/discussions)
+- [🐛 Report Bug](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=bug_report.md)
+- [✨ Request Feature](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=feature_request.md)
+- [☕ Buy Me a Coffee](https://buymeacoffee.com/yourusername)
 
 Special thanks to：
 

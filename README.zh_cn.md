@@ -2,6 +2,11 @@
 
 # 🌟 Sync Vault 社区版
 
+[![GitHub Stars](https://img.shields.io/github/stars/abcamus/obsidian-sync-vault-ce?style=social)](https://github.com/abcamus/obsidian-sync-vault-ce)
+[![License](https://img.shields.io/badge/license-AGPL3.0-green?style=flat-square)](LICENSE)
+[![Obsidian Plugin](https://img.shields.io/badge/Obsidian-Plugin-purple?style=flat-square&logo=obsidian)](https://obsidian.md)
+[![Latest Release](https://img.shields.io/github/v/release/abcamus/obsidian-sync-vault-ce?include_prereleases&style=flat-square)](https://github.com/abcamus/obsidian-sync-vault-ce/releases)
+
 Sync Vault 是一个基于云存储的 Obsidian 保险库同步插件。它提供用户友好的界面，可以完全掌控同步过程，同时确保数据隐私和安全。
 
 ## ✨ 特性
@@ -14,6 +19,22 @@ Sync Vault 是一个基于云存储的 Obsidian 保险库同步插件。它提�
 
 - 阿里云盘（已支持）
 - 更多云存储平台开发中...
+
+## Free vs. Paid Edition
+
+| Feature               | Free Edition       | Paid Edition              |
+|-----------------------|--------------------|---------------------------|
+| **Cloud Drives**      | Aliyun             | ✅ Baidu, OneDrive, 115 (Soon) |
+| **Auto-Sync**         | Manual Only     | ✅ Scheduled & Real-Time  |
+| **Sync Modes**        | Basic           | ✅ Auto, P2P, Plugin Sync       |
+| **File Filtering**    | No              | ✅ Regex Ignore Rules     |
+| **Sync Reports**      | No              | ✅ Detailed Logs          |
+| **Conflict Resolution** | Keep recent        | ✅ Keep recent, Mannual merge, Increment merge             |
+| **Video Playback**    | Download Only   | ✅ Stream (Baidu/Aliyun)  |
+| **File History**      | No         | ✅ Unlimited             |
+| **Customer Support**  | Community       | ✅ Priority Response      |
+
+**Upgrade now → [Sync Vault](https://kqiu.top)**
 
 ## ⚙️ 安装与使用
 
@@ -78,10 +99,11 @@ $ npm run deploy # 部署插件到默认保险库 (参见 `deploy.sh`)
   - 文件版本管理
   - 同步状态监控
 
-## 📬 联系与致谢
-
-- **我的主页** - [@KQ Digital Garden](https://kqiu.top/about/)
-- **项目链接**: [GitHub](https://github.com/abcamus/obsidian-sync-vault-ce)
+## 🔗 快速链接
+- [📖 Documentation](https://kqiu.top/docs/)
+- [💬 Discussions](https://github.com/abcamus/obsidian-sync-vault-ce/discussions)
+- [🐛 Report Bug](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=bug_report.md)
+- [✨ Request Feature](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=feature_request.md)
 
 感谢以下项目的支持：
 
