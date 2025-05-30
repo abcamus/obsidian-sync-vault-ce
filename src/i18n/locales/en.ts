@@ -39,6 +39,13 @@ export default {
         "rootFolder": "Root folder",
     },
     "settingTab": {
+        "label": {
+            "vaultInfo": "Vault info",
+            "startToUse": "Get started",
+            "syncSetting": "Sync settings",
+            "encryptSetting": "Encryption settings",
+            "help": "Help",
+        },
         "vault": {
             "title": "Vault",
             "vaultDesc": "Cloud path: %{syncPath}",
@@ -54,6 +61,10 @@ export default {
             "switchSyncMode": {
                 "title": "Switch Sync Mode",
                 "desc": "Support controlled sync mode, extensible for other sync modes",
+            },
+            "encryptMode": {
+                "title": "Encryption mode",
+                "desc": "Encryption mode: all files will be encrypted and uploaded",
             },
             "mode": {
                 "selfControlled": "Controlled",
@@ -94,7 +105,7 @@ export default {
             "title": "Upgrade & Help",
             "upgrade": {
                 "title": "Upgrade to Pro",
-                "checkUpdate": "Check for updates",
+                "checkUpdate": "Update to Pro",
                 "checking": "Checking...",
                 "updateAvailable": "New version available",
                 "latestVersion": "Already up to date",
@@ -127,6 +138,13 @@ export default {
                 "desc": "Record plugin runtime logs",
                 "openLogFile": "View Logs",
             },
-        }
+        },
+        "key": {
+            "title": "Key",
+            "desc": "Set document encryption key",
+            "placeholder": "Enter key",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password"
+        },
     },
 };

@@ -2,12 +2,12 @@ import { Plugin, Workspace, Notice } from 'obsidian';
 
 import { cloudDiskModel } from "./src/model/cloud-disk-model";
 import { DEFAULT_SETTINGS, SyncVaultPluginSetting } from './src/model/setting';
-import { CloudDiskSettingTab } from './src/view/setting-tab';
 import { SyncVaultPluginView, CLOUD_DISK_VIEW } from "./src/view/content-view";
 import { CloudDiskType, getCloudDiskName } from './src/service/cloud-interface';
 import { Service } from './src/service';
 import * as util from './src/util';
 import { i18n } from './src/i18n';
+import { LabeledSettingTab } from 'src/view/label-setting-tab';
 
 const logger = util.logger.createLogger('SyncVaultPlugin');
 
@@ -69,7 +69,8 @@ export default class SyncVaultPlugin extends Plugin {
 			return true;
 		}
 
-		return await this.checkAndRefreshToken();
+		cloudDiskModel.isTokenValid = await this.checkAndRefreshToken();
+		return cloudDiskModel.isTokenValid;
 	}
 
 	async onload() {
@@ -83,7 +84,7 @@ export default class SyncVaultPlugin extends Plugin {
 			window.setInterval(async () => await this.checkAndRefreshTokenInterval(), 1000 * 60)
 		);
 
-		this.addSettingTab(new CloudDiskSettingTab(this.app, this));
+		this.addSettingTab(new LabeledSettingTab(this.app, this));
 
 		this.addRibbonIcon('cloud', i18n.t('plugin.title'), async (evt) => {
 			const { workspace } = this.app;

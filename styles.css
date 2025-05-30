@@ -434,3 +434,62 @@
     transform: rotate(360deg);
   }
 }
+
+/* labeled setting tab */
+.cloud-settings-container {
+  display: flex;
+  height: 100%;
+  gap: 10px;
+}
+
+.cloud-settings-tab-bar {
+  width: 180px;
+  padding: 10px 0;
+  border-right: 1px solid var(--background-modifier-border);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cloud-settings-content-area {
+  flex: 1;
+  padding: 10px 20px;
+  overflow-y: auto;
+}
+
+.cloud-settings-tab-button {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  margin: 2px 0;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--text-muted);
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.cloud-settings-tab-button:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.cloud-settings-tab-button.active {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.cloud-settings-tab-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cloud-settings-tab-content {
+  display: none;
+}
+
+.cloud-settings-tab-content.active {
+  display: block;
+}

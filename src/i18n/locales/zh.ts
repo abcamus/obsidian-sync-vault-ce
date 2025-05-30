@@ -40,6 +40,13 @@ export default {
     },
 
     "settingTab": {
+        "label": {
+            "vaultInfo": "仓库信息",
+            "startToUse": "开始使用",
+            "syncSetting": "同步设置",
+            "encryptSetting": "加密设置",
+            "help": "帮助与更新",
+        },
         "vault": {
             "title": "仓库",
             "vaultDesc": "云端路径：%{syncPath}",
@@ -110,7 +117,7 @@ export default {
             "title": "升级和帮助",
             "upgrade": {
                 "title": "升级到pro版",
-                "checkUpdate": "检查更新",
+                "checkUpdate": "升级到pro版",
                 "checking": "检查中...",
                 "updateAvailable": "发现新版本",
                 "latestVersion": "版本已最新",

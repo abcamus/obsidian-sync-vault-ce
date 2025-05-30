@@ -34,6 +34,7 @@ class CloudDiskModel {
 	accessToken: string = '';
 	refreshToken: string = '';
 	tokenExpiryAt: string = '';
+	isTokenValid: boolean = false;
 
 	/* sync */
 	autoMode: boolean = false;
