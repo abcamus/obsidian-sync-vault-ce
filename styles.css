@@ -438,17 +438,19 @@
 /* labeled setting tab */
 .cloud-settings-container {
   display: flex;
+  flex-direction: column;
   height: 100%;
   gap: 10px;
 }
 
 .cloud-settings-tab-bar {
-  width: 180px;
+  width: 100%;
   padding: 10px 0;
-  border-right: 1px solid var(--background-modifier-border);
+  border-bottom: 1px solid var(--background-modifier-border);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 5px;
+  overflow-x: auto;
 }
 
 .cloud-settings-content-area {
@@ -461,12 +463,13 @@
   display: flex;
   align-items: center;
   padding: 8px 15px;
-  margin: 2px 0;
+  margin: 0 2px;
   cursor: pointer;
   border-radius: 4px;
   color: var(--text-muted);
   gap: 10px;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .cloud-settings-tab-button:hover {
