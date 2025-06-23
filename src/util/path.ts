@@ -1,6 +1,9 @@
 export function join(...paths: string[]): string {
-    const separator = '/';
-    return paths.filter(Boolean).join(separator);
+    return paths
+        .filter(Boolean) // 移除空路径段
+        .map(segment => segment.replace(/^\/+|\/+$/g, '')) // 去除每段开头结尾的斜杠
+        .filter(segment => segment !== '') // 再次过滤空字符串
+        .join('/'); // 用单斜杠连接
 }
 
 export function dirname(path: string): string {

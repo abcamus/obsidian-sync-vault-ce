@@ -2,6 +2,7 @@ import { CloudDownloadService, CloudUploadService, CloudInfoService, CloudFileMa
 import { CloudDiskType } from "./cloud-interface";
 import { AliyunService } from "./vendor/aliyun";
 import { cloudDiskModel } from "../model/cloud-disk-model";
+import { WebdavService } from "./vendor/webdav";
 
 export class CloudService {
     private downloadService: CloudDownloadService;
@@ -10,7 +11,8 @@ export class CloudService {
     private fileMngService: CloudFileManagementService;
     static instances: Record<CloudDiskType, CloudService | null> = {
         [CloudDiskType.Aliyun]: null,
-        [CloudDiskType.Unknown]: null
+        [CloudDiskType.Webdav]: null,
+        [CloudDiskType.Unknown]: null,
     };
 
     private constructor(cloudType: CloudDiskType) {
@@ -21,6 +23,13 @@ export class CloudService {
                 this.infoService = new AliyunService.AliyunInfoService();
                 this.fileMngService = new AliyunService.AliyunFileManagementService();
                 CloudService.instances[CloudDiskType.Aliyun] = this;
+                break;
+            case CloudDiskType.Webdav:
+                this.downloadService = new WebdavService.WebdavDownloadService();
+                this.uploadService = new WebdavService.WebdavUploadService();
+                this.infoService = new WebdavService.WebdavInfoService();
+                this.fileMngService = new WebdavService.WebdavFileManagementService();
+                CloudService.instances[CloudDiskType.Webdav] = this;
                 break;
         }
     }

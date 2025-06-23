@@ -27,8 +27,14 @@ async function userInfo(): Promise<UserInfo> {
         }
         const response = await requestUrl({
             url: AliNetdiskApi.info.get_user_info.url,
-            headers: headers
+            headers: headers,
+            throw: false,
         })
+
+        if (response.status !== 200) {
+            logger.error({ error: response });
+            throw new Error(`${response.json.code}`);
+        }
         const data = response.json;
         const userInfo: UserInfo = {
             user_id: data.id,
@@ -37,8 +43,7 @@ async function userInfo(): Promise<UserInfo> {
         };
         return userInfo;
     } catch (error) {
-        logger.error(`[userInfo] error: ${error}, access_token: ${cloudDiskModel.accessToken}`);
-        new Notice('获取用户信息失败');
+        new Notice(`Get user info failed, ${error}`);
         throw error;
     }
 }
@@ -172,7 +177,7 @@ async function listAllItemsOfFolder(folderPath: string, folderId: string): Promi
     }
     /* 修正文件路径 */
     allFiles.forEach((file) => {
-        file.path = util.path.join(folderPath, file.path);
+        file.path = '/' + util.path.join(folderPath, file.path);
     });
     return allFiles;
 }

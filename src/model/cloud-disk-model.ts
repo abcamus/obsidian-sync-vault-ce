@@ -36,6 +36,11 @@ class CloudDiskModel {
 	tokenExpiryAt: string = '';
 	isTokenValid: boolean = false;
 
+	/* webdav */
+	webdavUrl: string = '';
+	webdavUsername: string = '';
+	webdavPassword: string = '';
+
 	/* sync */
 	autoMode: boolean = false;
 
@@ -158,7 +163,7 @@ class CloudDiskModel {
 	}
 
 	set remoteRootPath(remoteRoot: string) {
-		this.remoteRoot = util.path.join('/apps/sync-vault', remoteRoot);
+		this.remoteRoot = '/' + util.path.join('apps/sync-vault', remoteRoot);
 	}
 
 	get remoteRootPath(): string {

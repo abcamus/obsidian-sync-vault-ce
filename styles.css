@@ -496,3 +496,30 @@
 .cloud-settings-tab-content.active {
   display: block;
 }
+
+/* cloud list */
+.cloud-disk-list {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.cloud-disk-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  padding: 8px 16px;
+  transition: border 0.2s, background 0.2s;
+}
+
+.cloud-disk-option.selected {
+  border: 2px solid var(--interactive-accent);
+  background: var(--background-modifier-hover);
+}
+
+.cloud-disk-name {
+  font-size: 16px;
+  font-weight: 500;
+}

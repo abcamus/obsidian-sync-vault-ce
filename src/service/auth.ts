@@ -30,6 +30,7 @@ class CloudAuthAPI {
     baseUrls: Record<oauthMethod, string>;
     static instances: Record<CloudDiskType, CloudAuthAPI | null> = {
         [CloudDiskType.Aliyun]: null,
+        [CloudDiskType.Webdav]: null,
         [CloudDiskType.Unknown]: null,
     };
 

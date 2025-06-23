@@ -39,6 +39,7 @@ export interface FileInfo {
 
 export enum CloudDiskType {
     Aliyun = 'aliyun',
+    Webdav = 'webdav',
     Unknown = 'unknown',
 }
 
@@ -46,6 +47,8 @@ export function getCloudDiskName(type: CloudDiskType) {
     switch (type) {
         case CloudDiskType.Aliyun:
             return 'AliDrive';
+        case CloudDiskType.Webdav:
+            return 'WebDAV';
         default:
             return 'Unknown';
     }

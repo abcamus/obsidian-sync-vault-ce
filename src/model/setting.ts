@@ -11,6 +11,9 @@ export interface SyncVaultPluginSetting {
 	encryptMode: boolean;
 	password: string;
 	fileSizeLimit: number; // in MB
+	webdavUrl?: string; // for WebDAV
+	webdavUsername?: string; // for WebDAV
+	webdavPassword?: string; // for WebDAV
 }
 
 export const DEFAULT_SETTINGS: SyncVaultPluginSetting = {
@@ -24,4 +27,7 @@ export const DEFAULT_SETTINGS: SyncVaultPluginSetting = {
 	encryptMode: false,
 	password: '',
 	fileSizeLimit: 100, // 100MB
+	webdavUrl: '',
+	webdavUsername: '',
+	webdavPassword: '',
 }

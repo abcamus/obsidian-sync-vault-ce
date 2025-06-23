@@ -26,6 +26,9 @@ export default class SyncVaultPlugin extends Plugin {
 		cloudDiskModel.accessToken = this.settings.accessToken;
 		cloudDiskModel.encryptMode = this.settings.encryptMode;
 		cloudDiskModel.fileSizeLimit = this.settings.fileSizeLimit;
+		cloudDiskModel.webdavUrl = this.settings.webdavUrl || '';
+		cloudDiskModel.webdavUsername = this.settings.webdavUsername || '';
+		cloudDiskModel.webdavPassword = this.settings.webdavPassword || '';
 		this.currentView = CLOUD_DISK_VIEW;
 	}
 
@@ -36,6 +39,9 @@ export default class SyncVaultPlugin extends Plugin {
 		cloudDiskModel.password = this.settings.password;
 		cloudDiskModel.accessToken = this.settings.accessToken;
 		cloudDiskModel.encryptMode = this.settings.encryptMode;
+		cloudDiskModel.webdavUrl = this.settings.webdavUrl || '';
+		cloudDiskModel.webdavUsername = this.settings.webdavUsername || '';
+		cloudDiskModel.webdavPassword = this.settings.webdavPassword || '';
 
 		await this.saveData(this.settings);
 	}

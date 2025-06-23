@@ -11,18 +11,20 @@ export class DebugManager {
         'smart-queue': false,
         'cloud-disk-model': false,
         'content-view': false,
-        'local-file-browser': false,
+        'local-file-browser': true,
         'metaop-queue': false,
         'auth': false,
 
         'setting-tab': false,
         'file-tree': false,
-        'snapshot': false,
+        'snapshot': true,
         'service.info': false,
 
         'aliyun.info': false,
         'aliyun.upload': false,
         'aliyun.file-mng': false,
+
+        'webdav.service': true,
     };
 
     private constructor() {

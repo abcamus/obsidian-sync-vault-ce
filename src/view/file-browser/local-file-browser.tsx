@@ -230,7 +230,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
             }
             let remoteMeta = await generateRemoteMetaFromSnapshot();
             if (!remoteMeta) {
-                remoteMeta = await cloudDiskModel.getRemoteMeta();
+                new Notice('Failed to get remote info');
             }
             setFileState(prev => ({ ...prev, remoteMeta: remoteMeta }));
             setLoadingState(prev => ({ ...prev, isLoadingRemoteMeta: false }));

@@ -6,14 +6,75 @@ import { CloudDiskType } from "src/service/cloud-interface";
 import { checkVersion, UpgradeModal } from "src/util/upgrade";
 
 import * as util from '../util';
+import { WebDAVLoginModal } from "./webdav-login-modal";
+
 const logger = util.logger.createLogger('setting-tab');
 
 function getCloudDiskTypeDesc(type: CloudDiskType): string {
     switch (type) {
         case CloudDiskType.Aliyun:
             return i18n.t('settingTab.cloudDisk.aliyunDisk');
+        case CloudDiskType.Webdav:
+            return 'WebDAV';
     }
     return 'unknown';
+}
+
+const cloudDiskOptions = [
+    {
+        type: CloudDiskType.Aliyun,
+        name: i18n.t('settingTab.cloudDisk.aliyunDisk'),
+        logo: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="10.5" stroke="#7B9CFF" stroke-width="3" fill="none" opacity="0.3"/>
+  <path d="M22 12a10 10 0 1 1-10-10" stroke="#7B9CFF" stroke-width="3" stroke-linecap="round" fill="none"/>
+</svg>`,
+    },
+    {
+        type: CloudDiskType.Webdav,
+        name: "坚果云",
+        logo: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 云朵 -->
+  <path d="M6 17
+           Q2 17 2 12
+           Q2 7 6 7
+           Q7 2 12 4
+           Q14 2 18 4
+           Q22 4 22 8
+           Q24 8 24 12
+           Q24 17 18 17
+           Z"
+        fill="#fff" stroke="#B97A3A" stroke-width="1.2"/>
+  <!-- 橡果主体 -->
+  <ellipse cx="15" cy="15" rx="6" ry="6" fill="#F9D488" stroke="#B97A3A" stroke-width="1.2"/>
+  <!-- 橡果阴影 -->
+  <ellipse cx="15" cy="15" rx="4.5" ry="4.5" fill="#E2B15B" opacity="0.5"/>
+  <!-- 橡果顶部帽子 -->
+  <path d="M9.5 12 Q15 9 20.5 12 Q18.5 11 15 12 Q11.5 11 9.5 12 Z"
+        fill="#8B5C2B" stroke="#6B3F1A" stroke-width="1"/>
+  <!-- 橡果分割线 -->
+  <path d="M15 12 Q16 16 15 21" stroke="#B97A3A" stroke-width="1"/>
+</svg>`,
+    }
+];
+
+function renderCloudDiskList(
+    selectedType: CloudDiskType,
+    onSelect: (cloudType: CloudDiskType, cloudName: string) => void,
+    container: HTMLElement
+) {
+    container.empty();
+    cloudDiskOptions.forEach(option => {
+        const item = container.createDiv({
+            cls: `cloud-disk-option${selectedType === option.type ? ' selected' : ''}`,
+            attr: { 'data-type': option.type }
+        });
+        // 插入 logo
+        item.createDiv({ cls: 'cloud-disk-logo' }).innerHTML = option.logo;
+        // 插入名称
+        item.createSpan({ text: option.name, cls: 'cloud-disk-name' });
+        // 点击事件
+        item.onclick = () => onSelect(option.type, option.name);
+    });
 }
 
 export class LabeledSettingTab extends PluginSettingTab {
@@ -146,20 +207,6 @@ export class LabeledSettingTab extends PluginSettingTab {
         new Setting(contentEl)
             .setName(i18n.t('settingTab.cloudDisk.title'))
             .setDesc(i18n.t('settingTab.cloudDisk.desc'))
-            .addDropdown(dropdown => dropdown
-                .addOption(CloudDiskType.Aliyun, i18n.t('settingTab.cloudDisk.aliyunDisk'))
-                .setValue(this.plugin.settings.selectedCloudDisk || CloudDiskType.Aliyun)
-                .onChange(async (value) => {
-                    if (value !== this.plugin.settings.selectedCloudDisk) {
-                        const message = getCloudDiskTypeDesc(value as CloudDiskType);
-                        new Notice(i18n.t('settingTab.cloudDisk.switchTo', { message }));
-                        /* 切换云盘后，重置初始化状态 */
-                        this.plugin.settings.selectedCloudDisk = value as CloudDiskType;
-                        cloudDiskModel.reset();
-                        await this.plugin.saveSettings();
-                    }
-                })
-            )
             .addButton(button => button
                 .setButtonText(isAccessTokenValid ? i18n.t('settingTab.accessToken.revoke') : i18n.t('settingTab.accessToken.clickToAuthorize'))
                 .onClick(async () => {
@@ -168,13 +215,45 @@ export class LabeledSettingTab extends PluginSettingTab {
                         button.setButtonText(i18n.t('settingTab.accessToken.clickToAuthorize'));
                         return;
                     }
-                    await this.plugin.authorize((isAuthorized) => {
-                        if (isAuthorized) {
-                            button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
-                        }
-                    });
+                    if (cloudDiskModel.selectedCloudDisk === CloudDiskType.Webdav) {
+                        new WebDAVLoginModal(this.app, (result) => {
+                            if (result) {
+                                this.plugin.settings.webdavUrl = result.url;
+                                this.plugin.settings.webdavUsername = result.username;
+                                this.plugin.settings.webdavPassword = result.password;
+                                this.plugin.saveSettings().then(() => {
+                                    new Notice(i18n.t('settingTab.accessToken.webdavLoginSuccess'));
+                                    button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
+                                });
+                            }
+                        }).open();
+                    } else {
+                        await this.plugin.authorize((isAuthorized) => {
+                            if (isAuthorized) {
+                                button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
+                            }
+                        });
+                    }
                 })
             );
+
+        const cloudDiskListContainer = contentEl.createDiv({ cls: 'cloud-disk-list' });
+        const onSelectCloudDisk = async (type: CloudDiskType, cloudName: string) => {
+            if (type !== this.plugin.settings.selectedCloudDisk) {
+                const message = cloudName;
+                new Notice(i18n.t('settingTab.cloudDisk.switchTo', { message }));
+                this.plugin.settings.selectedCloudDisk = type;
+                cloudDiskModel.reset();
+                await this.plugin.saveSettings();
+                // 重新渲染并继续传递 onSelectCloudDisk
+                renderCloudDiskList(type, onSelectCloudDisk, cloudDiskListContainer);
+            }
+        };
+        renderCloudDiskList(
+            this.plugin.settings.selectedCloudDisk || CloudDiskType.Aliyun,
+            onSelectCloudDisk,
+            cloudDiskListContainer
+        );
     }
 
     private renderSyncSettings(): void {
