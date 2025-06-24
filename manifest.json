@@ -1,9 +1,9 @@
 {
 	"id": "sync-vault-ce",
 	"name": "Sync Vault CE",
-	"version": "0.6.4",
+	"version": "0.6.5",
 	"minAppVersion": "0.15.0",
-	"description": "sync with cloud disk fast and safely",
+	"description": "Self-controlled sync across all platforms, Aliyun & & Jianguoyun & InifiCloud supported",
 	"author": "Camus Qiu",
 	"authorUrl": "https://kqiu.top/",
 	"isDesktopOnly": false

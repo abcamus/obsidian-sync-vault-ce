@@ -7,6 +7,8 @@ import { checkVersion, UpgradeModal } from "src/util/upgrade";
 
 import * as util from '../util';
 import { WebDAVLoginModal } from "./webdav-login-modal";
+import { createClient } from "webdav";
+import { WebDAVClient } from "src/service/vendor/webdav";
 
 const logger = util.logger.createLogger('setting-tab');
 
@@ -242,6 +244,13 @@ export class LabeledSettingTab extends PluginSettingTab {
                 cloudDiskModel.reset();
                 await this.plugin.saveSettings();
                 this.plugin.closeContentView();
+                if (type === CloudDiskType.Webdav) {
+                    WebDAVClient.createClient({
+                        url: cloudDiskModel.webdavUrl,
+                        username: cloudDiskModel.webdavUsername,
+                        password: cloudDiskModel.webdavPassword,
+                    });
+                }
                 renderCloudDiskList(type, cloudName, onSelectCloudDisk, cloudDiskListContainer);
             }
         };

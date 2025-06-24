@@ -41,6 +41,10 @@ export class WebDAVClient {
         this.password = config.password;
     }
 
+    static createClient(config: WebDAVConfig) {
+        this.instance = new WebDAVClient(config);
+    }
+
     static getInstance(): WebDAVClient {
         if (!WebDAVClient.instance) {
             WebDAVClient.instance = new WebDAVClient({
