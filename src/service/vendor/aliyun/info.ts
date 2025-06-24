@@ -98,7 +98,7 @@ export async function getFileIdByPath(remoteFilePath: string): Promise<string | 
 /* NOTE: 有qps限制，通过SmartQueue获取文件信息 */
 export async function getFileInfoByPath(remoteFilePath: string): Promise<FileInfo | null> {
     const accessToken = cloudDiskModel.accessToken;
-    const driveId = (await cloudDiskModel.getInfo()).storage.drive_id;
+    const driveId = (await cloudDiskModel.getInfo()).storage!.drive_id;
 
     const headers = {
         'Authorization': `Bearer ${accessToken}`,
@@ -131,7 +131,7 @@ export async function getFileInfoByPath(remoteFilePath: string): Promise<FileInf
 
 async function listFiles(parentFileId: string, limit: number = 100, nextMarker: string = ''): Promise<[FileEntry[], string]> {
     const accessToken = cloudDiskModel.accessToken;
-    const driveId = (await cloudDiskModel.getInfo()).storage.drive_id;
+    const driveId = (await cloudDiskModel.getInfo()).storage!.drive_id;
 
     /* 有qps限制，通过SmartQueue获取文件信息 */
     return SmartQueue.getInstance().enqueue(async () => {

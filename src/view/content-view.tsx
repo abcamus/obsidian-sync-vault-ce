@@ -5,6 +5,7 @@ import FileBrowserManager from './file-browser-mng';
 import { createLogger } from "src/util/logger";
 import SyncVaultPlugin from "../../main";
 import { i18n } from "../i18n";
+import { CloudDiskType } from "src/service/cloud-interface";
 
 const logger = createLogger('content-view');
 
@@ -36,10 +37,12 @@ export class SyncVaultPluginView extends ItemView {
 
     private async buildStatusBar(statusItem: HTMLElement) {
         await cloudDiskModel.getInfo().then((info) => {
-            const freeVolume = Math.trunc(info.storage.used / BYTES_PER_GB);
-            const totalVolume = Math.trunc(info.storage.total / BYTES_PER_GB);
             statusItem.append(statusItem.createDiv({ text: `${i18n.t('settingTab.cloudDisk.userName')}: ${info.user.user_name},` }));
-            statusItem.append(statusItem.createDiv({ text: `${i18n.t('settingTab.cloudDisk.volume')}: ${freeVolume} GB/${totalVolume} GB` }));
+            if (cloudDiskModel.selectedCloudDisk !== CloudDiskType.Webdav) {
+                const freeVolume = Math.trunc(info.storage.used / BYTES_PER_GB);
+                const totalVolume = Math.trunc(info.storage.total / BYTES_PER_GB);
+                statusItem.append(statusItem.createDiv({ text: `${i18n.t('settingTab.cloudDisk.volume')}: ${freeVolume} GB/${totalVolume} GB` }));
+            }
         }, (rejectReason: any) => {
             statusItem.append(statusItem.createDiv({ text: i18n.t('settingTab.cloudDisk.getInfoFailed') }));
         });

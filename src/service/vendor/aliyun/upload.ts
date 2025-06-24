@@ -7,8 +7,8 @@ import * as path from '../../../util/path';
 import { getFileInfoByPath } from './info';
 import { deleteFileById } from './file-mng';
 import { AliNetdiskApi } from './api';
-import { CloudUploadService } from 'src/service/cloud-disk-service';
-import { encrypt } from 'src/util/encryption';
+import { CloudUploadService } from '../../../service/cloud-disk-service';
+import { encrypt } from '../../../util/encryption';
 
 import { createDirectoryRecursive } from './file-mng';
 

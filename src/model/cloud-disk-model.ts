@@ -4,7 +4,7 @@ import { Service } from "../service";
 import { RemoteMeta } from "./meta-info";
 import { createLogger } from "../util/logger";
 import { VaultModel } from "./vault-model";
-import { CloudDiskType, UserInfo, StorageInfo } from "src/service/cloud-interface";
+import { CloudDiskType, UserInfo, StorageInfo } from "../service/cloud-interface";
 
 const logger = createLogger('cloud-disk-model');
 
@@ -79,14 +79,20 @@ class CloudDiskModel {
 	}
 
 	async initBasicInfo() {
-		const user = await Service.info.userInfo();
-		const storage = await Service.info.storageInfo();
-
-		if (user === null || storage === null) {
+		let user = await Service.info.userInfo();
+		if (user === null) {
 			new Notice('初始化网盘信息失败');
 			return;
 		}
 
+		let storage = { total: 0, used: 0};
+		if (cloudDiskModel.selectedCloudDisk !== CloudDiskType.Webdav) {
+			const storage = await Service.info.storageInfo();
+			if (storage === null) {
+				new Notice(`Init cloud disk failed.`);
+				return;
+			}
+		}
 
 		this.info = { user, storage };
 	}

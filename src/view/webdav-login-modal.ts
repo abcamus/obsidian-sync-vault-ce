@@ -21,15 +21,15 @@ export class WebDAVLoginModal extends Modal {
         contentEl.empty();
         contentEl.createEl("h2", { text: "WebDAV 登录" });
 
-        let url = "";
-        let username = "";
-        let password = "";
+        let url = cloudDiskModel.webdavUrl;
+        let username = cloudDiskModel.webdavUsername;
+        let password = cloudDiskModel.webdavPassword;
 
         new Setting(contentEl)
             .setName("WebDAV 服务器地址")
             .addText((text) =>
                 text
-                    .setValue(cloudDiskModel.webdavUrl)
+                    .setValue(url)
                     .setPlaceholder("https://example.com/webdav/")
                     .onChange((value) => (url = value))
             );
@@ -39,7 +39,7 @@ export class WebDAVLoginModal extends Modal {
             .addText((text) =>
                 text
                     .setPlaceholder("用户名")
-                    .setValue(cloudDiskModel.webdavUsername)
+                    .setValue(username)
                     .onChange((value) => (username = value))
             );
 
@@ -48,7 +48,7 @@ export class WebDAVLoginModal extends Modal {
             .addText((text) => {
                 text
                     .setPlaceholder("密码")
-                    .setValue(cloudDiskModel.webdavPassword)
+                    .setValue(password)
                     .onChange((value) => (password = value));
                 if (text.inputEl) {
                     text.inputEl.setAttribute("type", "password");

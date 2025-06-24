@@ -2,7 +2,7 @@ import { Notice, requestUrl } from 'obsidian';
 import { cloudDiskModel } from '../model/cloud-disk-model';
 import { CloudDiskType } from './cloud-interface';
 import * as util from '../util';
-import { secToMs } from 'src/util/time';
+import { secToMs } from '../util/time';
 
 const logger = util.logger.createLogger('auth');
 

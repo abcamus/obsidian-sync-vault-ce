@@ -7,7 +7,7 @@ import { CloudDiskType, getCloudDiskName } from './src/service/cloud-interface';
 import { Service } from './src/service';
 import * as util from './src/util';
 import { i18n } from './src/i18n';
-import { LabeledSettingTab } from 'src/view/label-setting-tab';
+import { getCloudDiskTypeDesc, LabeledSettingTab } from 'src/view/label-setting-tab';
 
 const logger = util.logger.createLogger('SyncVaultPlugin');
 
@@ -26,10 +26,19 @@ export default class SyncVaultPlugin extends Plugin {
 		cloudDiskModel.accessToken = this.settings.accessToken;
 		cloudDiskModel.encryptMode = this.settings.encryptMode;
 		cloudDiskModel.fileSizeLimit = this.settings.fileSizeLimit;
-		cloudDiskModel.webdavUrl = this.settings.webdavUrl || '';
-		cloudDiskModel.webdavUsername = this.settings.webdavUsername || '';
-		cloudDiskModel.webdavPassword = this.settings.webdavPassword || '';
+		const cloudDiskName = this.settings.cloudDiskName;
+		cloudDiskModel.webdavUrl = this.settings.webDAVAccount[cloudDiskName]?.url || '';
+		cloudDiskModel.webdavUsername = this.settings.webDAVAccount[cloudDiskName]?.name || '';
+		cloudDiskModel.webdavPassword = this.settings.webDAVAccount[cloudDiskName]?.password || '';
 		this.currentView = CLOUD_DISK_VIEW;
+
+		logger.info({
+			cloudType: cloudDiskModel.selectedCloudDisk,
+			cloudName: cloudDiskName,
+			webDAVURL: cloudDiskModel.webdavUrl,
+			webDAVName: cloudDiskModel.webdavUsername,
+			webDAVPassword: cloudDiskModel.webdavPassword
+		});
 	}
 
 	async saveSettings() {
@@ -39,9 +48,10 @@ export default class SyncVaultPlugin extends Plugin {
 		cloudDiskModel.password = this.settings.password;
 		cloudDiskModel.accessToken = this.settings.accessToken;
 		cloudDiskModel.encryptMode = this.settings.encryptMode;
-		cloudDiskModel.webdavUrl = this.settings.webdavUrl || '';
-		cloudDiskModel.webdavUsername = this.settings.webdavUsername || '';
-		cloudDiskModel.webdavPassword = this.settings.webdavPassword || '';
+		const cloudDiskName = this.settings.cloudDiskName;
+		cloudDiskModel.webdavUrl = this.settings.webDAVAccount[cloudDiskName]?.url || '';
+		cloudDiskModel.webdavUsername = this.settings.webDAVAccount[cloudDiskName]?.name || '';
+		cloudDiskModel.webdavPassword = this.settings.webDAVAccount[cloudDiskName]?.password || '';
 
 		await this.saveData(this.settings);
 	}
@@ -127,7 +137,7 @@ export default class SyncVaultPlugin extends Plugin {
 		util.LogService.init(this.app, this.manifest.dir!);
 	}
 
-	async openView(workspace: Workspace) {
+	async openContentView(workspace: Workspace) {
 		try {
 			const leaf = workspace.getLeftLeaf(false);
 			await leaf?.setViewState({ type: this.currentView, active: true });
@@ -140,11 +150,17 @@ export default class SyncVaultPlugin extends Plugin {
 		}
 	}
 
+	async closeContentView() {
+		const { workspace } = this.app;
+
+		workspace.detachLeavesOfType(this.currentView);
+	}
+
 	async toggleView(workspace: Workspace) {
 		const leaves = workspace.getLeavesOfType(this.currentView);
 
 		if (leaves.length === 0) {
-			this.openView(workspace);
+			this.openContentView(workspace);
 		} else {
 			/* focus on current view */
 			workspace.revealLeaf(leaves[0]);

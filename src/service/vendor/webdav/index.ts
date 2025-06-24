@@ -1,7 +1,7 @@
 import { CloudDownloadService, CloudUploadService, CloudInfoService, CloudFileManagementService } from '../../cloud-disk-service';
 import * as util from '../../../util';
-import { cloudDiskModel } from 'src/model/cloud-disk-model';
-import { FileEntry, StorageInfo, UserInfo } from 'src/service/cloud-interface';
+import { cloudDiskModel } from '../../../model/cloud-disk-model';
+import { FileEntry, StorageInfo, UserInfo } from '../../../service/cloud-interface';
 import { Notice, requestUrl, RequestUrlParam, RequestUrlResponse } from 'obsidian';
 
 const logger = util.logger.createLogger('webdav.service');
@@ -27,10 +27,10 @@ interface FileStat {
     extension?: string;
 }
 
-class WebDAVClient {
+export class WebDAVClient {
     baseUrl: string;
-    private username: string;
-    private password: string;
+    username: string;
+    password: string;
 
     static instance: WebDAVClient;
 
@@ -105,34 +105,51 @@ class WebDAVClient {
             throw new Error(`Failed to parse XML: ${error.textContent}`);
         }
 
-        // 获取所有 <d:response> 节点
-        const responses = doc.getElementsByTagName("d:response");
-        return Array.from(responses).map((res) => {
-            // 提取路径（移除开头的服务器地址部分）
-            const href = res.getElementsByTagName("d:href")[0]?.textContent || "";
+        // 兼容 d:response/D:response/无前缀等
+        const responses: Element[] = [];
+        const allElements = doc.getElementsByTagName("*");
+        for (let i = 0; i < allElements.length; i++) {
+            const el = allElements[i];
+            if (el.localName === "response") {
+                responses.push(el as Element);
+            }
+        }
+
+        logger.debug({ 'Response count': responses.length });
+        return responses.map((res) => {
+            const href = (res.getElementsByTagName("d:href")[0] ||
+                res.getElementsByTagName("D:href")[0] ||
+                res.getElementsByTagName("href")[0])?.textContent || "";
             const decodedHref = decodeURIComponent(href);
             const path = decodedHref.replace("/dav", "");
 
-            // 判断类型（文件 or 目录）
-            const isCollection = res.getElementsByTagName("d:collection").length > 0;
+            const isCollection = res.getElementsByTagName("d:collection").length > 0 ||
+                res.getElementsByTagName("D:collection").length > 0 ||
+                res.getElementsByTagName("collection").length > 0;
             const type = isCollection ? "directory" : "file";
 
-            // 提取文件大小
-            const sizeText = res.getElementsByTagName("d:getcontentlength")[0]?.textContent;
+            const sizeText = (res.getElementsByTagName("d:getcontentlength")[0] ||
+                res.getElementsByTagName("lp1:getcontentlength")[0] ||
+                res.getElementsByTagName("getcontentlength")[0])?.textContent;
             const size = sizeText ? parseInt(sizeText) : 0;
 
-            // 提取修改时间
-            const lastModifiedText = res.getElementsByTagName("d:getlastmodified")[0]?.textContent;
+            const lastModifiedText = (res.getElementsByTagName("d:getlastmodified")[0] ||
+                res.getElementsByTagName("lp1:getlastmodified")[0] ||
+                res.getElementsByTagName("getlastmodified")[0])?.textContent;
             const lastModified = lastModifiedText ? new Date(lastModifiedText).toISOString() : '';
 
-            // 提取文件扩展名
             const extension = type === "file" ? path.split(".").pop()?.toLowerCase() : undefined;
+
+            const etag = (res.getElementsByTagName("d:getetag")[0] ||
+                res.getElementsByTagName("lp1:getetag")[0] ||
+                res.getElementsByTagName("getetag")[0])?.textContent;
 
             return {
                 path,
                 type,
                 size,
                 lastModified,
+                etag: etag === null ? undefined : etag,
                 extension,
             };
         });
@@ -159,6 +176,16 @@ class WebDAVClient {
         }
     }
 
+    async createFolderRecursive(path: string): Promise<boolean> {
+        const parts = path.split('/').filter(Boolean);
+        let current = '';
+        for (const part of parts) {
+            current = current ? `${current}/${part}` : part;
+            await this.createFolder(current);
+        }
+        return true;
+    }
+
     async listDirectory(path: string = ""): Promise<FileStat[]> {
         try {
             const response = await this.request("PROPFIND", path);
@@ -173,6 +200,7 @@ class WebDAVClient {
     }
 
     async listFilesResursive(folderPath: string): Promise<FileStat[]> {
+        if (!folderPath.endsWith('/')) folderPath += '/';
         let requestCount = 0;
         const listInnerFolder = async (innerPath: string): Promise<FileStat[]> => {
             if (requestCount > 1000) {
@@ -182,9 +210,12 @@ class WebDAVClient {
             logger.debug(`List folder: ${innerPath}`);
             const contents = await this.listDirectory(innerPath);
 
+            logger.debug({ 'Item count': contents });
             const result: FileStat[] = [];
             for (const item of contents) {
-                if (item.path === innerPath) {
+                const itemPath = item.type === 'directory' && !item.path.endsWith('/') ? item.path + '/' : item.path;
+                const comparePath = innerPath.endsWith('/') ? innerPath : innerPath + '/';
+                if (itemPath === comparePath) {
                     result.push(item);
                     logger.debug(`Skip self: ${item.path}`);
                     continue;
@@ -246,7 +277,7 @@ class WebdavDownloadService implements CloudDownloadService {
 class WebdavUploadService implements CloudUploadService {
     // Implementation of Webdav upload service methods
     async uploadFile(localPath: string, remotePath: string, params?: { ctime?: number, mtime?: number }): Promise<boolean> {
-        const folderExists = WebDAVClient.getInstance().createFolder(util.path.dirname(remotePath));
+        const folderExists = await WebDAVClient.getInstance().createFolderRecursive(util.path.dirname(remotePath));
         if (!folderExists) {
             new Notice(`Folder not found: ${util.path.dirname(remotePath)}`);
             return false;
@@ -277,7 +308,7 @@ class WebdavUploadService implements CloudUploadService {
         ctime?: number,
         mtime?: number
     }, callback?: (ctime: number, mtime: number) => Promise<void>): Promise<boolean> {
-        const folderExists = WebDAVClient.getInstance().createFolder(util.path.dirname(remotePath));
+        const folderExists = await WebDAVClient.getInstance().createFolder(util.path.dirname(remotePath));
         if (!folderExists) {
             new Notice(`Folder not exists: ${util.path.dirname(remotePath)}`);
             return false;
@@ -312,23 +343,11 @@ class WebdavInfoService implements CloudInfoService {
     }
 
     async storageInfo(): Promise<StorageInfo> {
-        const response = await requestUrl({
-            url: "https://dav.jianguoyun.com/api/v1/account",
-            method: "GET",
-            headers: {
-                Authorization: "Basic " + btoa(`${cloudDiskModel.webdavUsername}:${cloudDiskModel.webdavPassword}`),
-            },
-        });
-
-        const data = response.json;
-        console.log(
-            `总容量: ${(data.quota / 1024 / 1024).toFixed(2)} MB\n` +
-            `已使用: ${(data.usage / 1024 / 1024).toFixed(2)} MB`
-        );
+        // FIXME: get cloud disk storage info
         return {
-            total: data.quota,
-            used: data.usage,
-        };
+            total: 1000000000,
+            used: 1000000000,
+        }
     }
 
     async listFiles(parentFileId: string, limit?: number, nextMarker?: string): Promise<[FileEntry[], string]> {
