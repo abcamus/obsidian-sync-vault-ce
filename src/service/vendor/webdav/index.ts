@@ -1,8 +1,9 @@
 import { CloudDownloadService, CloudUploadService, CloudInfoService, CloudFileManagementService } from '../../cloud-disk-service';
-import * as util from '../../../util';
 import { cloudDiskModel } from '../../../model/cloud-disk-model';
 import { FileEntry, StorageInfo, UserInfo } from '../../../service/cloud-interface';
 import { Notice, requestUrl, RequestUrlParam, RequestUrlResponse } from 'obsidian';
+
+import * as util from '../../../util';
 
 const logger = util.logger.createLogger('webdav.service');
 
@@ -59,6 +60,7 @@ export class WebDAVClient {
         headers: Record<string, string> = {}
     ): Promise<RequestUrlResponse> {
         const url = util.path.join(this.baseUrl, path);
+        logger.debug(`Target url: ${url}, username: ${this.username}, pwd: ${this.password}`);
         const authHeader = {
             Authorization: 'Basic ' + btoa(`${this.username}:${this.password}`),
         };
@@ -379,23 +381,24 @@ class WebdavFileManagementService implements CloudFileManagementService {
     // Implementation of Webdav file management service methods
     async renameFile(from: string, newName: string): Promise<void> {
         const client = WebDAVClient.getInstance();
+        const remoteFrom = util.path.join(cloudDiskModel.remoteRootPath, from);
         // 目标路径
-        const to = util.path.join(util.path.dirname(from), newName);
-        const url = util.path.join(client.baseUrl, from);
+        const to = util.path.join(util.path.dirname(remoteFrom), newName);
         const destUrl = util.path.join(client.baseUrl, to);
 
         const headers = {
-            Destination: destUrl,
+            Destination: encodeURI(destUrl),
             Overwrite: "T"
         };
-        const response = await client['request']("MOVE", from, undefined, headers);
+        const response = await client['request']("MOVE", remoteFrom, undefined, headers);
         if (response.status < 200 || response.status >= 300) {
-            throw new Error(`重命名失败: ${from} -> ${to}, 状态码: ${response.status}`);
+            throw new Error(`重命名失败: ${remoteFrom} -> ${destUrl}, 状态码: ${response.status}`);
         }
     }
     async deleteFile(filePath: string): Promise<boolean> {
         const client = WebDAVClient.getInstance();
-        const response = await client['request']("DELETE", filePath);
+        const remoteFilePath = util.path.join(cloudDiskModel.remoteRootPath, filePath);
+        const response = await client['request']("DELETE", remoteFilePath);
         if (response.status >= 200 && response.status < 300) {
             logger.info(`删除成功: ${filePath}`);
             return true;
@@ -410,12 +413,14 @@ class WebdavFileManagementService implements CloudFileManagementService {
     }
     async copyFile(from: string, to: string): Promise<any> {
         const client = WebDAVClient.getInstance();
-        const destUrl = util.path.join(client.baseUrl, to);
+        const remoteFromAddr = util.path.join(cloudDiskModel.remoteRootPath, from);
+        const remoteToAddr = util.path.join(cloudDiskModel.remoteRootPath, to);
+        const destUrl = util.path.join(client.baseUrl, remoteToAddr);
         const headers = {
-            Destination: destUrl,
+            Destination: encodeURI(destUrl),
             Overwrite: "T"
         };
-        const response = await client['request']("COPY", from, undefined, headers);
+        const response = await client['request']("COPY", remoteFromAddr, undefined, headers);
         if (response.status >= 200 && response.status < 300) {
             logger.info(`复制成功: ${from} -> ${to}`);
             return true;
@@ -440,7 +445,6 @@ class WebdavFileManagementService implements CloudFileManagementService {
         }
     }
     async mkdir(dirPath: string): Promise<void> {
-        // Logic to create a directory
         const result = WebDAVClient.getInstance().createFolder(dirPath);
         if (!result) {
             logger.error(`Create folder failed, ${dirPath}`);

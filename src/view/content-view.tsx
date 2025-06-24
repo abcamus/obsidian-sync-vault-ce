@@ -53,6 +53,18 @@ export class SyncVaultPluginView extends ItemView {
         await this.plugin.loadSettings();
         this.root = createRoot(this.containerEl.children[1]);
 
+        if (cloudDiskModel.selectedCloudDisk === CloudDiskType.Webdav) {
+            if (cloudDiskModel.webdavUrl === '' ||
+                cloudDiskModel.webdavUsername === '' ||
+                cloudDiskModel.webdavPassword === '') {
+                    new Notice('WebDAV account not configured.');
+                    this.containerEl.children[1].createDiv({
+                        text: `${this.plugin.settings.cloudDiskName} account not configured.`
+                    });
+                    return;
+                }
+        }
+
         // 检查 access_token 是否存在
         const accessToken = cloudDiskModel.accessToken;
         if (!accessToken) {

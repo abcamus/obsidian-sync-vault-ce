@@ -1,4 +1,7 @@
 import 'obsidian';
+import { DOMParser } from 'xmldom';
+
+(global as any).DOMParser = DOMParser;
 
 Object.assign(global, {
     window: {
