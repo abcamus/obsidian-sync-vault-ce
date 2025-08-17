@@ -101,7 +101,7 @@ export class LabeledSettingTab extends PluginSettingTab {
         this.addTab('vault', 'home', i18n.t('settingTab.label.vaultInfo'), () => this.renderVaultSettings());
         this.addTab('start', 'rocket', i18n.t('settingTab.label.startToUse'), () => this.renderStartToUseSettings());
         this.addTab('sync', 'refresh-cw', i18n.t('settingTab.label.syncSetting'), () => this.renderSyncSettings());
-        this.addTab('encrypt', 'lock', i18n.t('settingTab.label.encryptSetting'), () => this.renderEncryptSettings());
+        this.addTab('advanced', 'zap', i18n.t('settingTab.label.advancedSetting'), () => this.renderAdvancedSettings());
         this.addTab('help', 'help-circle', i18n.t('settingTab.label.help'), () => this.renderHelpSettings());
 
         // 默认激活第一个标签
@@ -161,8 +161,8 @@ export class LabeledSettingTab extends PluginSettingTab {
                     case 'sync':
                         this.renderSyncSettings();
                         break;
-                    case 'encrypt':
-                        this.renderEncryptSettings();
+                    case 'advanced':
+                        this.renderAdvancedSettings();
                         break;
                     case 'help':
                         this.renderHelpSettings();
@@ -287,6 +287,22 @@ export class LabeledSettingTab extends PluginSettingTab {
 
         this.syncModeSettingContainer = contentEl.createDiv();
         this.updateSyncModeSetting();
+
+        new Setting(contentEl)
+            .setHeading()
+            .setName(i18n.t('settingTab.menuSyncConfig.encryptMode.title'))
+            .setDesc(i18n.t('settingTab.menuSyncConfig.encryptMode.desc'))
+            .addToggle(toggle => {
+                toggle.setValue(this.plugin.settings.encryptMode)
+                    .onChange(async (value) => {
+                        this.plugin.settings.encryptMode = value;
+                        await this.plugin.saveSettings();
+                        this.updateKeySetting();
+                    })
+            });
+
+        this.keySettingContainer = contentEl.createDiv();
+        this.updateKeySetting();
     }
 
     private updateSyncModeSetting(): void {
@@ -344,8 +360,8 @@ export class LabeledSettingTab extends PluginSettingTab {
             );
     }
 
-    private renderEncryptSettings(): void {
-        const contentEl = this.contentArea.find(`.cloud-settings-tab-content[data-tab="encrypt"]`);
+    private renderAdvancedSettings(): void {
+        const contentEl = this.contentArea.find(`.cloud-settings-tab-content[data-tab="advanced"]`);
         if (!contentEl) return;
 
         new Setting(contentEl)

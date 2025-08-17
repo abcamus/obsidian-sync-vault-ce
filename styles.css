@@ -523,3 +523,56 @@
   font-size: 16px;
   font-weight: 500;
 }
+
+/* extension: highlight-todo */
+.cm-todo-highlight {
+  background-color: rgba(255, 200, 0, 0.3);
+  font-weight: bold;
+}
+
+/* extension: link suggestion */
+.custom-link-suggest-item {
+  display: flex;
+  align-items: center;
+  padding: 2px 8px;
+}
+
+.suggest-file-path {
+  flex: 1;
+  font-weight: 500;
+  color: var(--text-normal);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggest-file-status {
+  font-size: 0.95em;
+  margin-left: 8px;
+  min-width: 60px;
+  text-align: right;
+}
+
+/* 网盘图片组件 */
+.baidu-image-mark {
+  position: relative;
+  background: none;
+}
+
+.baidu-image-mark::after {
+  content: "";
+  display: block;
+  width: 200px;
+  height: 120px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left top;
+  margin-top: 4px;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px #0001;
+  background-image: attr(data-img url);
+}
+
+.baidu-image-mark-editing::after {
+  display: none;
+}

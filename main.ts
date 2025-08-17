@@ -8,6 +8,9 @@ import { Service } from './src/service';
 import * as util from './src/util';
 import { i18n } from './src/i18n';
 import { getCloudDiskTypeDesc, LabeledSettingTab } from 'src/view/label-setting-tab';
+import { myExtension } from 'src/extension/highlight-todo';
+import CustomLinkSuggest from 'src/extension/suggestion';
+import { imageViewPlugin } from 'src/extension/image-viewer';
 
 const logger = util.logger.createLogger('SyncVaultPlugin');
 
@@ -130,6 +133,25 @@ export default class SyncVaultPlugin extends Plugin {
 					new Notice(i18n.t('plugin.authorize.success'));
 				}
 			}
+		});
+
+		this.registerEditorExtension(myExtension);
+		// this.registerEditorSuggest(new CustomLinkSuggest(this.app));
+		this.registerEditorExtension(imageViewPlugin);
+
+		this.registerMarkdownPostProcessor((el, ctx) => {
+			// 查找所有图片
+			el.querySelectorAll('img').forEach(img => {
+				const src = img.getAttribute('src');
+				if (src && src.includes('pan.baidu.com')) {
+					// 这里可以异步获取真实图片链接
+					// 这里只做占位演示
+					img.src = "https://placehold.co/600x400/e5e7eb/000?text=BD+Image&font=roboto";
+					img.alt = "百度网盘图片";
+					img.style.maxWidth = "400px";
+					img.style.border = "1px solid #eee";
+				}
+			});
 		});
 
 		cloudDiskModel.vault = this.app.vault;

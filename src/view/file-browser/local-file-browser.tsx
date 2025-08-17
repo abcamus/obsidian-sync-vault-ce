@@ -273,6 +273,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
     /* 如果远程meta加载成功，则加载本地根节点 */
     useEffect(() => {
         if (!loadingState.isLoadingRemoteMeta && loadingState.isLoadingRootNode) {
+            logger.info('Loading local root node...');
             loadRootNode();
         }
     }, [loadingState.isLoadingRemoteMeta, loadingState.isLoadingRootNode]);

@@ -85,9 +85,9 @@ class CloudDiskModel {
 			return;
 		}
 
-		let storage = { total: 0, used: 0};
+		let storage: StorageInfo = { total: 0, used: 0};
 		if (cloudDiskModel.selectedCloudDisk !== CloudDiskType.Webdav) {
-			const storage = await Service.info.storageInfo();
+			storage = await Service.info.storageInfo();
 			if (storage === null) {
 				new Notice(`Init cloud disk failed.`);
 				return;

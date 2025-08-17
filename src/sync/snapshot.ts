@@ -6,6 +6,7 @@ const logger = util.logger.createLogger("snapshot");
 
 export class Snapshot {
     private _data: Record<string, FileEntry>;
+    static prev: Snapshot;
 
     private constructor(files: FileEntry[]) {
         this._data = {};
@@ -18,7 +19,8 @@ export class Snapshot {
     }
 
     static createWithFiles(files: FileEntry[]): Snapshot {
-        return new Snapshot(files);
+        Snapshot.prev = new Snapshot(files);
+        return Snapshot.prev;
     }
 
     get size(): number {

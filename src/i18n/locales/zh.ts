@@ -44,7 +44,7 @@ export default {
             "vaultInfo": "仓库信息",
             "startToUse": "开始使用",
             "syncSetting": "同步设置",
-            "encryptSetting": "加密设置",
+            "advancedSetting": "高级功能",
             "help": "帮助与更新",
         },
         "vault": {

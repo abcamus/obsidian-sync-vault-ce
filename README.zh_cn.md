@@ -17,7 +17,10 @@ Sync Vault 是一个基于云存储的 Obsidian 保险库同步插件。它提�
 
 ## 📱 支持的云存储
 
-- 阿里云盘（已支持）
+- 阿里云盘
+- WebDAV
+  - 坚果云
+  - InfiniCloud
 - 更多云存储平台开发中...
 
 ## Free vs. Paid Edition
