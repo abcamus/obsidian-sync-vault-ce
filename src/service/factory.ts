@@ -4,6 +4,12 @@ import { AliyunService } from "./vendor/aliyun";
 import { cloudDiskModel } from "../model/cloud-disk-model";
 import { WebdavService } from "./vendor/webdav";
 
+import * as util from "@/util";
+import { S3Service } from "./vendor/s3";
+// import { FtpService } from "./vendor/sftp";
+
+const logger = util.logger.createLogger('CloudService');
+
 export class CloudService {
     private downloadService: CloudDownloadService;
     private uploadService: CloudUploadService;
@@ -13,6 +19,8 @@ export class CloudService {
         [CloudDiskType.Aliyun]: null,
         [CloudDiskType.Webdav]: null,
         [CloudDiskType.Unknown]: null,
+        [CloudDiskType.Ftp]: null,
+        [CloudDiskType.S3]: null,
     };
 
     private constructor(cloudType: CloudDiskType) {
@@ -31,10 +39,19 @@ export class CloudService {
                 this.fileMngService = new WebdavService.WebdavFileManagementService();
                 CloudService.instances[CloudDiskType.Webdav] = this;
                 break;
+            case CloudDiskType.S3:
+                this.downloadService = new S3Service.S3DownloadService();
+                this.uploadService = new S3Service.S3UploadService();
+                this.infoService = new S3Service.S3InfoService();
+                this.fileMngService = new S3Service.S3FileManagementService();
+                CloudService.instances[CloudDiskType.Ftp] = this;
+                break;
+            default:
+                logger.error(`Unsupported cloud disk type: ${cloudType}`);
         }
     }
 
-    static getService(): CloudService {
+    static buildService(): CloudService {
         if (!CloudService.instances[cloudDiskModel.selectedCloudDisk]) {
             CloudService.instances[cloudDiskModel.selectedCloudDisk] = new CloudService(cloudDiskModel.selectedCloudDisk);
         }
@@ -42,18 +59,18 @@ export class CloudService {
     }
 
     static get download(): CloudDownloadService {
-        return CloudService.getService().downloadService;
+        return CloudService.buildService().downloadService;
     }
 
     static get upload(): CloudUploadService {
-        return CloudService.getService().uploadService;
+        return CloudService.buildService().uploadService;
     }
 
     static get info(): CloudInfoService {
-        return CloudService.getService().infoService;
+        return CloudService.buildService().infoService;
     }
 
     static get fileMng(): CloudFileManagementService {
-        return CloudService.getService().fileMngService;
+        return CloudService.buildService().fileMngService;
     }
 }

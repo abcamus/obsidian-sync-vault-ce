@@ -18,6 +18,22 @@ function validateRemoteMeta(metaContent: string): boolean {
 	}
 }
 
+export interface S3Config {
+	endpoint: string;
+	region: string;
+	accessKeyId: string;
+	secretAccessKey: string;
+	bucket: string;
+}
+
+export interface FtpConfig {
+	server: string;
+	port: number;
+	username: string;
+	password: string;
+	remotePath: string;
+}
+
 class CloudDiskModel {
 	private static instance: CloudDiskModel;
 
@@ -40,6 +56,24 @@ class CloudDiskModel {
 	webdavUrl: string = '';
 	webdavUsername: string = '';
 	webdavPassword: string = '';
+
+	/* FTP */
+	ftpConfig: FtpConfig = {
+		server: '',
+		port: 21,
+		username: '',
+		password: '',
+		remotePath: ''
+	}
+
+	/* S3 configuration */
+	s3Config: S3Config = {
+		endpoint: '',
+		region: '',
+		accessKeyId: '',
+		secretAccessKey: '',
+		bucket: ''
+	}
 
 	/* sync */
 	autoMode: boolean = false;
@@ -85,7 +119,7 @@ class CloudDiskModel {
 			return;
 		}
 
-		let storage: StorageInfo = { total: 0, used: 0};
+		let storage: StorageInfo = { total: 0, used: 0 };
 		if (cloudDiskModel.selectedCloudDisk !== CloudDiskType.Webdav) {
 			storage = await Service.info.storageInfo();
 			if (storage === null) {

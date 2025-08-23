@@ -17,6 +17,13 @@ export interface SyncVaultPluginSetting {
 		name: string;
 		password: string;
 	}>;
+	ftpAccount: {
+		url: string;
+		port: number;
+		path: string;
+		username: string;
+		password: string;
+	};
 }
 
 export const DEFAULT_SETTINGS: SyncVaultPluginSetting = {
@@ -31,5 +38,12 @@ export const DEFAULT_SETTINGS: SyncVaultPluginSetting = {
 	encryptMode: false,
 	password: '',
 	fileSizeLimit: 100, // 100MB
-	webDAVAccount: {}
+	webDAVAccount: {},
+	ftpAccount: {
+		url: '',
+		port: 21,
+		path: '',
+		username: '',
+		password: '',
+	},
 }

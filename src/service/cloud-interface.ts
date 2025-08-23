@@ -40,6 +40,8 @@ export interface FileInfo {
 export enum CloudDiskType {
     Aliyun = 'aliyun',
     Webdav = 'webdav',
+    Ftp = 'ftp',
+    S3 = 'sss',
     Unknown = 'unknown',
 }
 

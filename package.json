@@ -1,7 +1,7 @@
 {
 	"name": "sync-vault-community",
-	"version": "0.6.6",
-	"description": "Sync with cloud disk safely",
+	"version": "0.6.7",
+	"description": "Sync through cloud service easily and safely",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
@@ -35,6 +35,8 @@
 		"xmldom": "^0.6.0"
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.873.0",
+		"@aws-sdk/lib-storage": "^3.873.0",
 		"@emotion/react": "^11.13.3",
 		"@emotion/styled": "^11.13.0",
 		"@mui/icons-material": "^6.1.0",
@@ -42,6 +44,7 @@
 		"@noble/hashes": "^1.5.0",
 		"@types/diff-match-patch": "^1.0.36",
 		"@types/form-data": "^2.5.0",
+		"basic-ftp": "^5.0.5",
 		"diff": "^7.0.0",
 		"diff-match-patch": "^1.0.5",
 		"react": "^18.3.1",

@@ -1,14 +1,16 @@
 import SyncVaultPlugin from "main";
 import { App, Notice, PluginSettingTab, setIcon, Setting } from "obsidian";
 import { i18n } from "src/i18n";
-import { cloudDiskModel } from "src/model/cloud-disk-model";
+import { cloudDiskModel, FtpConfig, S3Config } from "src/model/cloud-disk-model";
 import { CloudDiskType } from "src/service/cloud-interface";
 import { checkVersion, UpgradeModal } from "src/util/upgrade";
 
 import * as util from '../util';
 import { WebDAVLoginModal } from "./webdav-login-modal";
 import { createClient } from "webdav";
-import { WebDAVClient } from "src/service/vendor/webdav";
+import { WebDAVClient } from "@/service/vendor/webdav";
+import { SftpLoginModal } from "./ftp-login-modal";
+import { S3ConfigModal } from "./s3-config.modal";
 
 const logger = util.logger.createLogger('setting-tab');
 
@@ -25,7 +27,7 @@ export function getCloudDiskTypeDesc(type: CloudDiskType): string {
 const cloudDiskOptions = [
     {
         type: CloudDiskType.Aliyun,
-        name: i18n.t('settingTab.cloudDisk.aliyunDisk'),
+        name: i18n.t('settingTab.cloudService.aliyunDisk'),
         logo: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="12" cy="12" r="10.5" stroke="#7B9CFF" stroke-width="3" fill="none" opacity="0.3"/>
                 <path d="M22 12a10 10 0 1 1-10-10" stroke="#7B9CFF" stroke-width="3" stroke-linecap="round" fill="none"/>
@@ -51,6 +53,50 @@ const cloudDiskOptions = [
                 <path d="M12 21c-4.32 0-7.83-2.92-7.83-6.5 0-3.58 3.51-6.5 7.83-6.5 2.17 0 3.93 1.05 3.93 2.33s-1.76 2.33-3.93 2.33c-1.3 0-2.35-0.52-2.35-1.17 0-0.65 1.05-1.17 2.35-1.17" stroke="#F39800" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                 <path d="M12 3c4.32 0 7.83 2.92 7.83 6.5 0 3.58-3.51 6.5-7.83 6.5-2.17 0-3.93-1.05-3.93-2.33s1.76-2.33 3.93-2.33c1.3 0 2.35 0.52 2.35 1.17 0 0.65-1.05 1.17-2.35 1.17" stroke="#F39800" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
               </svg>`,
+    },
+    {
+        type: CloudDiskType.Ftp,
+        name: 'FTP',
+        logo: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="16" height="16" rx="2" stroke="#6B7280" stroke-width="2" fill="none"/>
+            <path d="M8 8h8M8 12h8M8 16h4" stroke="#6B7280" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16 12l2 2-2 2" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>`,
+    },
+    {
+        type: CloudDiskType.S3,
+        name: 'S3',
+        logo: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 428 512">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #e25444;
+      }
+      .cls-1, .cls-2, .cls-3 {
+        fill-rule: evenodd;
+      }
+      .cls-2 {
+        fill: #7b1d13;
+      }
+      .cls-3 {
+        fill: #58150d;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M378,99L295,257l83,158,34-19V118Z"/>
+  <path class="cls-2" d="M378,99L212,118,127.5,257,212,396l166,19V99Z"/>
+  <path class="cls-3" d="M43,99L16,111V403l27,12L212,257Z"/>
+  <path class="cls-1" d="M42.637,98.667l169.587,47.111V372.444L42.637,415.111V98.667Z"/>
+  <path class="cls-3" d="M212.313,170.667l-72.008-11.556,72.008-81.778,71.83,81.778Z"/>
+  <path class="cls-3" d="M284.143,159.111l-71.919,11.733-71.919-11.733V77.333"/>
+  <path class="cls-3" d="M212.313,342.222l-72.008,13.334,72.008,70.222,71.83-70.222Z"/>
+  <path class="cls-2" d="M212,16L140,54V159l72.224-20.333Z"/>
+  <path class="cls-2" d="M212.224,196.444l-71.919,7.823V309.105l71.919,8.228V196.444Z"/>
+  <path class="cls-2" d="M212.224,373.333L140.305,355.3V458.363L212.224,496V373.333Z"/>
+  <path class="cls-1" d="M284.143,355.3l-71.919,18.038V496l71.919-37.637V355.3Z"/>
+  <path class="cls-1" d="M212.224,196.444l71.919,7.823V309.105l-71.919,8.228V196.444Z"/>
+  <path class="cls-1" d="M212,16l72,38V159l-72-20V16Z"/>
+</svg>`,
     }
 ];
 
@@ -200,8 +246,8 @@ export class LabeledSettingTab extends PluginSettingTab {
             .setName(i18n.t('settingTab.menuStartToUse.title'))
             .setDesc(i18n.t('settingTab.menuStartToUse.desc'))
         new Setting(contentEl)
-            .setName(i18n.t('settingTab.cloudDisk.title'))
-            .setDesc(i18n.t('settingTab.cloudDisk.desc'))
+            .setName(i18n.t('settingTab.cloudService.title'))
+            .setDesc(i18n.t('settingTab.cloudService.desc'))
             .addButton(button => button
                 .setButtonText(isAccessTokenValid ? i18n.t('settingTab.accessToken.revoke') : i18n.t('settingTab.accessToken.clickToAuthorize'))
                 .onClick(async () => {
@@ -223,6 +269,30 @@ export class LabeledSettingTab extends PluginSettingTab {
                                     button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
                                 });
                             }
+                        }).open();
+                    } else if (cloudDiskModel.selectedCloudDisk === CloudDiskType.Ftp) {
+                        new SftpLoginModal(this.app, (result: FtpConfig) => {
+                            if (result) {
+                                this.plugin.settings.ftpAccount = {
+                                    url: result.server,
+                                    port: result.port,
+                                    path: result.remotePath,
+                                    username: result.username,
+                                    password: result.password,
+                                };
+                                this.plugin.saveSettings().then(() => {
+                                    new Notice(`${this.plugin.settings.cloudDiskName} login`);
+                                    button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
+                                });
+                            }
+                        }).open();
+                    } else if (cloudDiskModel.selectedCloudDisk === CloudDiskType.S3) {
+                        new S3ConfigModal(this.app, (result: S3Config) => {
+                            this.plugin.saveSettings().then(() => {
+                                // TODO: save settings
+                                new Notice(`${this.plugin.settings.cloudDiskName} login`);
+                                button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
+                            });
                         }).open();
                     } else {
                         await this.plugin.authorize((isAuthorized) => {

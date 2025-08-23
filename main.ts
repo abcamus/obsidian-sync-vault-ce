@@ -35,6 +35,12 @@ export default class SyncVaultPlugin extends Plugin {
 		cloudDiskModel.webdavPassword = this.settings.webDAVAccount[cloudDiskName]?.password || '';
 		this.currentView = CLOUD_DISK_VIEW;
 
+		cloudDiskModel.ftpConfig.server = this.settings.ftpAccount.url;
+		cloudDiskModel.ftpConfig.port = this.settings.ftpAccount.port;
+		cloudDiskModel.ftpConfig.remotePath = this.settings.ftpAccount.path;
+		cloudDiskModel.ftpConfig.username = this.settings.ftpAccount.username;
+		cloudDiskModel.ftpConfig.password = this.settings.ftpAccount.password;
+
 		logger.info({
 			cloudType: cloudDiskModel.selectedCloudDisk,
 			cloudName: cloudDiskName,

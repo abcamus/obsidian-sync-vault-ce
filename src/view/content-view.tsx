@@ -38,10 +38,15 @@ export class SyncVaultPluginView extends ItemView {
     private async buildStatusBar(statusItem: HTMLElement) {
         await cloudDiskModel.getInfo().then((info) => {
             statusItem.append(statusItem.createDiv({ text: `${i18n.t('settingTab.cloudDisk.userName')}: ${info.user.user_name},` }));
-            if (cloudDiskModel.selectedCloudDisk !== CloudDiskType.Webdav) {
+            if (cloudDiskModel.selectedCloudDisk === CloudDiskType.Webdav) {
+                return;
+            }
+            if (info.storage) {
                 const freeVolume = Math.trunc(info.storage.used / BYTES_PER_GB);
                 const totalVolume = Math.trunc(info.storage.total / BYTES_PER_GB);
                 statusItem.append(statusItem.createDiv({ text: `${i18n.t('settingTab.cloudDisk.volume')}: ${freeVolume} GB/${totalVolume} GB` }));
+            } else {
+                statusItem.append(statusItem.createDiv({ text: `${i18n.t('settingTab.cloudDisk.volume')}: N/A` }));
             }
         }, (rejectReason: any) => {
             statusItem.append(statusItem.createDiv({ text: i18n.t('settingTab.cloudDisk.getInfoFailed') }));
@@ -57,12 +62,12 @@ export class SyncVaultPluginView extends ItemView {
             if (cloudDiskModel.webdavUrl === '' ||
                 cloudDiskModel.webdavUsername === '' ||
                 cloudDiskModel.webdavPassword === '') {
-                    new Notice('WebDAV account not configured.');
-                    this.containerEl.children[1].createDiv({
-                        text: `${this.plugin.settings.cloudDiskName} account not configured.`
-                    });
-                    return;
-                }
+                new Notice('WebDAV account not configured.');
+                this.containerEl.children[1].createDiv({
+                    text: `${this.plugin.settings.cloudDiskName} account not configured.`
+                });
+                return;
+            }
         }
 
         // 检查 access_token 是否存在

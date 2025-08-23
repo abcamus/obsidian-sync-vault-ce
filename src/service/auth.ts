@@ -32,6 +32,8 @@ class CloudAuthAPI {
         [CloudDiskType.Aliyun]: null,
         [CloudDiskType.Webdav]: null,
         [CloudDiskType.Unknown]: null,
+        [CloudDiskType.Ftp]: null,
+        [CloudDiskType.S3]: null,
     };
 
     private constructor(cloudType: CloudDiskType) {

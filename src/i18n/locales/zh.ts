@@ -92,14 +92,14 @@ export default {
             }
         },
 
-        "cloudDisk": {
-            "title": "选择云盘",
-            "desc": "选择要使用的云盘",
+        "cloudService": {
+            "title": "选择云服务",
+            "desc": "选择要使用的云服务",
             "aliyunDisk": "阿里云盘",
             "switchTo": "切换到 %{message}",
             "userName": "用户名",
             "volume": "容量",
-            "getInfoFailed": "获取云盘信息失败，请稍后重试",
+            "getInfoFailed": "获取云服务信息失败，请稍后重试",
         },
         "accessToken": {
             "title": "授权码",

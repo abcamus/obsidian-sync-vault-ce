@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "CommonJS",
