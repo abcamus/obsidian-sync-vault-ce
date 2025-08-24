@@ -24,6 +24,13 @@ export interface SyncVaultPluginSetting {
 		username: string;
 		password: string;
 	};
+	s3Account: {
+		accessKeyId: string;
+		secretAccessKey: string;
+		region: string;
+		endpoint: string;
+		bucket: string;
+	};
 }
 
 export const DEFAULT_SETTINGS: SyncVaultPluginSetting = {
@@ -45,5 +52,12 @@ export const DEFAULT_SETTINGS: SyncVaultPluginSetting = {
 		path: '',
 		username: '',
 		password: '',
+	},
+	s3Account: {
+		accessKeyId: '',
+		secretAccessKey: '',
+		region: '',
+		endpoint: '',
+		bucket: '',
 	},
 }

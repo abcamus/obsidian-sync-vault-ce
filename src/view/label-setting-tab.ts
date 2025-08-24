@@ -290,8 +290,17 @@ export class LabeledSettingTab extends PluginSettingTab {
                         new S3ConfigModal(this.app, (result: S3Config) => {
                             this.plugin.saveSettings().then(() => {
                                 // TODO: save settings
-                                new Notice(`${this.plugin.settings.cloudDiskName} login`);
-                                button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
+                                this.plugin.settings.s3Account = {
+                                    accessKeyId: result.accessKeyId,
+                                    secretAccessKey: result.secretAccessKey,
+                                    region: result.region,
+                                    endpoint: result.endpoint,
+                                    bucket: result.bucket,
+                                };
+                                this.plugin.saveSettings().then(() => {
+                                    new Notice(`${this.plugin.settings.cloudDiskName} login`);
+                                    button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
+                                });
                             });
                         }).open();
                     } else {

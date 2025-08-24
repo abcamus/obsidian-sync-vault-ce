@@ -41,6 +41,12 @@ export default class SyncVaultPlugin extends Plugin {
 		cloudDiskModel.ftpConfig.username = this.settings.ftpAccount.username;
 		cloudDiskModel.ftpConfig.password = this.settings.ftpAccount.password;
 
+		cloudDiskModel.s3Config.accessKeyId = this.settings.s3Account.accessKeyId;
+		cloudDiskModel.s3Config.secretAccessKey = this.settings.s3Account.secretAccessKey;
+		cloudDiskModel.s3Config.region = this.settings.s3Account.region;
+		cloudDiskModel.s3Config.endpoint = this.settings.s3Account.endpoint;
+		cloudDiskModel.s3Config.bucket = this.settings.s3Account.bucket;
+
 		logger.info({
 			cloudType: cloudDiskModel.selectedCloudDisk,
 			cloudName: cloudDiskName,

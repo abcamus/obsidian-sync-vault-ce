@@ -24,6 +24,7 @@ export class DebugManager {
         'aliyun.upload': false,
         'aliyun.file-mng': false,
 
+        's3.service': true,
         'webdav.service': false,
     };
 

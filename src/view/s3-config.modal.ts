@@ -17,12 +17,12 @@ export class S3ConfigModal extends Modal {
     onOpen() {
         const { contentEl } = this;
         contentEl.empty();
-        contentEl.createEl('h2', { text: i18n.t('modal.s3Config.title') });
+        contentEl.createEl('h2', { text: 'S3 Configuration' });
 
         // Endpoint 配置
         new Setting(contentEl)
-            .setName(i18n.t('modal.s3Config.endpoint'))
-            .setDesc(i18n.t('modal.s3Config.endpointDesc'))
+            .setName('Endpoint')
+            .setDesc('The endpoint for your S3 bucket')
             .addText(text => text
                 .setPlaceholder('https://s3.amazonaws.com')
                 .setValue(cloudDiskModel.s3Config.endpoint || '')
@@ -32,8 +32,8 @@ export class S3ConfigModal extends Modal {
 
         // Region 配置
         new Setting(contentEl)
-            .setName(i18n.t('modal.s3Config.region'))
-            .setDesc(i18n.t('modal.s3Config.regionDesc'))
+            .setName('Region')
+            .setDesc('The AWS region for your S3 bucket')
             .addText(text => text
                 .setPlaceholder('us-east-1')
                 .setValue(cloudDiskModel.s3Config.region || 'us-east-1')
@@ -43,8 +43,8 @@ export class S3ConfigModal extends Modal {
 
         // Access Key ID
         new Setting(contentEl)
-            .setName(i18n.t('modal.s3Config.accessKeyId'))
-            .setDesc(i18n.t('modal.s3Config.accessKeyIdDesc'))
+            .setName('Access Key ID')
+            .setDesc('The access key ID for your S3 account')
             .addText(text => text
                 .setValue(cloudDiskModel.s3Config.accessKeyId || '')
                 .onChange(async (value) => {
@@ -53,8 +53,8 @@ export class S3ConfigModal extends Modal {
 
         // Secret Access Key
         new Setting(contentEl)
-            .setName(i18n.t('modal.s3Config.secretAccessKey'))
-            .setDesc(i18n.t('modal.s3Config.secretAccessKeyDesc'))
+            .setName('Secret Access Key')
+            .setDesc('The secret access key for your S3 account')
             .addText(text => {
                 text
                     .setValue(cloudDiskModel.s3Config.secretAccessKey || '')
@@ -66,8 +66,7 @@ export class S3ConfigModal extends Modal {
 
         // Bucket 名称
         new Setting(contentEl)
-            .setName(i18n.t('modal.s3Config.bucket'))
-            .setDesc(i18n.t('modal.s3Config.bucketDesc'))
+            .setName('bucket')
             .addText(text => text
                 .setValue(cloudDiskModel.s3Config.bucket || '')
                 .onChange(async (value) => {
@@ -77,15 +76,16 @@ export class S3ConfigModal extends Modal {
         // 测试连接按钮
         new Setting(contentEl)
             .addButton(btn => btn
-                .setButtonText(i18n.t('modal.s3Config.testConnection'))
+                .setButtonText('Test Connection')
                 .setCta()
                 .onClick(async () => {
                     try {
                         const client = S3Client.getInstance();
+                        client.updateConfig(cloudDiskModel.s3Config);
                         await client.listObjects();
-                        new Notice(i18n.t('modal.s3Config.testSuccess'));
+                        new Notice('Test connection successful');
                     } catch (err) {
-                        new Notice(i18n.t('modal.s3Config.testFailed'));
+                        new Notice('Test connection failed');
                         console.error('S3 连接测试失败:', err);
                     }
                 }));
@@ -96,6 +96,8 @@ export class S3ConfigModal extends Modal {
                 .setButtonText('Save')
                 .setCta()
                 .onClick(async () => {
+                    const client = S3Client.getInstance();
+                    client.updateConfig(cloudDiskModel.s3Config);
                     this.onSubmit(cloudDiskModel.s3Config);
                     this.close();
                 }));
