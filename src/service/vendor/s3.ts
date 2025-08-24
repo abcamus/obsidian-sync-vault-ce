@@ -4,7 +4,9 @@ import {
     DeleteObjectCommand,
     ListObjectsV2Command,
     CopyObjectCommand,
-    HeadObjectCommand
+    HeadObjectCommand,
+    PutObjectAclCommand,
+    PutObjectCommand
 } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import * as util from "@/util";
@@ -62,6 +64,13 @@ export class S3Client {
             metadata: { 'x-cos-meta-mtime': localMtime }
         });
 
+        const metadata: Record<string, string> = {
+            'x-cos-meta-mtime': localMtime,
+            // 'mtime': localMtime,
+            // 'x-cos-meta-filename': key
+        };
+
+
         try {
             const upload = new Upload({
                 client: this.client,
@@ -69,17 +78,38 @@ export class S3Client {
                     Bucket: this.config.bucket,
                     Key: key,
                     Body: content,
-                    Metadata: {
-                        'x-cos-meta-mtime': localMtime
-                    }
+                    Metadata: metadata
                 }
             });
 
             await upload.done();
+
+            await this.verifyMetadata(key);
+
             return true;
         } catch (err) {
             logger.error(`上传文件失败: ${key}, 错误: ${err}`);
             return false;
+        }
+    }
+
+    private async verifyMetadata(key: string): Promise<void> {
+        try {
+            const headCommand = new HeadObjectCommand({
+                Bucket: this.config.bucket,
+                Key: key
+            });
+
+            const headResult = await this.client.send(headCommand);
+
+            logger.debug('元数据验证结果:', {
+                key,
+                metadata: headResult.Metadata,
+                lastModified: headResult.LastModified,
+                result: headResult
+            });
+        } catch (error) {
+            logger.warn(`元数据验证失败: ${key}`, error);
         }
     }
 
@@ -143,7 +173,7 @@ export class S3Client {
                 });
                 const headResponse = await this.client.send(headCommand);
 
-                logger.debug('File metadata:', { key: item.Key, meta: headResponse.Metadata });
+                logger.debug('File metadata:', { key: item.Key, meta: headResponse });
 
                 objects.push({
                     key: item.Key || '',
@@ -187,6 +217,11 @@ export class S3Client {
                 secretAccessKey: this.config.secretAccessKey
             }
         });
+    }
+
+    async getBucketUsage(): Promise<{ storageUsage: number }> {
+        // TODO
+        throw new Error('Not implemented');
     }
 }
 
@@ -246,6 +281,7 @@ class S3UploadService implements CloudUploadService {
 }
 
 class S3InfoService implements CloudInfoService {
+
     async userInfo(): Promise<UserInfo> {
         return {
             user_id: cloudDiskModel.s3Config.accessKeyId,
@@ -286,8 +322,8 @@ class S3InfoService implements CloudInfoService {
                     name: util.path.basename(obj.key),
                     isdir: obj.key.endsWith('/') ? true : false,
                     size: obj.size,
-                    ctime: obj.lastModified.getTime(),
-                    mtime: obj.lastModified.getTime(),
+                    ctime: util.time.msToSec(obj.lastModified.getTime()),
+                    mtime: util.time.msToSec(obj.lastModified.getTime()),
                     path: obj.key.startsWith('/') ? obj.key : `/${obj.key}`,
                 }));
 

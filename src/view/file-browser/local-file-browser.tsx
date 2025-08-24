@@ -346,6 +346,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
             };
 
             const remoteNode = fileState.remoteMeta!.children?.find(child => child.name === file.name);
+            logger.debug('Remote node mtime: ', remoteNode?.mtime);
             const newStatus = checkLocalFileNodeSyncStatus(newLocalNode, remoteNode ? remoteNode : null);
             logger.debug(`[onFileModify] status, from: ${localNode.syncStatus}, to: ${newStatus}`);
             newLocalNode.syncStatus = newStatus;
