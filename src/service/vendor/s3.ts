@@ -1,3 +1,10 @@
+/*
+ * Tencent Cloud Object Storage (COS) Client
+ *
+ * API explorer: https://console.cloud.tencent.com/api/explorer?Product=cos&Version=2018-11-26&Action=PutBucketCors
+ * Diagnose tool: https://console.cloud.tencent.com/cos/diagnose
+ */
+
 import {
     S3Client as AWSS3Client,
     GetObjectCommand,
@@ -8,12 +15,15 @@ import {
     PutObjectAclCommand,
     PutObjectCommand
 } from "@aws-sdk/client-s3";
+import COS from 'cos-js-sdk-v5';
 import { Upload } from "@aws-sdk/lib-storage";
 import * as util from "@/util";
 
 import { CloudDownloadService, CloudFileManagementService, CloudInfoService, CloudUploadService } from "../cloud-disk-service";
 import { FileEntry, StorageInfo, UserInfo } from "../cloud-interface";
 import { cloudDiskModel } from "@/model/cloud-disk-model";
+import { ListObjectsResult, TencentCosClient } from "./cos";
+import { Notice } from "obsidian";
 
 const logger = util.logger.createLogger('s3.service');
 
@@ -27,7 +37,9 @@ interface S3Config {
 
 export class S3Client {
     private static instance: S3Client;
-    private client: AWSS3Client;
+    private clients: Record<string, TencentCosClient> = {};
+    private initialized = false;
+
     private config: S3Config;
 
     private constructor() {
@@ -39,13 +51,24 @@ export class S3Client {
             bucket: cloudDiskModel.s3Config.bucket
         };
 
-        this.client = new AWSS3Client({
-            endpoint: this.config.endpoint,
-            region: this.config.region,
-            credentials: {
-                accessKeyId: this.config.accessKeyId,
-                secretAccessKey: this.config.secretAccessKey
-            }
+        // this.clients.aws = new AWSS3Client({
+        //     endpoint: this.config.endpoint,
+        //     region: this.config.region,
+        //     credentials: {
+        //         accessKeyId: this.config.accessKeyId,
+        //         secretAccessKey: this.config.secretAccessKey
+        //     }
+        // });
+
+        // this.clients.cos = new COS({
+        //     SecretId: this.config.accessKeyId,
+        //     SecretKey: this.config.secretAccessKey,
+        // });
+        this.clients.cos = new TencentCosClient({
+            secretId: this.config.accessKeyId,
+            secretKey: this.config.secretAccessKey,
+            bucket: this.config.bucket,
+            region: this.config.region
         });
     }
 
@@ -56,7 +79,29 @@ export class S3Client {
         return S3Client.instance;
     }
 
+    private async init(): Promise<void> {
+        if (!this.clients.cos) {
+            throw new Error('COS client is not created.');
+        }
+
+        if (this.initialized) {
+            return;
+        }
+
+        try {
+            // Initialize any necessary resources or connections
+            await this.clients.cos.putBucketCors();
+            this.initialized = true;
+        } catch (err) {
+            logger.error(`初始化 COS 客户端失败: ${err}`);
+            new Notice('Init COS client failed. Please check your CORS configuration.');
+        }
+    }
+
     async uploadFile(content: Buffer | Uint8Array, key: string, mtime?: number): Promise<boolean> {
+        if (!this.initialized) {
+            await this.init();
+        }
         const localMtime = mtime ? new Date(mtime).toISOString() : new Date().toISOString();
         logger.debug('Uploading file with metadata:', {
             key,
@@ -65,26 +110,14 @@ export class S3Client {
         });
 
         const metadata: Record<string, string> = {
-            'x-cos-meta-mtime': localMtime,
-            // 'mtime': localMtime,
-            // 'x-cos-meta-filename': key
+            'mtime': localMtime,
         };
 
 
         try {
-            const upload = new Upload({
-                client: this.client,
-                params: {
-                    Bucket: this.config.bucket,
-                    Key: key,
-                    Body: content,
-                    Metadata: metadata
-                }
-            });
+            await this.clients.cos.uploadFile(key, content, localMtime);
 
-            await upload.done();
-
-            await this.verifyMetadata(key);
+            // await this.verifyMetadata(key);
 
             return true;
         } catch (err) {
@@ -95,12 +128,7 @@ export class S3Client {
 
     private async verifyMetadata(key: string): Promise<void> {
         try {
-            const headCommand = new HeadObjectCommand({
-                Bucket: this.config.bucket,
-                Key: key
-            });
-
-            const headResult = await this.client.send(headCommand);
+            const headResult = await this.clients.cos.getObjectMetadata(key);
 
             logger.debug('元数据验证结果:', {
                 key,
@@ -114,22 +142,28 @@ export class S3Client {
     }
 
     async downloadToBuffer(key: string): Promise<Buffer | null> {
+        if (!this.initialized) {
+            await this.init();
+        }
+
         try {
-            const command = new GetObjectCommand({
-                Bucket: this.config.bucket,
-                Key: key
-            });
-            const response = await this.client.send(command);
+            // TODO: implement
+            return null;
+            // const command = new GetObjectCommand({
+            //     Bucket: this.config.bucket,
+            //     Key: key
+            // });
+            // const response = await this.clients.aws.send(command);
 
-            if (!response.Body) {
-                return null;
-            }
+            // if (!response.Body) {
+            //     return null;
+            // }
 
-            const chunks: Buffer[] = [];
-            for await (const chunk of response.Body as any) {
-                chunks.push(Buffer.from(chunk));
-            }
-            return Buffer.concat(chunks);
+            // const chunks: Buffer[] = [];
+            // for await (const chunk of response.Body as any) {
+            //     chunks.push(Buffer.from(chunk));
+            // }
+            // return Buffer.concat(chunks);
         } catch (err) {
             logger.error(`下载文件失败: ${key}, 错误: ${err}`);
             return null;
@@ -137,14 +171,19 @@ export class S3Client {
     }
 
     async deleteObject(key: string): Promise<boolean> {
+        if (!this.initialized) {
+            await this.init();
+        }
+
         logger.debug('Deleting file:', { key });
 
         try {
-            const command = new DeleteObjectCommand({
-                Bucket: this.config.bucket,
-                Key: key
-            });
-            await this.client.send(command);
+            // TODO: implement
+            // const command = new DeleteObjectCommand({
+            //     Bucket: this.config.bucket,
+            //     Key: key
+            // });
+            // await this.clients.aws.send(command);
             return true;
         } catch (err) {
             logger.error(`删除文件失败: ${key}, 错误: ${err}`);
@@ -157,31 +196,27 @@ export class S3Client {
         size: number;
         lastModified: Date;
     }[]> {
+        if (!this.initialized) {
+            await this.init();
+        }
+
         try {
-            const command = new ListObjectsV2Command({
-                Bucket: this.config.bucket,
-                Prefix: prefix
+            const response: ListObjectsResult = await this.clients.cos.listObjects({
+                prefix,
             });
-            const response = await this.client.send(command);
 
-            const objects = [];
+            logger.debug('List objects response:', response);
+
+            const objects = []
+
             for (const item of response.Contents || []) {
-                // 获取对象的元数据
-                const headCommand = new HeadObjectCommand({
-                    Bucket: this.config.bucket,
-                    Key: item.Key
-                });
-                const headResponse = await this.client.send(headCommand);
-
-                logger.debug('File metadata:', { key: item.Key, meta: headResponse });
-
                 objects.push({
                     key: item.Key || '',
-                    size: item.Size || 0,
+                    size: Number(item.Size) || 0,
                     // 优先使用元数据中的 mtime，如果没有则使用 S3 的 LastModified
-                    lastModified: headResponse.Metadata?.['x-cos-meta-mtime'] ?
-                        new Date(headResponse.Metadata['x-cos-meta-mtime']) :
-                        (item.LastModified || new Date())
+                    lastModified: item.Metadata?.['x-cos-meta-mtime'] ?
+                        new Date(item.Metadata['x-cos-meta-mtime']) :
+                        (new Date(item.LastModified) || new Date())
                 });
             }
 
@@ -193,13 +228,18 @@ export class S3Client {
     }
 
     async copyObject(fromKey: string, toKey: string): Promise<boolean> {
+        if (!this.initialized) {
+            await this.init();
+        }
+
         try {
-            const command = new CopyObjectCommand({
-                Bucket: this.config.bucket,
-                CopySource: `${this.config.bucket}/${fromKey}`,
-                Key: toKey
-            });
-            await this.client.send(command);
+            // TODO: implement
+            // const command = new CopyObjectCommand({
+            //     Bucket: this.config.bucket,
+            //     CopySource: `${this.config.bucket}/${fromKey}`,
+            //     Key: toKey
+            // });
+            // await this.clients.aws.send(command);
             return true;
         } catch (err) {
             logger.error(`复制文件失败: ${fromKey} -> ${toKey}, 错误: ${err}`);
@@ -209,14 +249,22 @@ export class S3Client {
 
     updateConfig(newConfig: Partial<S3Config>) {
         this.config = { ...this.config, ...newConfig };
-        this.client = new AWSS3Client({
-            endpoint: this.config.endpoint,
-            region: this.config.region,
-            credentials: {
-                accessKeyId: this.config.accessKeyId,
-                secretAccessKey: this.config.secretAccessKey
-            }
-        });
+        this.clients = {
+            // aws: new AWSS3Client({
+            //     endpoint: this.config.endpoint,
+            //     region: this.config.region,
+            //     credentials: {
+            //         accessKeyId: this.config.accessKeyId,
+            //         secretAccessKey: this.config.secretAccessKey
+            //     }
+            // }),
+            cos: new TencentCosClient({
+                secretId: this.config.accessKeyId,
+                secretKey: this.config.secretAccessKey,
+                bucket: this.config.bucket,
+                region: this.config.region,
+            })
+        };
     }
 
     async getBucketUsage(): Promise<{ storageUsage: number }> {
@@ -281,7 +329,6 @@ class S3UploadService implements CloudUploadService {
 }
 
 class S3InfoService implements CloudInfoService {
-
     async userInfo(): Promise<UserInfo> {
         return {
             user_id: cloudDiskModel.s3Config.accessKeyId,

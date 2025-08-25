@@ -1,5 +1,6 @@
 import { cloudDiskModel } from "../model/cloud-disk-model";
 import { sha256 } from '@noble/hashes/sha256';
+import { hmac } from '@noble/hashes/hmac';
 import { createLogger } from "./logger";
 
 const logger = createLogger('encryption');
@@ -246,3 +247,4 @@ export async function generateCodeChallenge(code_challenge_method: 'plain' | 'S2
 
     return { codeVerifier, codeChallenge };
 }
+

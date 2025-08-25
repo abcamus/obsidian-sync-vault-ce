@@ -26,6 +26,8 @@ export class DebugManager {
 
         's3.service': true,
         'webdav.service': false,
+
+        'cos-client': true,
     };
 
     private constructor() {
