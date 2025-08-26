@@ -14,11 +14,13 @@
 	"author": "Camus Qiu/KQ Digital Garden",
 	"license": "Proprietary Software License",
 	"devDependencies": {
+		"@types/crypto-js": "^4.2.2",
 		"@types/diff": "^7.0.0",
 		"@types/jest": "^29.5.14",
 		"@types/node": "^16.11.6",
 		"@types/react-dom": "^18.3.0",
 		"@types/spark-md5": "^3.0.4",
+		"@types/xml2js": "^0.4.14",
 		"@types/xmldom": "^0.1.34",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",
@@ -35,22 +37,21 @@
 		"xmldom": "^0.6.0"
 	},
 	"dependencies": {
-		"@aws-sdk/client-s3": "^3.873.0",
-		"@aws-sdk/lib-storage": "^3.873.0",
 		"@emotion/react": "^11.13.3",
 		"@emotion/styled": "^11.13.0",
 		"@mui/icons-material": "^6.1.0",
 		"@mui/material": "^6.1.1",
 		"@noble/hashes": "^1.5.0",
 		"@types/diff-match-patch": "^1.0.36",
-		"@types/form-data": "^2.5.0",
 		"basic-ftp": "^5.0.5",
+		"crypto-js": "^4.2.0",
 		"diff": "^7.0.0",
 		"diff-match-patch": "^1.0.5",
+		"fast-xml-parser": "^5.2.5",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"react-icons": "^5.5.0",
 		"spark-md5": "^3.0.2",
-		"webdav": "^5.8.0"
+		"xml2js": "^0.6.2"
 	}
 }

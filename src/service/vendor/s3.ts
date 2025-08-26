@@ -5,18 +5,6 @@
  * Diagnose tool: https://console.cloud.tencent.com/cos/diagnose
  */
 
-import {
-    S3Client as AWSS3Client,
-    GetObjectCommand,
-    DeleteObjectCommand,
-    ListObjectsV2Command,
-    CopyObjectCommand,
-    HeadObjectCommand,
-    PutObjectAclCommand,
-    PutObjectCommand
-} from "@aws-sdk/client-s3";
-import COS from 'cos-js-sdk-v5';
-import { Upload } from "@aws-sdk/lib-storage";
 import * as util from "@/util";
 
 import { CloudDownloadService, CloudFileManagementService, CloudInfoService, CloudUploadService } from "../cloud-disk-service";
@@ -92,14 +80,14 @@ export class S3Client {
             // Initialize any necessary resources or connections
             const bucketCors = await this.clients.cos.getBucketCors();
 
-            const corsRule = bucketCors.corsconfiguration.corsrule;
+            const corsRule = bucketCors.CORSConfiguration.CORSRule;
             logger.debug('CORS rule:', { corsRule });
-            if (corsRule && corsRule.allowedorigin === '*' &&
-                corsRule.exposeheader.includes('x-cos-meta-mtime') &&
-                corsRule.allowedmethod.includes('PUT') &&
-                corsRule.allowedmethod.includes('GET') &&
-                corsRule.allowedmethod.includes('HEAD') &&
-                corsRule.allowedmethod.includes('DELETE')
+            if (corsRule && corsRule.AllowedOrigin === '*' &&
+                corsRule.ExposeHeader.includes('x-cos-meta-mtime') &&
+                corsRule.AllowedMethod.includes('PUT') &&
+                corsRule.AllowedMethod.includes('GET') &&
+                corsRule.AllowedMethod.includes('HEAD') &&
+                corsRule.AllowedMethod.includes('DELETE')
             ) {
                 logger.info('CORS configuration looks good.');
                 new Notice('CORS is properly configured.');
@@ -370,7 +358,7 @@ class S3InfoService implements CloudInfoService {
 
     async listAllFiles(folderPath: string, folderId?: string): Promise<FileEntry[]> {
         const [files] = await this.listFiles(folderPath);
-        logger.info({ folderPath, files });
+        logger.debug({ folderPath, files });
         return files;
     }
 }

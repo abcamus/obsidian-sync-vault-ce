@@ -100,7 +100,7 @@ async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey>
     return crypto.subtle.deriveKey(
         {
             name: 'PBKDF2',
-            salt: salt,
+            salt: new Uint8Array(salt),
             iterations: 100000,
             hash: 'SHA-256'
         },
@@ -129,7 +129,7 @@ export async function encrypt(data: Uint8Array): Promise<Uint8Array> {
             iv: iv
         },
         key,
-        data
+        new Uint8Array(data)
     );
 
     const encryptedArray = new Uint8Array(encryptedContent);
@@ -174,7 +174,7 @@ export async function decrypt(encryptedData: Uint8Array, userPassword?: string, 
     const data = encryptedArray.slice(salt.length + IV_LENGTH);
 
     const hash = sha256(encryptedArray);
-    if (!hash.slice(0, 4).every((byte, i) => byte === magicInfo.contentHash[i])) {
+    if (!hash.slice(0, 4).every((byte: number, i: number) => byte === magicInfo.contentHash[i])) {
         throw new Error('Content hash mismatch');
     }
 

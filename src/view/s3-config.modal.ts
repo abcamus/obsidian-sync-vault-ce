@@ -52,7 +52,7 @@ export class S3ConfigModal extends Modal {
                 }));
 
         // Secret Access Key
-        new Setting(contentEl)
+        const secretKeySetting = new Setting(contentEl)
             .setName('Secret Access Key')
             .setDesc('The secret access key for your S3 account')
             .addText(text => {
@@ -63,6 +63,26 @@ export class S3ConfigModal extends Modal {
                     });
                 text.inputEl.type = 'password';
             });
+
+        secretKeySetting.addExtraButton(button => {
+            button
+                .setIcon('eye')
+                .setTooltip(i18n.t('settingTab.key.showPassword'))
+                .onClick(() => {
+                    const inputEl = secretKeySetting.controlEl.querySelector('input');
+                    if (inputEl) {
+                        if (inputEl.type === 'password') {
+                            inputEl.type = 'text';
+                            button.setIcon('eye-off');
+                            button.setTooltip(i18n.t('settingTab.key.hidePassword'));
+                        } else {
+                            inputEl.type = 'password';
+                            button.setIcon('eye');
+                            button.setTooltip(i18n.t('settingTab.key.showPassword'));
+                        }
+                    }
+                });
+        });
 
         // Bucket 名称
         new Setting(contentEl)
@@ -108,3 +128,4 @@ export class S3ConfigModal extends Modal {
         contentEl.empty();
     }
 }
+

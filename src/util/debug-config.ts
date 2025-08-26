@@ -24,10 +24,10 @@ export class DebugManager {
         'aliyun.upload': false,
         'aliyun.file-mng': false,
 
-        's3.service': false,
+        's3.service': true,
         'webdav.service': false,
 
-        'cos-client': false,
+        'cos-client': true,
     };
 
     private constructor() {

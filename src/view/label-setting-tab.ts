@@ -7,7 +7,6 @@ import { checkVersion, UpgradeModal } from "src/util/upgrade";
 
 import * as util from '../util';
 import { WebDAVLoginModal } from "./webdav-login-modal";
-import { createClient } from "webdav";
 import { WebDAVClient } from "@/service/vendor/webdav";
 import { SftpLoginModal } from "./ftp-login-modal";
 import { S3ConfigModal } from "./s3-config.modal";

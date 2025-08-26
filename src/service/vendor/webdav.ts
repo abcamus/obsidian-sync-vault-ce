@@ -321,7 +321,7 @@ class WebdavUploadService implements CloudUploadService {
         }
         try {
             const client = WebDAVClient.getInstance();
-            const response = await client['request']("PUT", remotePath, content);
+            const response = await client['request']("PUT", remotePath, new Uint8Array(content).buffer);
             if (response.status >= 200 && response.status < 300) {
                 logger.info(`内容上传成功: ${remotePath}`);
                 if (callback && params?.ctime && params?.mtime) {

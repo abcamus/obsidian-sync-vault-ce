@@ -1,9 +1,7 @@
 // cos-client.ts
-import crypto from 'crypto';
-import { hmac } from '@noble/hashes/hmac';
-import { sha256 } from '@noble/hashes/sha256';
 import { requestUrl } from 'obsidian';
-import { parseStringPromise } from 'xml2js';
+import * as CryptoJS from 'crypto-js';
+import { XMLParser } from "fast-xml-parser";
 
 import * as util from '@/util';
 
@@ -52,17 +50,15 @@ export interface ListObjectsResult {
     EncodingType?: string;
 }
 
-interface CorsRule {
-    allowedorigin: string;
-    allowedmethod: string[];
-    allowedheader: string;
-    exposeheader: string[];
-    maxageseconds: number;
-}
-
 export interface GetCorsResult {
-    corsconfiguration: {
-        corsrule: CorsRule;
+    CORSConfiguration: {
+        CORSRule: {
+            AllowedOrigin: string;
+            AllowedMethod: string[];
+            AllowedHeader: string;
+            ExposeHeader: string[];
+            MaxAgeSeconds: number;
+        };
     };
 }
 
@@ -103,13 +99,51 @@ export class TencentCosClient {
         return `${this.config.protocol}://${this.config.bucket}.cos.${this.config.region}.myqcloud.com`;
     }
 
-    private hmacSha1Crypto(key: string, message: string): string {
-        const hmac = crypto.createHmac('sha1', key);
-        hmac.update(message);
-        return hmac.digest('hex'); // 返回16进制字符串
+    private async hmacSha1Crypto(key: string, message: string): Promise<string> {
+        // const hmac = crypto.createHmac('sha1', key);
+        // hmac.update(message);
+        // return hmac.digest('hex'); // 返回16进制字符串
+
+        const encoder = new TextEncoder();
+        const keyData = encoder.encode(key);
+        const messageData = encoder.encode(message);
+
+        // 导入密钥
+        const cryptoKey = await crypto.subtle.importKey(
+            'raw',
+            keyData,
+            {
+                name: 'HMAC',
+                hash: { name: 'SHA-1' }
+            },
+            false,
+            ['sign']
+        );
+
+        // 生成HMAC
+        const signature = await crypto.subtle.sign(
+            'HMAC',
+            cryptoKey,
+            messageData
+        );
+
+        // 将ArrayBuffer转换为16进制字符串
+        return Array.from(new Uint8Array(signature))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
     }
 
-    generateSignature(params: CosSignParams): string {
+    private sha1Hash(data: string): string {
+        return CryptoJS.SHA1(data).toString(CryptoJS.enc.Hex);
+    }
+
+    private calculateMD5Hash(content: string): string {
+        const md5Hash = CryptoJS.MD5(content);
+        return CryptoJS.enc.Base64.stringify(md5Hash);
+    }
+
+
+    async generateSignature(params: CosSignParams): Promise<string> {
         const {
             secretId,
             secretKey,
@@ -145,7 +179,7 @@ export class TencentCosClient {
 
         logger.debug({ secretKey, keyTime });
         // 6. 生成签名键
-        const signKey = this.hmacSha1Crypto(secretKey, keyTime);
+        const signKey = await this.hmacSha1Crypto(secretKey, keyTime);
         logger.debug({ signKey });
 
         // 7. 生成 HttpString
@@ -161,7 +195,7 @@ export class TencentCosClient {
         logger.debug({ httpString });
 
         // 8. 生成 StringToSign
-        const sha256Hash = crypto.createHash('sha1').update(httpString).digest('hex');
+        const sha256Hash = this.sha1Hash(httpString);
         const stringToSign = [
             'sha1',
             keyTime,
@@ -172,7 +206,7 @@ export class TencentCosClient {
         logger.debug({ stringToSign });
 
         // 9. 计算签名
-        const signature = this.hmacSha1Crypto(signKey, stringToSign);
+        const signature = await this.hmacSha1Crypto(signKey, stringToSign);
 
         logger.debug({ signature });
 
@@ -195,12 +229,13 @@ export class TencentCosClient {
     // 解析 XML 响应
     private async parseXmlResponse<T>(text: string): Promise<T> {
         try {
-            const result = await parseStringPromise(text, {
-                explicitArray: false,
-                ignoreAttrs: false,
-                tagNameProcessors: [name => name.toLowerCase()]
+            const parser = new XMLParser({
+                ignoreAttributes: false,
+                attributeNamePrefix: '',
+                parseTagValue: true,
+                trimValues: true,
             });
-            return result as T;
+            return parser.parse(text) as T;
         } catch (error) {
             throw new Error(`Failed to parse XML response: ${error}`);
         }
@@ -220,17 +255,11 @@ export class TencentCosClient {
         return metadata;
     }
 
-    private calculateMD5Hash(content: string): string {
-        const md5 = crypto.createHash('md5');
-        md5.update(content);
-        return md5.digest('base64');
-    }
-
     async getBucketCors(): Promise<GetCorsResult> {
         const method = 'GET';
         const path = '/';
 
-        const authorization = this.generateSignature({
+        const authorization = await this.generateSignature({
             secretId: this.config.secretId,
             secretKey: this.config.secretKey,
             method: method,
@@ -285,7 +314,7 @@ export class TencentCosClient {
             </CORSConfiguration>
         `.trim();
 
-        const authorization = this.generateSignature({
+        const authorization = await this.generateSignature({
             secretId: this.config.secretId,
             secretKey: this.config.secretKey,
             method: method,
@@ -349,7 +378,7 @@ export class TencentCosClient {
         logger.debug('List objects URL:', url);
 
         // 生成签名
-        const authorization = this.generateSignature({
+        const authorization = await this.generateSignature({
             secretId: this.config.secretId,
             secretKey: this.config.secretKey,
             method: method,
@@ -384,21 +413,21 @@ export class TencentCosClient {
             // 解析 XML 响应
             const xmlResult = await this.parseXmlResponse<any>(response.text);
 
-            if (!xmlResult.listbucketresult) {
+            if (!xmlResult.ListBucketResult) {
                 throw new Error('Invalid response format');
             }
 
-            const result = xmlResult.listbucketresult;
+            const result = xmlResult.ListBucketResult;
 
             // 转换响应数据
             const listResult: ListObjectsResult = {
-                Name: result.name,
-                Prefix: result.prefix || '',
-                Marker: result.marker || '',
-                MaxKeys: parseInt(result.maxkeys || '1000'),
+                Name: result.Name,
+                Prefix: result.Prefix || '',
+                Marker: result.Marker || '',
+                MaxKeys: parseInt(result.MaxKeys || '1000'),
                 Delimiter: result.delimiter,
-                IsTruncated: result.istruncated === 'true',
-                NextMarker: result.nextmarker,
+                IsTruncated: result.IsTruncated === 'true',
+                NextMarker: result.NextMarker,
                 Contents: [],
                 CommonPrefixes: result.commonprefixes ?
                     (Array.isArray(result.commonprefixes) ?
@@ -409,8 +438,8 @@ export class TencentCosClient {
             };
 
             // 处理 Contents
-            if (result.contents) {
-                const contents = Array.isArray(result.contents) ? result.contents : [result.contents];
+            if (result.Contents) {
+                const contents = Array.isArray(result.Contents) ? result.Contents : [result.Contents];
 
                 listResult.Contents = await Promise.all(
                     contents.map(async (content: any) => {
@@ -418,14 +447,14 @@ export class TencentCosClient {
                         const metadata = await this.getObjectMetadata(content.key);
 
                         return {
-                            Key: content.key,
-                            Size: parseInt(content.size),
-                            LastModified: new Date(content.lastmodified),
-                            ETag: content.etag ? content.etag.replace(/"/g, '') : '',
-                            StorageClass: content.storageclass || 'STANDARD',
+                            Key: content.Key,
+                            Size: parseInt(content.Size),
+                            LastModified: new Date(content.LastModified),
+                            ETag: content.ETag ? content.ETag.replace(/"/g, '') : '',
+                            StorageClass: content.StorageClass || 'STANDARD',
                             Owner: {
-                                ID: content.owner?.id || '',
-                                DisplayName: content.owner?.displayname || ''
+                                ID: content.Owner?.ID || '',
+                                DisplayName: content.OWNER?.DisplayName || ''
                             },
                             Metadata: metadata
                         };
@@ -445,7 +474,7 @@ export class TencentCosClient {
         const method = 'HEAD';
         const path = `/${key}`;
 
-        const authorization = this.generateSignature({
+        const authorization = await this.generateSignature({
             secretId: this.config.secretId,
             secretKey: this.config.secretKey,
             method: method,
@@ -518,7 +547,7 @@ export class TencentCosClient {
         try {
             const method = 'HEAD';
             const path = `/${encodeURIComponent(key)}`;
-            const authorization = this.generateSignature({
+            const authorization = await this.generateSignature({
                 secretId: this.config.secretId,
                 secretKey: this.config.secretKey,
                 method: method,
@@ -542,7 +571,7 @@ export class TencentCosClient {
     async deleteObject(key: string): Promise<void> {
         logger.debug(`Deleting object with key: ${key}`);
         const path = `/${key}`;
-        const authorization = this.generateSignature({
+        const authorization = await this.generateSignature({
             secretId: this.config.secretId,
             secretKey: this.config.secretKey,
             method: 'DELETE',
@@ -570,7 +599,7 @@ export class TencentCosClient {
         const method = 'PUT';
         const path = `/${toKey}`;
         const source = `${this.config.bucket}.cos.${this.config.region}.myqcloud.com/${fromKey}`;
-        const authorization = this.generateSignature({
+        const authorization = await this.generateSignature({
             secretId: this.config.secretId,
             secretKey: this.config.secretKey,
             method,
@@ -611,7 +640,7 @@ export class TencentCosClient {
         // const md5 = this.calculateMD5Hash(content);
         const path = `/${key}`;
 
-        const authorization = this.generateSignature({
+        const authorization = await this.generateSignature({
             secretId: this.config.secretId,
             secretKey: this.config.secretKey,
             method: 'PUT',
@@ -650,7 +679,7 @@ export class TencentCosClient {
     async getObject(key: string): Promise<Buffer | null> {
         logger.debug(`Getting object with key: ${key}`);
         const path = `/${key}`;
-        const authorization = this.generateSignature({
+        const authorization = await this.generateSignature({
             secretId: this.config.secretId,
             secretKey: this.config.secretKey,
             method: 'GET',
@@ -679,3 +708,5 @@ export class TencentCosClient {
         }
     }
 }
+
+export const a = 1;

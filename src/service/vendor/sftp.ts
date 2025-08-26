@@ -1,5 +1,4 @@
-import { Client } from 'basic-ftp';
-import { Writable } from 'stream';
+// import { Client } from 'basic-ftp';
 import { cloudDiskModel } from '@/model/cloud-disk-model';
 import { Notice } from 'obsidian';
 import * as util from '@/util';
