@@ -70,6 +70,10 @@ export async function downloadFileNodes(
             }
             const file = await cloudDiskModel.ensureFileExists(item.path);
             if (file && (file instanceof TFile)) {
+                logger.info('Node info: ', {
+                    name: item.node.name,
+                    mtime: item.node.mtime,
+                });
                 await vault.modifyBinary(file, content, { mtime: item.node.mtime });
             }
 

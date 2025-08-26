@@ -90,8 +90,24 @@ export class S3Client {
 
         try {
             // Initialize any necessary resources or connections
-            await this.clients.cos.putBucketCors();
-            this.initialized = true;
+            const bucketCors = await this.clients.cos.getBucketCors();
+
+            const corsRule = bucketCors.corsconfiguration.corsrule;
+            logger.debug('CORS rule:', { corsRule });
+            if (corsRule && corsRule.allowedorigin === '*' &&
+                corsRule.exposeheader.includes('x-cos-meta-mtime') &&
+                corsRule.allowedmethod.includes('PUT') &&
+                corsRule.allowedmethod.includes('GET') &&
+                corsRule.allowedmethod.includes('HEAD') &&
+                corsRule.allowedmethod.includes('DELETE')
+            ) {
+                logger.info('CORS configuration looks good.');
+                new Notice('CORS is properly configured.');
+                this.initialized = true;
+            } else {
+                logger.warn('CORS configuration is not properly set.');
+                new Notice('CORS is not properly configured.');
+            }
         } catch (err) {
             logger.error(`初始化 COS 客户端失败: ${err}`);
             new Notice('Init COS client failed. Please check your CORS configuration.');
@@ -115,7 +131,7 @@ export class S3Client {
 
 
         try {
-            await this.clients.cos.uploadFile(key, content, localMtime);
+            await this.clients.cos.putObject(key, content, localMtime);
 
             // await this.verifyMetadata(key);
 
@@ -147,30 +163,20 @@ export class S3Client {
         }
 
         try {
-            // TODO: implement
-            return null;
-            // const command = new GetObjectCommand({
-            //     Bucket: this.config.bucket,
-            //     Key: key
-            // });
-            // const response = await this.clients.aws.send(command);
+            const data = await this.clients.cos.getObject(key);
+            if (!data) {
+                logger.warn(`文件不存在或内容为空: ${key}`);
+                return null;
+            }
 
-            // if (!response.Body) {
-            //     return null;
-            // }
-
-            // const chunks: Buffer[] = [];
-            // for await (const chunk of response.Body as any) {
-            //     chunks.push(Buffer.from(chunk));
-            // }
-            // return Buffer.concat(chunks);
+            return data;
         } catch (err) {
             logger.error(`下载文件失败: ${key}, 错误: ${err}`);
             return null;
         }
     }
 
-    async deleteObject(key: string): Promise<boolean> {
+    async deleteFile(key: string): Promise<boolean> {
         if (!this.initialized) {
             await this.init();
         }
@@ -178,12 +184,7 @@ export class S3Client {
         logger.debug('Deleting file:', { key });
 
         try {
-            // TODO: implement
-            // const command = new DeleteObjectCommand({
-            //     Bucket: this.config.bucket,
-            //     Key: key
-            // });
-            // await this.clients.aws.send(command);
+            await this.clients.cos.deleteObject(key);
             return true;
         } catch (err) {
             logger.error(`删除文件失败: ${key}, 错误: ${err}`);
@@ -213,9 +214,9 @@ export class S3Client {
                 objects.push({
                     key: item.Key || '',
                     size: Number(item.Size) || 0,
-                    // 优先使用元数据中的 mtime，如果没有则使用 S3 的 LastModified
-                    lastModified: item.Metadata?.['x-cos-meta-mtime'] ?
-                        new Date(item.Metadata['x-cos-meta-mtime']) :
+                    // 优先使用元数据中的 mtime，如果没有则使用 object的 LastModified
+                    lastModified: item.Metadata?.['mtime'] ?
+                        new Date(item.Metadata['mtime']) :
                         (new Date(item.LastModified) || new Date())
                 });
             }
@@ -233,13 +234,7 @@ export class S3Client {
         }
 
         try {
-            // TODO: implement
-            // const command = new CopyObjectCommand({
-            //     Bucket: this.config.bucket,
-            //     CopySource: `${this.config.bucket}/${fromKey}`,
-            //     Key: toKey
-            // });
-            // await this.clients.aws.send(command);
+            await this.clients.cos.copyObject(fromKey, toKey);
             return true;
         } catch (err) {
             logger.error(`复制文件失败: ${fromKey} -> ${toKey}, 错误: ${err}`);
@@ -250,14 +245,6 @@ export class S3Client {
     updateConfig(newConfig: Partial<S3Config>) {
         this.config = { ...this.config, ...newConfig };
         this.clients = {
-            // aws: new AWSS3Client({
-            //     endpoint: this.config.endpoint,
-            //     region: this.config.region,
-            //     credentials: {
-            //         accessKeyId: this.config.accessKeyId,
-            //         secretAccessKey: this.config.secretAccessKey
-            //     }
-            // }),
             cos: new TencentCosClient({
                 secretId: this.config.accessKeyId,
                 secretKey: this.config.secretAccessKey,
@@ -396,12 +383,12 @@ class S3FileManagementService implements CloudFileManagementService {
         if (!success) {
             throw new Error(`重命名失败: ${from} -> ${newName}`);
         }
-        await S3Client.getInstance().deleteObject(from);
+        await S3Client.getInstance().deleteFile(remoteFrom);
     }
 
     async deleteFile(filePath: string): Promise<boolean> {
         const remoteFilePath = util.path.join(cloudDiskModel.remoteRootPath, filePath);
-        return await S3Client.getInstance().deleteObject(remoteFilePath);
+        return await S3Client.getInstance().deleteFile(remoteFilePath);
     }
 
     async deleteFileById(fileId: string): Promise<void> {
@@ -421,15 +408,18 @@ class S3FileManagementService implements CloudFileManagementService {
     }
 
     async moveFile(from: string, to: string): Promise<void> {
-        const success = await S3Client.getInstance().copyObject(from, to);
+        const remoteFrom = util.path.join(cloudDiskModel.remoteRootPath, from);
+        const remoteTo = util.path.join(cloudDiskModel.remoteRootPath, to);
+        const success = await S3Client.getInstance().copyObject(remoteFrom, remoteTo);
         if (!success) {
             throw new Error(`移动文件失败: ${from} -> ${to}`);
         }
-        await S3Client.getInstance().deleteObject(from);
+        await S3Client.getInstance().deleteFile(remoteFrom);
     }
 
     async mkdir(dirPath: string): Promise<void> {
-        const success = await S3Client.getInstance().uploadFile(Buffer.from(''), `${dirPath}/.keep`);
+        const remoteDirPath = util.path.join(cloudDiskModel.remoteRootPath, dirPath);
+        const success = await S3Client.getInstance().uploadFile(Buffer.from(''), `${remoteDirPath}/.keep`);
         if (!success) {
             throw new Error(`创建目录失败: ${dirPath}`);
         }

@@ -52,6 +52,20 @@ export interface ListObjectsResult {
     EncodingType?: string;
 }
 
+interface CorsRule {
+    allowedorigin: string;
+    allowedmethod: string[];
+    allowedheader: string;
+    exposeheader: string[];
+    maxageseconds: number;
+}
+
+export interface GetCorsResult {
+    corsconfiguration: {
+        corsrule: CorsRule;
+    };
+}
+
 // 列表参数接口
 export interface ListObjectsParams {
     prefix?: string;
@@ -210,6 +224,46 @@ export class TencentCosClient {
         const md5 = crypto.createHash('md5');
         md5.update(content);
         return md5.digest('base64');
+    }
+
+    async getBucketCors(): Promise<GetCorsResult> {
+        const method = 'GET';
+        const path = '/';
+
+        const authorization = this.generateSignature({
+            secretId: this.config.secretId,
+            secretKey: this.config.secretKey,
+            method: method,
+            pathname: path,
+            // params: { 'cors': '' },
+            headers: {}
+        });
+
+        const url = `${this.getEndpoint()}${path}?cors`;
+        logger.debug('Getting bucket CORS with URL:', url);
+
+        try {
+            const response = await requestUrl({
+                url,
+                method: method,
+                headers: {
+                    'Authorization': authorization,
+                    'Date': new Date().toUTCString()
+                },
+                throw: false,
+            });
+
+            logger.debug('Get bucket CORS response:', response);
+
+            if (response.status >= 200 && response.status < 300) {
+                return this.parseXmlResponse(response.text);
+            } else {
+                throw new Error(`Failed to get CORS configuration: ${response.status} ${response.text}`);
+            }
+
+        } catch (error) {
+            throw error;
+        }
     }
 
     async putBucketCors() {
@@ -414,7 +468,7 @@ export class TencentCosClient {
                 throw: false,
             });
 
-            logger.debug('Get object metadata response:', response);
+            logger.debug('Get object metadata response:', { key, headers: response.headers });
 
             return this.extractMetadataFromHeaders(response.headers);
 
@@ -485,7 +539,74 @@ export class TencentCosClient {
         }
     }
 
-    async uploadFile(key: string, content: Buffer | Uint8Array, localMtime: string): Promise<void> {
+    async deleteObject(key: string): Promise<void> {
+        logger.debug(`Deleting object with key: ${key}`);
+        const path = `/${key}`;
+        const authorization = this.generateSignature({
+            secretId: this.config.secretId,
+            secretKey: this.config.secretKey,
+            method: 'DELETE',
+            pathname: path
+        });
+
+        const url = `${this.getEndpoint()}/${encodeURIComponent(key)}`;
+
+        try {
+            await requestUrl({
+                url,
+                method: 'DELETE',
+                headers: {
+                    'Authorization': authorization,
+                    'Date': new Date().toUTCString()
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async copyObject(fromKey: string, toKey: string): Promise<void> {
+        logger.debug(`Copying object from ${fromKey} to ${toKey}`);
+        const method = 'PUT';
+        const path = `/${toKey}`;
+        const source = `${this.config.bucket}.cos.${this.config.region}.myqcloud.com/${fromKey}`;
+        const authorization = this.generateSignature({
+            secretId: this.config.secretId,
+            secretKey: this.config.secretKey,
+            method,
+            pathname: path,
+            headers: {
+                'x-cos-copy-source': encodeURIComponent(source)
+            }
+        });
+
+        const url = `${this.getEndpoint()}/${encodeURIComponent(toKey)}`;
+
+        logger.debug({ 'Copy Object Request': { url, method, headers: { 'x-cos-copy-source': source } } });
+
+        try {
+            const response = await requestUrl({
+                url,
+                method,
+                headers: {
+                    'Authorization': authorization,
+                    'Date': new Date().toUTCString(),
+                    'x-cos-copy-source': encodeURIComponent(source)
+                },
+                throw: false,
+            });
+            logger.debug({ 'Copy Object Response': response });
+            if (response.status >= 200 && response.status < 300) {
+                return;
+            } else {
+                throw new Error(`Failed to copy object: ${response.status} ${response.text}`);
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async putObject(key: string, content: Buffer | Uint8Array, localMtime: string): Promise<void> {
         logger.debug(`Uploading file to key: ${key} with mtime: ${localMtime}`);
         // const md5 = this.calculateMD5Hash(content);
         const path = `/${key}`;
@@ -520,6 +641,38 @@ export class TencentCosClient {
                 return;
             } else {
                 throw new Error(`Failed to upload file: ${response.status} ${response.text}`);
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async getObject(key: string): Promise<Buffer | null> {
+        logger.debug(`Getting object with key: ${key}`);
+        const path = `/${key}`;
+        const authorization = this.generateSignature({
+            secretId: this.config.secretId,
+            secretKey: this.config.secretKey,
+            method: 'GET',
+            pathname: path
+        });
+
+        const url = `${this.getEndpoint()}/${encodeURIComponent(key)}`;
+
+        try {
+            const response = await requestUrl({
+                url,
+                method: 'GET',
+                headers: {
+                    'Authorization': authorization,
+                    'Date': new Date().toUTCString()
+                }
+            });
+
+            if (response.status === 200) {
+                return Buffer.from(response.arrayBuffer);
+            } else {
+                throw new Error(`Failed to get object: ${response.status} ${response.text}`);
             }
         } catch (error) {
             throw error;
