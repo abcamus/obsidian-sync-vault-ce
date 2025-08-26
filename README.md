@@ -17,7 +17,10 @@ Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. I
 
 ## 📱 Supported Cloud Storage
 
-- Aliyun Drive (Supported)
+- Aliyun Drive
+- InfiniCloud
+- JianguoYun
+- Tencent COS
 - More platforms coming soon...
 
 ## Free vs. Paid Edition

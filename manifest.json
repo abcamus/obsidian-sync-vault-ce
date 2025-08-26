@@ -3,8 +3,8 @@
 	"name": "Sync Vault CE",
 	"version": "0.6.7",
 	"minAppVersion": "0.15.0",
-	"description": "Self-controlled sync across all platforms, Aliyun & & Jianguoyun & InifiCloud supported",
+	"description": "Self-controlled sync across all platforms, Aliyun & & Jianguoyun & InifiCloud & Tencent COS supported",
 	"author": "Camus Qiu",
-	"authorUrl": "https://kqiu.top/",
+	"authorUrl": "https://sync-vault.com/",
 	"isDesktopOnly": false
 }
