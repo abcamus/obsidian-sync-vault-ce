@@ -224,8 +224,6 @@ export class TencentCosClient {
         return authorization;
     }
 
-
-
     // 解析 XML 响应
     private async parseXmlResponse<T>(text: string): Promise<T> {
         try {
@@ -444,7 +442,7 @@ export class TencentCosClient {
                 listResult.Contents = await Promise.all(
                     contents.map(async (content: any) => {
                         // 对于每个对象，获取详细的元数据
-                        const metadata = await this.getObjectMetadata(content.key);
+                        const metadata = await this.getObjectMetadata(content.Key);
 
                         return {
                             Key: content.Key,
