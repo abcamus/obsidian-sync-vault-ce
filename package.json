@@ -1,6 +1,6 @@
 {
 	"name": "sync-vault-community",
-	"version": "0.6.7",
+	"version": "0.6.8",
 	"description": "Sync through cloud service easily and safely",
 	"main": "main.js",
 	"scripts": {

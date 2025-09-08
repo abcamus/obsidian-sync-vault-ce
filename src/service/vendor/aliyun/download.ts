@@ -49,6 +49,12 @@ export class AliyunDownloadService implements CloudDownloadService {
         let fileInfo: FileInfo | null = null;
         let downloadUrl: string | null = null;
 
+        logger.info('Downloading ' + remoteFilePath);
+
+        if (!remoteFilePath.startsWith('/')) {
+            remoteFilePath = '/' + remoteFilePath;
+        }
+
         /* Step 1: 获取文件信息 */
         try {
             fileInfo = await getFileInfoByPath(remoteFilePath);
@@ -69,6 +75,7 @@ export class AliyunDownloadService implements CloudDownloadService {
                 'downloadFile',
                 { remotePath: remoteFilePath }
             );
+            logger.error(`Download ${remoteFilePath} failed,`, error);
             return null;
         }
 

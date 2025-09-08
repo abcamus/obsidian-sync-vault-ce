@@ -23,6 +23,7 @@ export class DebugManager {
         'aliyun.info': false,
         'aliyun.upload': false,
         'aliyun.file-mng': false,
+        'aliyun.download': false,
 
         's3.service': false,
         'webdav.service': false,

@@ -35,6 +35,7 @@ export interface FileInfo {
     parent_file_id: string;
     name: string;
     size: number;
+    mtime?: string;
 }
 
 export enum CloudDiskType {
