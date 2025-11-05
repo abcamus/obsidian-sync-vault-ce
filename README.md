@@ -9,7 +9,7 @@
 
 Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. It provides a user-friendly interface that gives you complete control over the synchronization process while ensuring data privacy and security.
 
-> [!note] sync-vault-v1.0.0 fully inherits all features from sync-vault-ce — all of which are provided free of charge.preview
+> [!NOTE] sync-vault-v1.0.0 fully inherits all features from sync-vault-ce — all of which are provided free of charge.
 
 ## ✨ Features
 
@@ -31,9 +31,9 @@ Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. I
 
 | Feature                           | Free                                                         | Premium                                                                                                                   |
 | --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| Supported Cloud Storage           | Nutstore<br>InfiniCloud<br>Tencent COS<br>Alibaba Cloud Disk | Nutstore<br>InfiniCloud<br>Tencent COS<br>Alibaba Cloud Disk<br>==+ Baidu Netdisk==<br>==+ Quark Disk==<br>==+ OneDrive== |
-| Synchronization Methods           | Manual Sync                                                  | Manual Sync<br>==+ Auto Mode==<br>==+ Real-Time Mode==                                                                    |
-| Synchronization Objects           | Only notes in the vault                                      | Files in the vault<br>==+ Third-Party Plugins==<br>==+ Third-Party Themes==                                               |
+| Supported Cloud Storage           | Nutstore<br>InfiniCloud<br>Tencent COS<br>Alibaba Cloud Disk | Nutstore<br>InfiniCloud<br>Tencent COS<br>Alibaba Cloud Disk<br>+ Baidu Netdisk<br>+ Quark Disk<br>+ OneDrive |
+| Synchronization Methods           | Manual Sync                                                  | Manual Sync<br>+ Auto Mode<br>+ Real-Time Mode                                                                    |
+| Synchronization Objects           | Only notes in the vault                                      | Files in the vault<br>+ Third-Party Plugins<br>+ Third-Party Themes                                               |
 | Performance                       | Average                                                      | Highly Optimized                                                                                                          |
 | Supported Device Types & Quantity | Unlimited                                                    | Unlimited                                                                                                                 |
 | Number of Vaults                  | Unlimited                                                    | Unlimited                                                                                                                 |
@@ -41,10 +41,10 @@ Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. I
 | Performance & Issue Diagnosis     | Yes                                                          | Yes                                                                                                                       |
 | Synchronization Report            | No                                                           | Yes                                                                                                                       |
 | File Revision History             | No                                                           | Yes                                                                                                                       |
-| Conflict Resolution               | Always keep the latest modification                          | ==+ Manual Merge==<br>==+ Incremental Auto Merge==                                                                        |
-| Online Video Playback             | No                                                           | ==+ Baidu Netdisk Video Online Playback==<br>==+ Alibaba Cloud Disk Video Online Playback==                               |
+| Conflict Resolution               | Always keep the latest modification                          | + Manual Merge<br>+ Incremental Auto Merge                                                                        |
+| Online Video Playback             | No                                                           | + Baidu Netdisk Video Online Playback<br>+ Alibaba Cloud Disk Video Online Playback                               |
 | Online PDF Reader                 | No                                                           | Yes(compatible with obsidian pdf reader)                                                                                  |
-| Customer Support                  | Community Support                                            | ==+ Dedicated Customer Remote Assistance==                                                                                |
+| Customer Support                  | Community Support                                            | + Dedicated Customer Remote Assistance                                                                                |
 
 ## ⚙️ Installation & Usage
 
