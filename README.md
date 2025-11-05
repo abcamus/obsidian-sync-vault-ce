@@ -10,7 +10,7 @@
 Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. It provides a user-friendly interface that gives you complete control over the synchronization process while ensuring data privacy and security.
 
 > [!note] 
-> sync-vault-v1.0.0 fully inherits all features from sync-vault-ce — all of which are provided free of charge.
+> [sync-vault](https://github.com/abcamus/obsidian-sync-vault) fully inherits all features from sync-vault-ce — all of which are provided free of charge.
 
 ## ✨ Features
 
