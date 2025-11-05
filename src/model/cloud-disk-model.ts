@@ -39,23 +39,23 @@ class CloudDiskModel {
 
 	info: { user: UserInfo; storage: StorageInfo };
 	remoteMeta: RemoteMeta | null = null;
-	pluginHomeDir: string = '';
+	pluginHomeDir = '';
 	selectedCloudDisk: CloudDiskType = CloudDiskType.Unknown;
-	remoteRoot: string = '';
+	remoteRoot = '';
 	vault: Vault;
 
 	cloudInitialized: Record<string, boolean> = {};
 
 	/* auth */
-	accessToken: string = '';
-	refreshToken: string = '';
-	tokenExpiryAt: string = '';
-	isTokenValid: boolean = false;
+	accessToken = '';
+	refreshToken = '';
+	tokenExpiryAt = '';
+	isTokenValid = false;
 
 	/* webdav */
-	webdavUrl: string = '';
-	webdavUsername: string = '';
-	webdavPassword: string = '';
+	webdavUrl = '';
+	webdavUsername = '';
+	webdavPassword = '';
 
 	/* FTP */
 	ftpConfig: FtpConfig = {
@@ -76,18 +76,18 @@ class CloudDiskModel {
 	}
 
 	/* sync */
-	autoMode: boolean = false;
+	autoMode = false;
 
 	/* log */
-	logMode: boolean = false;
+	logMode = false;
 
 	/* encryption */
-	encryptMode: boolean = false;
+	encryptMode = false;
 	password: string;
 
 	/* ignore files */
-	ignorePattern: string = '';
-	fileSizeLimit: number = 100; // in MB
+	ignorePattern = '';
+	fileSizeLimit = 100; // in MB
 
 	private constructor() {
 		this.info = { user: {} as UserInfo, storage: {} as StorageInfo };
@@ -113,7 +113,7 @@ class CloudDiskModel {
 	}
 
 	async initBasicInfo() {
-		let user = await Service.info.userInfo();
+		const user = await Service.info.userInfo();
 		if (user === null) {
 			new Notice('初始化网盘信息失败');
 			return;

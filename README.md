@@ -9,6 +9,8 @@
 
 Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. It provides a user-friendly interface that gives you complete control over the synchronization process while ensuring data privacy and security.
 
+> [!note] sync-vault-v1.0.0 fully inherits all features from sync-vault-ce — all of which are provided free of charge.preview
+
 ## ✨ Features
 
 - End-to-end encryption for data security
@@ -21,23 +23,28 @@ Sync Vault is an Obsidian vault synchronization plugin based on cloud storage. I
 - InfiniCloud
 - JianguoYun
 - Tencent COS
-- More platforms coming soon...
+- Baidu Netdisk
+- OneDrive
+- Quark(experimental)
 
 ## Free vs. Paid Edition
 
-| Feature               | Free Edition       | Paid Edition              |
-|-----------------------|--------------------|---------------------------|
-| **Cloud Drives**      | Aliyun             | ✅ Baidu, OneDrive, 115 (Soon) |
-| **Auto-Sync**         | Manual Only     | ✅ Scheduled & Real-Time  |
-| **Sync Modes**        | Basic           | ✅ Auto, P2P, Plugin Sync       |
-| **File Filtering**    | No              | ✅ Regex Ignore Rules     |
-| **Sync Reports**      | No              | ✅ Detailed Logs          |
-| **Conflict Resolution** | Keep recent        | ✅ Keep recent, Mannual merge, Increment merge             |
-| **Video Playback**    | Download Only   | ✅ Stream (Baidu/Aliyun)  |
-| **File History**      | No         | ✅ Unlimited             |
-| **Customer Support**  | Community       | ✅ Priority Response      |
-
-**Upgrade now → [Sync Vault](https://kqiu.top)**
+| Feature                           | Free                                                         | Premium                                                                                                                   |
+| --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| Supported Cloud Storage           | Nutstore<br>InfiniCloud<br>Tencent COS<br>Alibaba Cloud Disk | Nutstore<br>InfiniCloud<br>Tencent COS<br>Alibaba Cloud Disk<br>==+ Baidu Netdisk==<br>==+ Quark Disk==<br>==+ OneDrive== |
+| Synchronization Methods           | Manual Sync                                                  | Manual Sync<br>==+ Auto Mode==<br>==+ Real-Time Mode==                                                                    |
+| Synchronization Objects           | Only notes in the vault                                      | Files in the vault<br>==+ Third-Party Plugins==<br>==+ Third-Party Themes==                                               |
+| Performance                       | Average                                                      | Highly Optimized                                                                                                          |
+| Supported Device Types & Quantity | Unlimited                                                    | Unlimited                                                                                                                 |
+| Number of Vaults                  | Unlimited                                                    | Unlimited                                                                                                                 |
+| Visual Dashboard                  | Yes                                                          | Yes                                                                                                                       |
+| Performance & Issue Diagnosis     | Yes                                                          | Yes                                                                                                                       |
+| Synchronization Report            | No                                                           | Yes                                                                                                                       |
+| File Revision History             | No                                                           | Yes                                                                                                                       |
+| Conflict Resolution               | Always keep the latest modification                          | ==+ Manual Merge==<br>==+ Incremental Auto Merge==                                                                        |
+| Online Video Playback             | No                                                           | ==+ Baidu Netdisk Video Online Playback==<br>==+ Alibaba Cloud Disk Video Online Playback==                               |
+| Online PDF Reader                 | No                                                           | Yes(compatible with obsidian pdf reader)                                                                                  |
+| Customer Support                  | Community Support                                            | ==+ Dedicated Customer Remote Assistance==                                                                                |
 
 ## ⚙️ Installation & Usage
 

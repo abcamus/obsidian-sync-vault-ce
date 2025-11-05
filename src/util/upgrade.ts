@@ -120,6 +120,8 @@ export async function downloadAndInstallUpdate(
     pluginDir: string,
     vault: Vault
 ) {
+    const notice = new Notice('Start updating...', 0);
+
     try {
         const owner = 'abcamus';
         const repo = 'obsidian-sync-vault-release';
@@ -133,6 +135,8 @@ export async function downloadAndInstallUpdate(
         if (await backupCurrentVersion(currentVersion, pluginDir, vault) === false) {
             throw new Error('备份失败');
         }
+
+        notice.setMessage(`Backup ${currentVersion}...`);
 
         /* Step 2: 获取校验和 */
         const checksums = await getChecksums();
@@ -156,7 +160,7 @@ export async function downloadAndInstallUpdate(
             }
         ];
 
-        new Notice('[1/3] ' + i18n.t('settingTab.upgradeAndHelp.downloading'));
+        notice.setMessage('[1/3] ' + i18n.t('settingTab.menuUpgradeAndHelp.upgrade.downloading'));
         const fileContents: Record<string, string> = {};
         for (const item of downloadFiles) {
             const response = await requestUrl({
@@ -176,7 +180,7 @@ export async function downloadAndInstallUpdate(
         }
 
         /* Step 4: 写入文件 */
-        new Notice('[2/3] ' + i18n.t('settingTab.upgradeAndHelp.updating'));
+        notice.setMessage('[2/3] ' + i18n.t('settingTab.menuUpgradeAndHelp.upgrade.updating'));
         for (const item of downloadFiles) {
             const filePath = util.path.join(pluginDir, item.name);
             await vault.adapter.write(filePath, fileContents[item.name]);
@@ -187,11 +191,11 @@ export async function downloadAndInstallUpdate(
         await vault.adapter.write(checksumPath, JSON.stringify(checksums, null, 2));
         logger.info('Checksums saved to:', checksumPath);
 
-        new Notice('[3/3] ' + i18n.t('settingTab.upgradeAndHelp.updateInstalled'));
+        notice.setMessage('[3/3] ' + i18n.t('settingTab.menuUpgradeAndHelp.upgrade.updateInstalled'));
         return true;
     } catch (error) {
         logger.info('下载更新失败:', error);
-        new Notice('[3/3] ' + i18n.t('settingTab.upgradeAndHelp.updateInstallFailed') + error);
+        notice.setMessage('[3/3] ' + i18n.t('settingTab.menuUpgradeAndHelp.upgrade.updateInstallFailed') + error);
         return false;
     }
 }
