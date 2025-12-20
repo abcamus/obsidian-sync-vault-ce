@@ -1,7 +1,7 @@
 {
 	"name": "sync-vault-community",
-	"version": "0.6.9",
-	"description": "Sync through cloud service easily and safely",
+	"version": "1.2.0",
+	"description": "Backup, Sync and Link your knowledge",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

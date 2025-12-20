@@ -113,11 +113,6 @@ export class S3Client {
             metadata: { 'x-cos-meta-mtime': localMtime }
         });
 
-        const metadata: Record<string, string> = {
-            'mtime': localMtime,
-        };
-
-
         try {
             await this.clients.cos.putObject(key, content, localMtime);
 
@@ -180,7 +175,7 @@ export class S3Client {
         }
     }
 
-    async listObjects(prefix: string = ''): Promise<{
+    async listObjects(prefix = ''): Promise<{
         key: string;
         size: number;
         lastModified: Date;

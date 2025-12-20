@@ -161,7 +161,7 @@ export class WebDAVClient {
         });
     }
 
-    async createFolder(path: string = ""): Promise<boolean> {
+    async createFolder(path = ""): Promise<boolean> {
         try {
             // WebDAV 创建文件夹使用 MKCOL 方法
             const response = await this.request("MKCOL", path);
@@ -192,7 +192,7 @@ export class WebDAVClient {
         return true;
     }
 
-    async listDirectory(path: string = ""): Promise<FileStat[]> {
+    async listDirectory(path = ""): Promise<FileStat[]> {
         try {
             const response = await this.request("PROPFIND", path);
 
@@ -225,7 +225,7 @@ export class WebDAVClient {
                     result.push(item);
                     logger.debug(`Skip self: ${item.path}`);
                     continue;
-                };
+                }
                 if (item.type === 'directory') {
                     const subItems = await listInnerFolder(item.path);
                     result.push(...subItems);

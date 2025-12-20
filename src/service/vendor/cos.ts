@@ -269,27 +269,22 @@ export class TencentCosClient {
         const url = `${this.getEndpoint()}${path}?cors`;
         logger.debug('Getting bucket CORS with URL:', url);
 
-        try {
-            const response = await requestUrl({
-                url,
-                method: method,
-                headers: {
-                    'Authorization': authorization,
-                    'Date': new Date().toUTCString()
-                },
-                throw: false,
-            });
+        const response = await requestUrl({
+            url,
+            method: method,
+            headers: {
+                'Authorization': authorization,
+                'Date': new Date().toUTCString()
+            },
+            throw: false,
+        });
 
-            logger.debug('Get bucket CORS response:', response);
+        logger.debug('Get bucket CORS response:', response);
 
-            if (response.status >= 200 && response.status < 300) {
-                return this.parseXmlResponse(response.text);
-            } else {
-                throw new Error(`Failed to get CORS configuration: ${response.status} ${response.text}`);
-            }
-
-        } catch (error) {
-            throw error;
+        if (response.status >= 200 && response.status < 300) {
+            return this.parseXmlResponse(response.text);
+        } else {
+            throw new Error(`Failed to get CORS configuration: ${response.status} ${response.text}`);
         }
     }
 
@@ -323,30 +318,25 @@ export class TencentCosClient {
         const url = `${this.getEndpoint()}${path}`;
         logger.debug('Putting bucket CORS with URL:', url);
 
-        try {
-            const response = await requestUrl({
-                url,
-                method: method,
-                headers: {
-                    'Authorization': authorization,
-                    'Date': new Date().toUTCString(),
-                    'Content-Type': 'application/xml',
-                    'Content-MD5': this.calculateMD5Hash(corsConfiguration)
-                },
-                body: corsConfiguration,
-                throw: false,
-            });
+        const response = await requestUrl({
+            url,
+            method: method,
+            headers: {
+                'Authorization': authorization,
+                'Date': new Date().toUTCString(),
+                'Content-Type': 'application/xml',
+                'Content-MD5': this.calculateMD5Hash(corsConfiguration)
+            },
+            body: corsConfiguration,
+            throw: false,
+        });
 
-            logger.debug('Put bucket CORS response:', response);
+        logger.debug('Put bucket CORS response:', response);
 
-            if (response.status >= 200 && response.status < 300) {
-                return true;
-            } else {
-                throw new Error(`Failed to set CORS configuration: ${response.status} ${response.text}`);
-            }
-
-        } catch (error) {
-            throw error;
+        if (response.status >= 200 && response.status < 300) {
+            return true;
+        } else {
+            throw new Error(`Failed to set CORS configuration: ${response.status} ${response.text}`);
         }
     }
 
@@ -395,76 +385,71 @@ export class TencentCosClient {
             authorization
         });
 
-        try {
-            const response = await requestUrl({
-                url,
-                method: method,
-                headers: {
-                    'Authorization': authorization,
-                    'Date': new Date().toUTCString()
-                },
-                throw: false,
-            });
+        const response = await requestUrl({
+            url,
+            method: method,
+            headers: {
+                'Authorization': authorization,
+                'Date': new Date().toUTCString()
+            },
+            throw: false,
+        });
 
-            logger.debug('List objects response:', response);
+        logger.debug('List objects response:', response);
 
-            // 解析 XML 响应
-            const xmlResult = await this.parseXmlResponse<any>(response.text);
+        // 解析 XML 响应
+        const xmlResult = await this.parseXmlResponse<any>(response.text);
 
-            if (!xmlResult.ListBucketResult) {
-                throw new Error('Invalid response format');
-            }
-
-            const result = xmlResult.ListBucketResult;
-
-            // 转换响应数据
-            const listResult: ListObjectsResult = {
-                Name: result.Name,
-                Prefix: result.Prefix || '',
-                Marker: result.Marker || '',
-                MaxKeys: parseInt(result.MaxKeys || '1000'),
-                Delimiter: result.delimiter,
-                IsTruncated: result.IsTruncated === 'true',
-                NextMarker: result.NextMarker,
-                Contents: [],
-                CommonPrefixes: result.commonprefixes ?
-                    (Array.isArray(result.commonprefixes) ?
-                        result.commonprefixes.map((cp: any) => cp.prefix) :
-                        [result.commonprefixes.prefix]) :
-                    undefined,
-                EncodingType: result.encodingtype
-            };
-
-            // 处理 Contents
-            if (result.Contents) {
-                const contents = Array.isArray(result.Contents) ? result.Contents : [result.Contents];
-
-                listResult.Contents = await Promise.all(
-                    contents.map(async (content: any) => {
-                        // 对于每个对象，获取详细的元数据
-                        const metadata = await this.getObjectMetadata(content.Key);
-
-                        return {
-                            Key: content.Key,
-                            Size: parseInt(content.Size),
-                            LastModified: new Date(content.LastModified),
-                            ETag: content.ETag ? content.ETag.replace(/"/g, '') : '',
-                            StorageClass: content.StorageClass || 'STANDARD',
-                            Owner: {
-                                ID: content.Owner?.ID || '',
-                                DisplayName: content.OWNER?.DisplayName || ''
-                            },
-                            Metadata: metadata
-                        };
-                    })
-                );
-            }
-
-            return listResult;
-
-        } catch (error) {
-            throw error;
+        if (!xmlResult.ListBucketResult) {
+            throw new Error('Invalid response format');
         }
+
+        const result = xmlResult.ListBucketResult;
+
+        // 转换响应数据
+        const listResult: ListObjectsResult = {
+            Name: result.Name,
+            Prefix: result.Prefix || '',
+            Marker: result.Marker || '',
+            MaxKeys: parseInt(result.MaxKeys || '1000'),
+            Delimiter: result.delimiter,
+            IsTruncated: result.IsTruncated === 'true',
+            NextMarker: result.NextMarker,
+            Contents: [],
+            CommonPrefixes: result.commonprefixes ?
+                (Array.isArray(result.commonprefixes) ?
+                    result.commonprefixes.map((cp: any) => cp.prefix) :
+                    [result.commonprefixes.prefix]) :
+                undefined,
+            EncodingType: result.encodingtype
+        };
+
+        // 处理 Contents
+        if (result.Contents) {
+            const contents = Array.isArray(result.Contents) ? result.Contents : [result.Contents];
+
+            listResult.Contents = await Promise.all(
+                contents.map(async (content: any) => {
+                    // 对于每个对象，获取详细的元数据
+                    const metadata = await this.getObjectMetadata(content.Key);
+
+                    return {
+                        Key: content.Key,
+                        Size: parseInt(content.Size),
+                        LastModified: new Date(content.LastModified),
+                        ETag: content.ETag ? content.ETag.replace(/"/g, '') : '',
+                        StorageClass: content.StorageClass || 'STANDARD',
+                        Owner: {
+                            ID: content.Owner?.ID || '',
+                            DisplayName: content.OWNER?.DisplayName || ''
+                        },
+                        Metadata: metadata
+                    };
+                })
+            );
+        }
+
+        return listResult;
     }
 
     // 获取对象元数据
@@ -542,28 +527,24 @@ export class TencentCosClient {
 
     // 检查对象是否存在
     async objectExists(key: string): Promise<boolean> {
-        try {
-            const method = 'HEAD';
-            const path = `/${encodeURIComponent(key)}`;
-            const authorization = await this.generateSignature({
-                secretId: this.config.secretId,
-                secretKey: this.config.secretKey,
-                method: method,
-                pathname: path
-            });
+        const method = 'HEAD';
+        const path = `/${encodeURIComponent(key)}`;
+        const authorization = await this.generateSignature({
+            secretId: this.config.secretId,
+            secretKey: this.config.secretKey,
+            method: method,
+            pathname: path
+        });
 
-            await requestUrl({
-                url: path,
-                method: method,
-                headers: {
-                    'Authorization': authorization,
-                    'Date': new Date().toUTCString()
-                }
-            });
-            return true;
-        } catch (error) {
-            throw error;
-        }
+        await requestUrl({
+            url: path,
+            method: method,
+            headers: {
+                'Authorization': authorization,
+                'Date': new Date().toUTCString()
+            }
+        });
+        return true;
     }
 
     async deleteObject(key: string): Promise<void> {
@@ -578,18 +559,14 @@ export class TencentCosClient {
 
         const url = `${this.getEndpoint()}/${encodeURIComponent(key)}`;
 
-        try {
-            await requestUrl({
-                url,
-                method: 'DELETE',
-                headers: {
-                    'Authorization': authorization,
-                    'Date': new Date().toUTCString()
-                }
-            });
-        } catch (error) {
-            throw error;
-        }
+        await requestUrl({
+            url,
+            method: 'DELETE',
+            headers: {
+                'Authorization': authorization,
+                'Date': new Date().toUTCString()
+            }
+        });
     }
 
     async copyObject(fromKey: string, toKey: string): Promise<void> {
@@ -611,25 +588,21 @@ export class TencentCosClient {
 
         logger.debug({ 'Copy Object Request': { url, method, headers: { 'x-cos-copy-source': source } } });
 
-        try {
-            const response = await requestUrl({
-                url,
-                method,
-                headers: {
-                    'Authorization': authorization,
-                    'Date': new Date().toUTCString(),
-                    'x-cos-copy-source': encodeURIComponent(source)
-                },
-                throw: false,
-            });
-            logger.debug({ 'Copy Object Response': response });
-            if (response.status >= 200 && response.status < 300) {
-                return;
-            } else {
-                throw new Error(`Failed to copy object: ${response.status} ${response.text}`);
-            }
-        } catch (error) {
-            throw error;
+        const response = await requestUrl({
+            url,
+            method,
+            headers: {
+                'Authorization': authorization,
+                'Date': new Date().toUTCString(),
+                'x-cos-copy-source': encodeURIComponent(source)
+            },
+            throw: false,
+        });
+        logger.debug({ 'Copy Object Response': response });
+        if (response.status >= 200 && response.status < 300) {
+            return;
+        } else {
+            throw new Error(`Failed to copy object: ${response.status} ${response.text}`);
         }
     }
 
@@ -650,27 +623,23 @@ export class TencentCosClient {
 
         const url = `${this.getEndpoint()}/${encodeURIComponent(key)}`;
 
-        try {
-            const response = await requestUrl({
-                url,
-                method: 'PUT',
-                headers: {
-                    'Authorization': authorization,
-                    'Date': new Date().toUTCString(),
-                    'x-cos-meta-mtime': localMtime,
-                },
-                body: new Uint8Array(content).buffer,
-                throw: false,
-            });
+        const response = await requestUrl({
+            url,
+            method: 'PUT',
+            headers: {
+                'Authorization': authorization,
+                'Date': new Date().toUTCString(),
+                'x-cos-meta-mtime': localMtime,
+            },
+            body: new Uint8Array(content).buffer,
+            throw: false,
+        });
 
-            logger.debug('Upload file response:', response);
-            if (response.status >= 200 && response.status < 300) {
-                return;
-            } else {
-                throw new Error(`Failed to upload file: ${response.status} ${response.text}`);
-            }
-        } catch (error) {
-            throw error;
+        logger.debug('Upload file response:', response);
+        if (response.status >= 200 && response.status < 300) {
+            return;
+        } else {
+            throw new Error(`Failed to upload file: ${response.status} ${response.text}`);
         }
     }
 
@@ -686,23 +655,19 @@ export class TencentCosClient {
 
         const url = `${this.getEndpoint()}/${encodeURIComponent(key)}`;
 
-        try {
-            const response = await requestUrl({
-                url,
-                method: 'GET',
-                headers: {
-                    'Authorization': authorization,
-                    'Date': new Date().toUTCString()
-                }
-            });
-
-            if (response.status === 200) {
-                return Buffer.from(response.arrayBuffer);
-            } else {
-                throw new Error(`Failed to get object: ${response.status} ${response.text}`);
+        const response = await requestUrl({
+            url,
+            method: 'GET',
+            headers: {
+                'Authorization': authorization,
+                'Date': new Date().toUTCString()
             }
-        } catch (error) {
-            throw error;
+        });
+
+        if (response.status === 200) {
+            return Buffer.from(response.arrayBuffer);
+        } else {
+            throw new Error(`Failed to get object: ${response.status} ${response.text}`);
         }
     }
 }

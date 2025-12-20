@@ -85,10 +85,9 @@ class CloudAuthAPI {
 }
 
 async function authorize(method: oauthMethod, params?: Record<string, any>): Promise<CheckTokenResult> {
-    let cloudAuth: CloudAuthAPI;
     let url;
 
-    cloudAuth = CloudAuthAPI.createAuthManager(cloudDiskModel.selectedCloudDisk);
+    const cloudAuth = CloudAuthAPI.createAuthManager(cloudDiskModel.selectedCloudDisk);
 
     if (method === 'get_code') {
         url = await cloudAuth.buildQueryCodeUrl({
@@ -156,16 +155,14 @@ async function authorize(method: oauthMethod, params?: Record<string, any>): Pro
  * @returns {CheckTokenResult}
  */
 async function checkToken(deviceName: string, deviceType: string): Promise<CheckTokenResult> {
-    const cloudAuth = CloudAuthAPI.createAuthManager(cloudDiskModel.selectedCloudDisk);
-
+    // TODO: check token
     return {
         status: 'success',
     };
 }
 
 async function refreshToken(deviceName: string, deviceType: string): Promise<CheckTokenResult> {
-    const cloudAuth = CloudAuthAPI.createAuthManager(cloudDiskModel.selectedCloudDisk);
-
+    // TODO: refresh token
     return {
         status: 'success',
     }
