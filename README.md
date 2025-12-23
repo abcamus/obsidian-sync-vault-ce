@@ -10,9 +10,9 @@
 > [!note] 
 > 从 1.0 版本开始闭源, 开源版本支持到 0.6.9
 
-## ✨ 主要功能
+![看板](./assets/dashboard.webp)
 
-<img src="./assets/dashboard.webp" alt="sync vault看板" style="width: 500px; display: block; margin: 0 auto;" />
+## ✨ 主要功能
 
 - 多重备份, 轻松上传资料到多种网盘.
 - 多设备同步, 支持通过7种云服务同步.
@@ -25,7 +25,7 @@
 - 轻松访问云服务资源,比如PDF,音视频,在Obsidian中直接播放.
 - 同一份文档多人协同编辑.
 
-<img src="./assets/multi-devices-collab.webp" alt="3台设备实时协同编辑" style="width: 500px; display: block; margin: 0 auto;" />
+![多人协同编辑](./assets/3台设备协同编辑.webp)
 
 [点击查看](https://sync-vault.com)更多功能.
 
