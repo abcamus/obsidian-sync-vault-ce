@@ -25,7 +25,7 @@
 - 轻松访问云服务资源,比如PDF,音视频,在Obsidian中直接播放.
 - 同一份文档多人协同编辑.
 
-<img src="./assets/3台设备协同编辑.webp" alt="3台设备实时协同编辑" style="width: 500px; display: block; margin: 0 auto;" />
+<img src="./assets/multi-devices-collab.webp" alt="3台设备实时协同编辑" style="width: 500px; display: block; margin: 0 auto;" />
 
 [点击查看](https://sync-vault.com)更多功能.
 
@@ -54,12 +54,7 @@
 1. 点击侧边栏☁️图标,打开看板后,在快捷操作卡片找到新手引导按扭.
 2. 点击**新手引导**按扭,按照提示完成网盘登陆和同步模式设置.
 
-成功后,可看到如下图所示的看板.
-
-<div align="center">
-  <img src="assets/dashboard.png" alt="Sync Vault Interface Preview" width="600" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-  <p><em>Sync Vault Dashboard</em></p>
-</div>
+成功后,可看到Sync Vault看板.
 
 ## 🗺️ Roadmap
 
