@@ -12,7 +12,7 @@
 
 ## ✨ 主要功能
 
-![dashboard](./assets/dashboard.webp)
+<img src="./assets/dashboard.webp" alt="sync vault看板" style="width: 500px; display: block; margin: 0 auto;" />
 
 - 多重备份, 轻松上传资料到多种网盘.
 - 多设备同步, 支持通过7种云服务同步.
@@ -24,6 +24,8 @@
     - markdown文件端到端加密.
 - 轻松访问云服务资源,比如PDF,音视频,在Obsidian中直接播放.
 - 同一份文档多人协同编辑.
+
+<img src="./assets/3台设备协同编辑.webp" alt="3台设备实时协同编辑" style="width: 500px; display: block; margin: 0 auto;" />
 
 [点击查看](https://sync-vault.com)更多功能.
 
