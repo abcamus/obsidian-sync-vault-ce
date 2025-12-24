@@ -1,6 +1,6 @@
 {
 	"name": "sync-vault-community",
-	"version": "1.3.1",
+	"version": "1.3.1.1",
 	"description": "Backup, Sync and Link your knowledge",
 	"main": "main.js",
 	"scripts": {
