@@ -10,7 +10,7 @@
 > [!note] 
 > 从 1.0 版本开始闭源, 开源版本支持到 0.6.9
 
-![看板](./assets/dashboard.webp)
+
 
 ## ✨ 主要功能
 
@@ -22,10 +22,17 @@
     - 忽略大文件,按照正则表达式忽略对应名字文件.
     - 同步第三方插件和主题.
     - markdown文件端到端加密.
-- 轻松访问云服务资源,比如PDF,音视频,在Obsidian中直接播放.
+- 通过看板轻松访问云服务资源,比如PDF,音视频,在Obsidian中直接播放.
+<p align="center">
+  <img src="./assets/dashboard.webp" alt="看板" width="400" />
+</p>
 - 同一份文档多人协同编辑.
 
-![多人协同编辑](./assets/3台设备协同编辑.webp)
+<video width="640" height="360" controls muted>
+  <source src="./assets/demo.mov" type="video/mp4">
+  你的浏览器不支持视频播放，请升级浏览器。
+</video>
+
 
 [点击查看](https://sync-vault.com)更多功能.
 
