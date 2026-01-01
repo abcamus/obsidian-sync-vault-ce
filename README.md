@@ -28,10 +28,15 @@
 </p>
 - 同一份文档多人协同编辑.
 
-<video width="640" height="360" controls muted>
-  <source src="https://github.com/abcamus/obsidian-sync-vault-ce/raw/main/assets/demo.mov" type="video/mp4">
-  你的浏览器不支持视频播放，请升级浏览器。
-</video>
+<p align="center">
+  <video width="640" height="360" controls muted>
+    <source 
+      src="https://raw.githubusercontent.com/abcamus/obsidian-sync-vault-ce/main/assets/demo.mp4" 
+      type="video/mp4"
+    >
+    你的浏览器不支持视频播放，请升级浏览器。
+  </video>
+</p>
 
 
 [点击查看](https://sync-vault.com)更多功能.
