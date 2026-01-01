@@ -29,7 +29,7 @@
 - 同一份文档多人协同编辑.
 
 <video width="640" height="360" controls muted>
-  <source src="./assets/demo.mov" type="video/mp4">
+  <source src="https://github.com/abcamus/obsidian-sync-vault-ce/raw/main/assets/demo.mov" type="video/mp4">
   你的浏览器不支持视频播放，请升级浏览器。
 </video>
 
