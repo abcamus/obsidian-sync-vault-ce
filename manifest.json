@@ -1,7 +1,7 @@
 {
 	"id": "sync-vault-ce",
 	"name": "Sync Vault CE",
-	"version": "1.5.0.1",
+	"version": "1.5.1",
 	"minAppVersion": "0.15.0",
 	"description": "Backup, Sync and Link your knowledge, restricted mode/auto mode/live mode, BaiduCloudDisk/AliCloudDisk/TencentCOS .etc",
 	"authorUrl": "https://kqiu.top",
