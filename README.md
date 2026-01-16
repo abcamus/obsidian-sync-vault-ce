@@ -30,11 +30,11 @@
 
 **实时协作演示**
 
-https://github.com/user-attachments/assets/85d63239-2c5c-4d73-8774-f4ea2f93f426
+[演示视频](https://github.com/user-attachments/assets/85d63239-2c5c-4d73-8774-f4ea2f93f426)
 
 **百度网盘双向同步演示**
 
-https://github.com/user-attachments/assets/fbc8c22a-9de2-42c4-b676-753007e5e031
+[演示视频](https://github.com/user-attachments/assets/fbc8c22a-9de2-42c4-b676-753007e5e031)
 
 [点击查看](https://sync-vault.com)更多功能.
 
