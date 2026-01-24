@@ -6,7 +6,7 @@ import { createLogger } from '../../../util/logger';
 import * as path from '../../../util/path';
 import { getFileInfoByPath } from './info';
 import { deleteFileById } from './file-mng';
-import { AliNetdiskApi } from './api';
+import { AliNetdiskApi } from '../../proto/aliyun';
 import { CloudUploadService } from '../../../service/cloud-disk-service';
 import { encrypt } from '../../../util/encryption';
 

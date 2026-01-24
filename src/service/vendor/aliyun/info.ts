@@ -5,7 +5,7 @@ import { cloudDiskModel } from "@/model/cloud-disk-model";
 import { SmartQueue, TaskType } from "@/util/queue/smart-queue";
 import * as util from "@/util";
 import { CloudInfoService } from "@/service/cloud-disk-service";
-import { AliNetdiskApi } from "./api";
+import { AliNetdiskApi } from "../../proto/aliyun";
 
 const logger = util.logger.createLogger('aliyun.info');
 
@@ -129,7 +129,7 @@ export async function getFileInfoByPath(remoteFilePath: string): Promise<FileInf
     }, `getFileInfoByPath:${remoteFilePath}`, TaskType.GET_BY_PATH);
 }
 
-async function listFiles(parentFileId: string, limit: number = 100, nextMarker: string = ''): Promise<[FileEntry[], string]> {
+async function listFiles(parentFileId: string, limit = 100, nextMarker = ''): Promise<[FileEntry[], string]> {
     const accessToken = cloudDiskModel.accessToken;
     const driveId = (await cloudDiskModel.getInfo()).storage!.drive_id;
 
@@ -165,15 +165,14 @@ async function listFiles(parentFileId: string, limit: number = 100, nextMarker: 
 }
 
 async function listAllItemsOfFolder(folderPath: string, folderId: string): Promise<FileEntry[]> {
-    let allFiles: FileEntry[] = [];
-    let nextMarker: string = '';
+    const allFiles: FileEntry[] = [];
+    let nextMarker = '';
     let files: FileEntry[] = [];
-    while (true) {
+    let hasMore = true;
+    while (hasMore) {
         [files, nextMarker] = await listFiles(folderId, 100, nextMarker);
         allFiles.push(...files);
-        if (nextMarker === '') {
-            break;
-        }
+        hasMore = nextMarker !== '';
     }
     /* 修正文件路径 */
     allFiles.forEach((file) => {
@@ -214,7 +213,7 @@ export class AliyunInfoService implements CloudInfoService {
     async storageInfo(): Promise<StorageInfo> {
         return await storageInfo();
     }
-    async listFiles(parentFileId: string, limit: number = 100, nextMarker: string = ''): Promise<[FileEntry[], string]> {
+    async listFiles(parentFileId: string, limit = 100, nextMarker = ''): Promise<[FileEntry[], string]> {
         return await listFiles(parentFileId, limit, nextMarker);
     }
     async listAllFiles(folderPath: string, folderId?: string): Promise<FileEntry[]> {

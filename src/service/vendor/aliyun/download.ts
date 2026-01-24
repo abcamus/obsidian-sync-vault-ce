@@ -6,7 +6,7 @@ import * as util from '@/util';
 import { SmartQueue, TaskType } from '@/util/queue/smart-queue';
 
 import { CloudDownloadService } from '@/service/cloud-disk-service';
-import { AliNetdiskApi } from './api';
+import { AliNetdiskApi } from '../../proto/aliyun';
 import { FileInfo } from '@/types';
 
 const logger = util.logger.createLogger('aliyun.download');
@@ -113,10 +113,10 @@ export class AliyunDownloadService implements CloudDownloadService {
         const endTime = Date.now();
         logger.debug(`[downloadFile] 下载文件完成, 大小: ${downloadSize}, 耗时: ${endTime - startTime}ms, 速度: ${(downloadSize / (endTime - startTime)).toFixed(2)}KB/s}`);
 
-        let u8Array = new Uint8Array(data);
         try {
+            const u8Array = new Uint8Array(data);
             if (util.encryption.isEncrypted(u8Array)) {
-                u8Array = await util.encryption.decrypt(u8Array)
+                return new Uint8Array(await util.encryption.decrypt(u8Array)).buffer;
             }
             return u8Array.buffer;
         } catch (error) {

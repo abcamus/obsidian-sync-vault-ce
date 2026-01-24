@@ -4,7 +4,7 @@ import { getFileInfoByPath } from './info';
 import * as util from '@/util';
 import { SmartQueue, TaskType } from '@/util/queue/smart-queue';
 import { CloudFileManagementService } from '@/service/cloud-disk-service';
-import { AliNetdiskApi } from './api';
+import { AliNetdiskApi } from '../../proto/aliyun';
 import { MetaOperationQueue } from '@/util/queue/meta-operation-queue';
 import { CloudDiskType } from '@/types';
 import { QueryCache } from './query-cache';
