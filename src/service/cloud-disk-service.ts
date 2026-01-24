@@ -23,7 +23,7 @@ export interface CloudFileManagementService {
     mkdir(dirPath: string): Promise<void>;
 }
 
-import { UserInfo, StorageInfo, FileEntry } from "./cloud-interface";
+import { UserInfo, StorageInfo, FileEntry } from "@/types";
 
 export interface CloudInfoService {
     userInfo(): Promise<UserInfo>;

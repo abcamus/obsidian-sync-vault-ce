@@ -1,6 +1,6 @@
-import { FileEntry } from "../service/cloud-interface";
-import { cloudDiskModel } from "../model/cloud-disk-model";
-import * as util from "../util";
+import { FileEntry } from "@/types";
+import { cloudDiskModel } from "@/model/cloud-disk-model";
+import * as util from "@/util";
 
 const logger = util.logger.createLogger("snapshot");
 

@@ -1,8 +1,8 @@
 import '../mock/global-mock';
-import { checkLocalFileNodeSyncStatus } from '../../src/model/file-tree-node';
-import { SyncStatus } from '../../src/model/sync-status';
-import { LocalFileNode } from '../../src/model/file-tree-node';
-import { FileEntry } from '../../src/service/cloud-interface';
+import { checkLocalFileNodeSyncStatus } from '@/model/file-tree-node';
+import { SyncStatus } from '@/model/sync-status';
+import { LocalFileNode } from '@/model/file-tree-node';
+import { FileEntry } from '@/types';
 
 describe('checkLocalFileNodeSyncStatus', () => {
     const baseTime = new Date('2024-01-01T00:00:00Z').getTime();

@@ -1,10 +1,10 @@
-import { Notice, TFile, TFolder, TAbstractFile, Vault } from "obsidian";
+import { Notice, TAbstractFile, Vault } from "obsidian";
 import * as util from "../util";
 import { Service } from "../service";
 import { RemoteMeta } from "./meta-info";
 import { createLogger } from "../util/logger";
 import { VaultModel } from "./vault-model";
-import { CloudDiskType, UserInfo, StorageInfo } from "../service/cloud-interface";
+import { CloudDiskType, UserInfo, StorageInfo } from "@/types";
 
 const logger = createLogger('cloud-disk-model');
 

@@ -1,11 +1,11 @@
-import { CloudDownloadService, CloudUploadService, CloudInfoService, CloudFileManagementService } from "./cloud-disk-service";
-import { CloudDiskType } from "./cloud-interface";
-import { AliyunService } from "./vendor/aliyun";
-import { cloudDiskModel } from "../model/cloud-disk-model";
-import { WebdavService } from "./vendor/webdav";
+import { CloudDownloadService, CloudUploadService, CloudInfoService, CloudFileManagementService } from "@/service/cloud-disk-service";
+import { CloudDiskType } from "@/types";
+import { AliyunService } from "@/service/vendor/aliyun";
+import { cloudDiskModel } from "@/model/cloud-disk-model";
+import { WebdavService } from "@/service/vendor/webdav";
 
 import * as util from "@/util";
-import { S3Service } from "./vendor/s3";
+import { S3Service } from "@/service/vendor/s3";
 // import { FtpService } from "./vendor/sftp";
 
 const logger = util.logger.createLogger('CloudService');
@@ -44,7 +44,7 @@ export class CloudService {
                 this.uploadService = new S3Service.S3UploadService();
                 this.infoService = new S3Service.S3InfoService();
                 this.fileMngService = new S3Service.S3FileManagementService();
-                CloudService.instances[CloudDiskType.Ftp] = this;
+                CloudService.instances[CloudDiskType.S3] = this;
                 break;
             default:
                 logger.error(`Unsupported cloud disk type: ${cloudType}`);

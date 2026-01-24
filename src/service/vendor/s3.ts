@@ -7,8 +7,8 @@
 
 import * as util from "@/util";
 
-import { CloudDownloadService, CloudFileManagementService, CloudInfoService, CloudUploadService } from "../cloud-disk-service";
-import { FileEntry, StorageInfo, UserInfo } from "../cloud-interface";
+import { CloudDownloadService, CloudFileManagementService, CloudInfoService, CloudUploadService } from "@/service/cloud-disk-service";
+import { FileEntry, StorageInfo, UserInfo } from "@/types";
 import { cloudDiskModel } from "@/model/cloud-disk-model";
 import { ListObjectsResult, TencentCosClient } from "./cos";
 import { Notice } from "obsidian";

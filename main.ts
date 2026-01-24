@@ -1,16 +1,15 @@
 import { Plugin, Workspace, Notice } from 'obsidian';
 
-import { cloudDiskModel } from "./src/model/cloud-disk-model";
-import { DEFAULT_SETTINGS, SyncVaultPluginSetting } from './src/model/setting';
-import { SyncVaultPluginView, CLOUD_DISK_VIEW } from "./src/view/content-view";
-import { CloudDiskType, getCloudDiskName } from './src/service/cloud-interface';
-import { Service } from './src/service';
-import * as util from './src/util';
-import { i18n } from './src/i18n';
-import { getCloudDiskTypeDesc, LabeledSettingTab } from 'src/view/label-setting-tab';
-import { myExtension } from 'src/extension/highlight-todo';
-import CustomLinkSuggest from 'src/extension/suggestion';
-import { imageViewPlugin } from 'src/extension/image-viewer';
+import { cloudDiskModel } from "@/model/cloud-disk-model";
+import { DEFAULT_SETTINGS, SyncVaultPluginSetting } from '@/model/setting';
+import { SyncVaultPluginView, CLOUD_DISK_VIEW } from "@/view/content-view";
+import { CloudDiskType, getCloudDiskName } from '@/types';
+import { Service } from '@/service';
+import * as util from '@/util';
+import { i18n } from '@/i18n';
+import { LabeledSettingTab } from '@/view/label-setting-tab';
+import { myExtension } from '@/extension/highlight-todo';
+import { imageViewPlugin } from '@/extension/image-viewer';
 
 const logger = util.logger.createLogger('SyncVaultPlugin');
 

@@ -1,6 +1,6 @@
-import { CloudFileManagementService } from "src/service/cloud-disk-service";
-import { CloudDiskType } from "../../service/cloud-interface";
-import { createLogger } from "../logger";
+import { CloudFileManagementService } from "@/service/cloud-disk-service";
+import { CloudDiskType } from "@/types";
+import { createLogger } from "@/util/logger";
 
 const logger = createLogger('meta-op-queue');
 
@@ -13,7 +13,7 @@ type MetaOperation = {
 
 export class MetaOperationQueue {
     private queue: MetaOperation[] = [];
-    private isProcessing: boolean = false;
+    private isProcessing = false;
     static queueObjs: { [key: string]: any } = {};
     private fileMngService: CloudFileManagementService;
 

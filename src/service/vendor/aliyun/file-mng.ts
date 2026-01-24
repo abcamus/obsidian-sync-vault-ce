@@ -1,12 +1,12 @@
 import { requestUrl, RequestUrlParam } from 'obsidian';
-import { cloudDiskModel } from '../../../model/cloud-disk-model';
+import { cloudDiskModel } from '@/model/cloud-disk-model';
 import { getFileInfoByPath } from './info';
-import * as util from '../../../util';
-import { SmartQueue, TaskType } from '../../../util/queue/smart-queue';
-import { CloudFileManagementService } from 'src/service/cloud-disk-service';
+import * as util from '@/util';
+import { SmartQueue, TaskType } from '@/util/queue/smart-queue';
+import { CloudFileManagementService } from '@/service/cloud-disk-service';
 import { AliNetdiskApi } from './api';
-import { MetaOperationQueue } from '../../../util/queue/meta-operation-queue';
-import { CloudDiskType } from '../../../service/cloud-interface';
+import { MetaOperationQueue } from '@/util/queue/meta-operation-queue';
+import { CloudDiskType } from '@/types';
 import { QueryCache } from './query-cache';
 
 const logger = util.logger.createLogger('aliyun.file-mng');

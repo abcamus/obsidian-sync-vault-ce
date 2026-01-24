@@ -1,4 +1,4 @@
-import { CloudDiskType } from '../service/cloud-interface';
+import { CloudDiskType } from '@/types';
 
 export interface SyncVaultPluginSetting {
 	syncPath: string;

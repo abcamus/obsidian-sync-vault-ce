@@ -1,10 +1,10 @@
 import { Notice, requestUrl } from "obsidian";
 
-import { UserInfo, StorageInfo, FileEntry, FileInfo } from "../../cloud-interface";
-import { cloudDiskModel } from "../../../model/cloud-disk-model";
-import { SmartQueue, TaskType } from "../../../util/queue/smart-queue";
-import * as util from "../../../util";
-import { CloudInfoService } from "src/service/cloud-disk-service";
+import { UserInfo, StorageInfo, FileEntry, FileInfo } from "@/types";
+import { cloudDiskModel } from "@/model/cloud-disk-model";
+import { SmartQueue, TaskType } from "@/util/queue/smart-queue";
+import * as util from "@/util";
+import { CloudInfoService } from "@/service/cloud-disk-service";
 import { AliNetdiskApi } from "./api";
 
 const logger = util.logger.createLogger('aliyun.info');

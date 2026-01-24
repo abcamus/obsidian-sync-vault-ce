@@ -1,8 +1,8 @@
 import { Notice, requestUrl } from 'obsidian';
-import { cloudDiskModel } from '../model/cloud-disk-model';
-import { CloudDiskType } from './cloud-interface';
-import * as util from '../util';
-import { secToMs } from '../util/time';
+import { cloudDiskModel } from '@/model/cloud-disk-model';
+import { CloudDiskType } from '@/types';
+import * as util from '@/util';
+import { secToMs } from '@/util/time';
 
 const logger = util.logger.createLogger('auth');
 

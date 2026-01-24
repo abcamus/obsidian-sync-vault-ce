@@ -1,13 +1,13 @@
 import { requestUrl } from 'obsidian';
-import { cloudDiskModel } from '../../../model/cloud-disk-model';
-import { RemoteFileNode } from '../../../model/meta-info';
+import { cloudDiskModel } from '@/model/cloud-disk-model';
+import { RemoteFileNode } from '@/model/meta-info';
 import { getFileInfoByPath } from './info';
-import * as util from '../../../util';
-import { SmartQueue, TaskType } from '../../../util/queue/smart-queue';
+import * as util from '@/util';
+import { SmartQueue, TaskType } from '@/util/queue/smart-queue';
 
-import { CloudDownloadService } from '../../cloud-disk-service';
+import { CloudDownloadService } from '@/service/cloud-disk-service';
 import { AliNetdiskApi } from './api';
-import { FileInfo } from 'src/service/cloud-interface';
+import { FileInfo } from '@/types';
 
 const logger = util.logger.createLogger('aliyun.download');
 const chunkSize = 6 * 1024 * 1024;

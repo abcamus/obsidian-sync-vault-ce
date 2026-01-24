@@ -1,5 +1,5 @@
-import { LocalFileNode } from '../../model/file-tree-node';
-import { SyncStatus, getSyncButtonText } from '../../model/sync-status';
+import { LocalFileNode } from '@/model/file-tree-node';
+import { SyncStatus, getSyncButtonText } from '@/model/sync-status';
 import {
     FolderOutlined,
     DescriptionOutlined,
@@ -82,7 +82,7 @@ export const getSyncStatusIcon = (syncStatus: SyncStatus, remoteEncrypt: boolean
         </Tooltip>
     );
 
-    const statusIcon = (icon: JSX.Element, lock: boolean = false) => {
+    const statusIcon = (icon: JSX.Element, lock = false) => {
         return (
             <StyledIcon $hoverable={false}>
                 {icon}
@@ -222,4 +222,4 @@ export function renderFileItem(
             {renderFileModified(file)}
         </div>
     );
-};
+}

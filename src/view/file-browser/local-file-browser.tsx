@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { TAbstractFile, TFile, TFolder, Vault, Notice } from 'obsidian';
-import { VaultModel } from '../../model/vault-model';
+import { VaultModel } from '@/model/vault-model';
 import { cloudDiskModel } from '../../model/cloud-disk-model';
 import { uploadFileNode, downloadFileNodes } from '../../model/sync-action';
 import { renderFileItem } from "./render";
-import * as util from '../../util';
-import { Snapshot } from '../../sync/snapshot';
+import * as util from '@/util';
+import { Snapshot } from '@/sync/snapshot';
 import { isFolderNodeEmpty } from '../../model/file-tree-node';
-import { i18n } from '../../i18n';
+import { i18n } from '@/i18n';
 
-import * as metaInfo from '../../model/meta-info';
+import * as metaInfo from '@/model/meta-info';
 
 import {
     checkLocalFileNodeSyncStatus,
@@ -19,7 +19,7 @@ import {
     removeNodeAt,
     updateLocalNodeSyncStatus,
     renameNode,
-} from '../../model/file-tree-node';
+} from '@/model/file-tree-node';
 
 import {
     SyncStatus,
@@ -27,11 +27,11 @@ import {
     shouldUpload,
     shouldDownload,
     hasRemoteChanges,
-} from '../../model/sync-status';
-import { Service } from '../../service';
-import { ignoreModify } from '../../service/vendor/aliyun/upload';
-import { CloudDiskType } from 'src/service/cloud-interface';
-import { shouldIgnore } from 'src/sync/ignore';
+} from '@/model/sync-status';
+import { Service } from '@/service';
+import { ignoreModify } from '@/service/vendor/aliyun/upload';
+import { CloudDiskType } from '@/types';
+import { shouldIgnore } from '@/sync/ignore';
 
 const logger = util.logger.createLogger('local-file-browser');
 
@@ -102,8 +102,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
         const pathToLoad = targetPath || currentPathRef.current;
 
         try {
-            let localNodes: LocalFileNode[];
-            localNodes = pathToLoad.length === 0 ? fileState.rootNode?.children || [] : findFolderByPath(fileState.rootNode, pathToLoad)?.children || [];
+            const localNodes: LocalFileNode[] = pathToLoad.length === 0 ? fileState.rootNode?.children || [] : findFolderByPath(fileState.rootNode, pathToLoad)?.children || [];
             const remoteNodes = metaInfo.getRemoteContentsByPath(fileState.remoteMeta!, pathToLoad);
             const mergedContents = new Map<string, LocalFileNode>();
             localNodes.forEach(item => {
@@ -170,7 +169,6 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
     };
 
     async function generateRemoteMetaFromSnapshot(): Promise<metaInfo.RemoteMeta | null> {
-        const name = cloudDiskModel.selectedCloudDisk.toString();
         try {
             const files = await Service.info.listAllFiles(cloudDiskModel.remoteRootPath);
             const remoteSnapshot = Snapshot.createWithFiles(files);
@@ -228,7 +226,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                 }, 1000);
                 return;
             }
-            let remoteMeta = await generateRemoteMetaFromSnapshot();
+            const remoteMeta = await generateRemoteMetaFromSnapshot();
             if (!remoteMeta) {
                 new Notice('Failed to get remote info');
             }
@@ -362,7 +360,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
 
                 /* 更新current视图 */
                 loadFolderContents();
-            };
+            }
         };
 
         /* 本地删除文件，先删除meta，再删除远端文件 */
@@ -473,8 +471,8 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
         return child ? findFolderByPath(child, rest) : undefined;
     };
 
-    const handleUpload = async (localPath: string, remoteEncrypt: boolean = false): Promise<boolean> => {
-        let localFile = vault.getAbstractFileByPath(localPath);
+    const handleUpload = async (localPath: string, remoteEncrypt = false): Promise<boolean> => {
+        const localFile = vault.getAbstractFileByPath(localPath);
         let syncResult = true;
         const fileState = fileStateRef.current;
 

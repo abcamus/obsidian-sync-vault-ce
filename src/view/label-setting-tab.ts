@@ -1,9 +1,9 @@
 import SyncVaultPlugin from "main";
 import { App, Notice, PluginSettingTab, setIcon, Setting } from "obsidian";
 import { i18n } from "src/i18n";
-import { cloudDiskModel, FtpConfig, S3Config } from "src/model/cloud-disk-model";
-import { CloudDiskType } from "src/service/cloud-interface";
-import { checkVersion, UpgradeModal } from "src/util/upgrade";
+import { cloudDiskModel, FtpConfig, S3Config } from "@/model/cloud-disk-model";
+import { CloudDiskType } from "@/types";
+import { checkVersion, UpgradeModal } from "@/util/upgrade";
 
 import * as util from '../util';
 import { WebDAVLoginModal } from "./webdav-login-modal";
@@ -238,7 +238,7 @@ export class LabeledSettingTab extends PluginSettingTab {
         const contentEl = this.contentArea.find(`.cloud-settings-tab-content[data-tab="start"]`);
         if (!contentEl) return;
 
-        let isAccessTokenValid = cloudDiskModel.isTokenValid;
+        const isAccessTokenValid = cloudDiskModel.isTokenValid;
 
         new Setting(contentEl)
             .setHeading()

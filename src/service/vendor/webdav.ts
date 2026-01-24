@@ -1,6 +1,6 @@
 import { CloudDownloadService, CloudUploadService, CloudInfoService, CloudFileManagementService } from '@/service/cloud-disk-service';
 import { cloudDiskModel } from '@/model/cloud-disk-model';
-import { FileEntry, StorageInfo, UserInfo } from '@/service/cloud-interface';
+import { FileEntry, StorageInfo, UserInfo } from '@/types';
 import { Notice, requestUrl, RequestUrlParam, RequestUrlResponse } from 'obsidian';
 
 import * as util from '@/util';

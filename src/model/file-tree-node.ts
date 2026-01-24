@@ -4,12 +4,12 @@ A file tree is originally depicted by json.
 see doc/file-tree.json
 `
 
-import { SyncStatus, shouldUpload } from './sync-status';
-import { createLogger } from '../util/logger';
-import { RemoteMeta, findRemoteFile, RemoteFileNode } from './meta-info';
-import { EMPTY_FILE_MD5 } from '../util/md5';
-import * as path from '../util/path';
-import { FileEntry } from '../service/cloud-interface';
+import { SyncStatus, shouldUpload } from '@/model/sync-status';
+import { createLogger } from '@/util/logger';
+import { RemoteMeta, findRemoteFile, RemoteFileNode } from '@/model/meta-info';
+import { EMPTY_FILE_MD5 } from '@/util/md5';
+import * as path from '@/util/path';
+import { FileEntry } from '@/types';
 const logger = createLogger('file-tree');
 
 export interface LocalFileNode {

@@ -1,5 +1,5 @@
-import { createLogger } from '../util/logger';
-import { EMPTY_FILE_MD5 } from '../util/md5';
+import { createLogger } from '@/util/logger';
+import { EMPTY_FILE_MD5 } from '@/util/md5';
 import { LocalFileNode } from './file-tree-node';
 import { SyncStatus, shouldDownload } from './sync-status';
 import { findNodeAt, checkLocalFileNodeSyncStatus } from './file-tree-node';

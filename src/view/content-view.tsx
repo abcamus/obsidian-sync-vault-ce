@@ -1,11 +1,11 @@
 import { App, IconName, ItemView, WorkspaceLeaf, Notice } from "obsidian";
-import { cloudDiskModel } from "../model/cloud-disk-model";
+import { cloudDiskModel } from "@/model/cloud-disk-model";
 import { Root, createRoot } from "react-dom/client";
 import FileBrowserManager from './file-browser-mng';
-import { createLogger } from "src/util/logger";
+import { createLogger } from "@/util/logger";
 import SyncVaultPlugin from "../../main";
-import { i18n } from "../i18n";
-import { CloudDiskType } from "src/service/cloud-interface";
+import { i18n } from '@/i18n';
+import { CloudDiskType } from '@/types';
 
 const logger = createLogger('content-view');
 
