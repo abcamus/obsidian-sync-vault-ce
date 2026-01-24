@@ -1,7 +1,7 @@
-import { LocalFileNode } from './file-tree-node';
-import { RemoteMeta, findRemoteFile, insertRemoteFile } from './meta-info';
-import { createLogger } from '../util/logger';
-import { i18n } from '../i18n';
+import { LocalFileNode } from "@/model/file-tree-node";
+import { RemoteMeta, findRemoteFile, insertRemoteFile } from "@/model/meta-info";
+import { createLogger } from "@/util/logger";
+import { i18n } from "@/i18n";
 
 const logger = createLogger('sync-status');
 

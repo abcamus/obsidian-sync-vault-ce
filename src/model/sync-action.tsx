@@ -1,10 +1,10 @@
 import { TAbstractFile, TFile, TFolder, Vault } from "obsidian";
-import { Service } from "../service";
-import { cloudDiskModel } from "./cloud-disk-model";
-import { LocalFileNode, getUploadFileListOfNode } from "./file-tree-node";
-import { SyncStatus } from "./sync-status";
-import { DownloadItem } from "./meta-info";
-import * as util from "../util";
+import { Service } from "@/service";
+import { cloudDiskModel } from "@/model/cloud-disk-model";
+import { LocalFileNode, getUploadFileListOfNode } from "@/model/file-tree-node";
+import { SyncStatus } from "@/model/sync-status";
+import { DownloadItem } from "@/model/meta-info";
+import * as util from "@/util";
 
 const logger = util.logger.createLogger('sync-action');
 
