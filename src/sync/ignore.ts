@@ -1,5 +1,5 @@
-import { cloudDiskModel } from "../model/cloud-disk-model";
-import { LocalFileNode } from "../model/file-tree-node";
+import { cloudDiskModel } from "@/model/cloud-disk-model";
+import { LocalFileNode } from "@/model/file-tree-node";
 
 export function shouldIgnore(filePath: string, nodeInfo?: LocalFileNode): boolean {
     const normalizedPath = filePath.replace(/\\/g, '/');
