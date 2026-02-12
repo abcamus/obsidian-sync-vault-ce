@@ -5,18 +5,10 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/abcamus/obsidian-sync-vault-ce">
-    <img src="https://img.shields.io/github/stars/abcamus/obsidian-sync-vault-ce?style=social" alt="GitHub Stars">
-  </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/license-AGPL3.0-green?style=flat-square" alt="License">
-  </a>
-  <a href="https://kqiu.top">
-    <img src="https://img.shields.io/badge/Obsidian-Plugin-purple?style=flat-square&logo=obsidian" alt="Obsidian Plugin">
-  </a>
-  <a href="https://github.com/abcamus/obsidian-sync-vault-ce/releases">
-    <img src="https://img.shields.io/github/v/release/abcamus/obsidian-sync-vault-ce?include_prereleases&style=flat-square" alt="Latest Release">
-  </a>
+  <a href="https://github.com/abcamus/obsidian-sync-vault-ce"><img src="https://img.shields.io/github/stars/abcamus/obsidian-sync-vault-ce?style=social" alt="GitHub Stars"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL3.0-green?style=flat-square" alt="License"></a>
+  <a href="https://kqiu.top"><img src="https://img.shields.io/badge/Obsidian-Plugin-purple?style=flat-square&logo=obsidian" alt="Obsidian Plugin"></a>
+  <a href="https://github.com/abcamus/obsidian-sync-vault-ce/releases"><img src="https://img.shields.io/github/v/release/abcamus/obsidian-sync-vault-ce?include_prereleases&style=flat-square" alt="Latest Release"></a>
 </p>
 
 <p align="center">
