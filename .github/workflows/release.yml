@@ -28,8 +28,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           tag="${GITHUB_REF#refs/tags/}"
+          version="${tag#v}" # Remove 'v' prefix if present for changelog matching
+
+          # Extract release notes from CHANGELOG.md
+          # Finds the section starting with "## [version]" and prints until the next "## " line
+          awk -v ver="[$version]" '
+            /^## / { if (p) { exit }; if ($2 == ver) { p=1; next } }
+            p { print }
+          ' CHANGELOG.md > release_notes.md
+
+          # If release_notes.md is empty, use a default message
+          if [ ! -s release_notes.md ]; then
+            echo "Release $tag" > release_notes.md
+          fi
 
           gh release create "$tag" \
             --title="$tag" \
+            --notes-file release_notes.md \
             --draft \
             main.js manifest.json styles.css
