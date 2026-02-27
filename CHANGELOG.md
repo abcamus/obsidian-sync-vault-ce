@@ -16,3 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * 修复：unicode编码问题。
 * 优化：冗余同步日志。
 * 新增：黑胶音乐播放器。
+
+## [1.9.3] - 2026-02-27
+
+* 修复：大文件下载接口未适配解密流程。
+* 优化：网络状态显示。
