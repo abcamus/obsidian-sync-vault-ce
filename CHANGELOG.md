@@ -21,3 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * 修复：大文件下载接口未适配解密流程。
 * 优化：网络状态显示。
+
+## [1.10.0] - 2026-03-01
+
+* 新增：MCP server，[点击查看功能](https://kqiu.top/obsidian-sync-vault-mcp)。
+* 修复：移动端百度网盘视频播放问题。
