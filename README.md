@@ -24,6 +24,14 @@
 - `[]()` 格式链接云盘资源。
 - `![]()` 格式嵌入云盘资源。
 
+### 🤖 MCP Server
+
+内置 [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) Server，允许 LLM / AI Agent 直接读取和操作网盘中的文件。
+
+- 支持 `list_cloud_files`、`read_cloud_file`、`search_cloud_files` 等工具。
+- 兼容 Claude Code、Cursor 等支持 MCP 的客户端。
+- 通过 SSE (Server-Sent Events) 提供实时上下文访问。
+
 ### ✨ 备份
 
 [介绍](https://mp.weixin.qq.com/s/zct07eny-LcMTiYjb49k9w)
@@ -45,7 +53,6 @@
 ### 🤝 多人协同编辑
 
 分布式多人协同编辑，[演示](https://github.com/user-attachments/assets/85d63239-2c5c-4d73-8774-f4ea2f93f426)。
-
 
 
 ## 📱 不同云服务支持的功能（持续完善中）

@@ -24,6 +24,14 @@
 - `[]()` format to link cloud resources.
 - `![]()` format to embed cloud resources.
 
+### 🤖 MCP Server
+
+Built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) Server, allowing LLMs / AI Agents to directly access and operate on files in your Cloud Storage.
+
+- Supports tools like `list_cloud_files`, `read_cloud_file`, `search_cloud_files`.
+- Compatible with MCP-supported clients such as Claude Code and Cursor.
+- Provides real-time context access via SSE (Server-Sent Events).
+
 ### ✨ Backup
 
 [Introduction](https://mp.weixin.qq.com/s/zct07eny-LcMTiYjb49k9w)
