@@ -36,6 +36,17 @@
   - `read_cloud_file`
   - `get_cloud_file_link`
   - `get_cloud_media_code_block`
+- 配置（SSE）
+  ```json
+  {
+    "mcpServers": {
+      "sync-vault-mcp": {
+        "type": "sse",
+          "url": "http://127.0.0.1:3000/sse"
+        }
+    }
+  }
+  ```
 
 ### ✨ 备份
 
