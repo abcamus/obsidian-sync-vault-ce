@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  An Obsidian plugin that allows you to easily use resources on various cloud services as if they were local files, relieving local storage and synchronization pressure.
+  The missing bridge between your 10 TB cloud drive and your AI brain. Access, sync, and link everything—images, PDFs, audio, video—across devices without filling up local storage.
 </p>
 
 ## Key Features
@@ -28,9 +28,14 @@
 
 Built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) Server, allowing LLMs / AI Agents to directly access and operate on files in your Cloud Storage.
 
-- Supports tools like `list_cloud_files`, `read_cloud_file`, `search_cloud_files`.
 - Compatible with MCP-supported clients such as Claude Code and Cursor.
 - Provides real-time context access via SSE (Server-Sent Events).
+- Tool call
+  - `list_cloud_files`
+  - `search_cloud_files`
+  - `read_cloud_file`
+  - `get_cloud_file_link`
+  - `get_cloud_media_code_block`
 
 ### ✨ Backup
 

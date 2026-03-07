@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  一个 Obsidian 插件，让 Obsidian 像访问本地文件一样轻松使用多种云服务上的资源，释放本地存储和同步压力。
+  连接 TB 级网盘与 Obsidian AI 大脑，跨设备免本地存储轻松同步、链接一切资源。
 </p>
 
 ## 主要功能简介
@@ -28,9 +28,14 @@
 
 内置 [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) Server，允许 LLM / AI Agent 直接读取和操作网盘中的文件。
 
-- 支持 `list_cloud_files`、`read_cloud_file`、`search_cloud_files` 等工具。
 - 兼容 Claude Code、Cursor 等支持 MCP 的客户端。
 - 通过 SSE (Server-Sent Events) 提供实时上下文访问。
+- 工具调用能力
+  - `list_cloud_files`
+  - `search_cloud_files`
+  - `read_cloud_file`
+  - `get_cloud_file_link`
+  - `get_cloud_media_code_block`
 
 ### ✨ 备份
 
