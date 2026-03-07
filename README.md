@@ -9,6 +9,8 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL3.0-green?style=flat-square" alt="License"></a>
   <a href="https://kqiu.top"><img src="https://img.shields.io/badge/Obsidian-Plugin-purple?style=flat-square&logo=obsidian" alt="Obsidian Plugin"></a>
   <a href="https://github.com/abcamus/obsidian-sync-vault-ce/releases"><img src="https://img.shields.io/github/v/release/abcamus/obsidian-sync-vault-ce?include_prereleases&style=flat-square" alt="Latest Release"></a>
+  <br>
+  <a href="https://kqiu.top"><img src="https://img.shields.io/badge/官网-点击访问-blue?style=flat-square" alt="访问官网"></a>
 </p>
 
 <p align="center">
