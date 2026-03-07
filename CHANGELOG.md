@@ -26,3 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * 新增：MCP server，[点击查看功能](https://kqiu.top/obsidian-sync-vault-mcp)。
 * 修复：移动端百度网盘视频播放问题。
+
+## [1.10.1] - 2026-03-07
+
+* 修复：Obsidian 1.12 和 阿里云盘 视频播放兼容性。
+* 优化：提升hls播放稳定性。
+* 新增：mcp server 支持 获取云盘文件链接。
+* 新增：mcp server 支持 获取云盘文件视频代码块。
