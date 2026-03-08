@@ -38,17 +38,6 @@
   - `read_cloud_file`
   - `get_cloud_file_link`
   - `get_cloud_media_code_block`
-- 配置（SSE）
-  ```json
-  {
-    "mcpServers": {
-      "sync-vault-mcp": {
-        "type": "sse",
-          "url": "http://127.0.0.1:3000/sse"
-        }
-    }
-  }
-  ```
 
 ### ✨ 备份
 
@@ -99,7 +88,56 @@
 1. 点击侧边栏 ☁️ 图标，打开看板后，在快捷操作卡片找到新手引导按钮。
 2. 点击 **新手引导** 按钮，按照提示完成网盘登陆和同步模式设置。
 
-成功后，可看到 Sync Vault 看板。
+### 配置MCP(SSE)
+
+#### Claude Code CLI
+
+  在 `.claude/mcp.json` 中添加如下代码(注：3000修改为实际的端口)：
+  ```json
+  {
+    "mcpServers": {
+      "sync-vault-mcp": {
+        "type": "sse",
+          "url": "http://127.0.0.1:3000/sse"
+        }
+    }
+  }
+  ```
+
+#### Claude Desktop
+
+> Claude Desktop由于只支持 STDIO 方式接入MCP Server，可选择桥接器转接 Sync Vault MCP，这里可以选择 sse-bridge。
+
+1. `npm install -g @mcpwizard/sse-bridge`
+2. 在 Claude Desktop 【设置】-【开发者】中点击编辑配置按钮，复制粘贴以下代码。
+  ```json
+  {
+    "mcpServers": {
+      "sync-vault-mcp": {
+        "command": "npx",
+        "args": [
+          "@mcpwizard/sse-bridge",
+          "http://127.0.0.1:3000/sse"
+        ]
+      }
+    }
+  }
+  ```
+
+#### Cursor/Trae
+
+在 Cursor/Trae 的MCP设置中，选择手动添加 MCP Server（Sync Vault MCP 默认 `http://127.0.0.1:3000/sse`）。
+
+```json
+{
+  "mcpServers": {
+    "sync-vault-mcp": {
+      "type": "sse",
+        "url": "http://127.0.0.1:3000/sse"
+      }
+  }
+}
+```
 
 ## 🗺️ Roadmap
 
@@ -107,12 +145,14 @@
 - 🏠 多人协同
 - 🎨 更好的用户体验
 - ⎔ 支持Zotero
+- 🤖 AI Infra
 
 ## 🔗 Quick Links
 - [📖 Documentation](https://kqiu.top/docs/)
 - [💬 Discussions](https://github.com/abcamus/obsidian-sync-vault-ce/discussions)
 - [🐛 Report Bug](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=bug_report.md)
 - [✨ Request Feature](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=feature_request.md)
+- [🥂 Pricing](https://kqiu.top/product/sync-vault/)
 
 ## ❤️ Special Thanks
 

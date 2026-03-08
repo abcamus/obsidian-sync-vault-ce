@@ -1,4 +1,4 @@
-<h1 align="center">🌟 Sync Vault</h1>
+# 🌟 Sync Vault
 
 <p align="center">
   <a href="./README.md">中文</a>
@@ -32,23 +32,12 @@ Built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) Server
 
 - Compatible with MCP-supported clients such as Claude Code and Cursor.
 - Provides real-time context access via SSE (Server-Sent Events).
-- Tool call
+- Tool capabilities:
   - `list_cloud_files`
   - `search_cloud_files`
   - `read_cloud_file`
   - `get_cloud_file_link`
   - `get_cloud_media_code_block`
-- Configuration(SSE)
-  ```json
-  {
-    "mcpServers": {
-      "sync-vault-mcp": {
-        "type": "sse",
-          "url": "http://127.0.0.1:3000/sse"
-        }
-    }
-  }
-  ```
 
 ### ✨ Backup
 
@@ -97,7 +86,56 @@ Search for `sync vault ce` in the plugin market, or [click here](https://obsidia
 1. Click the ☁️ icon in the sidebar to open the dashboard, then find the "Beginner Guide" button in the Quick Actions card.
 2. Click the **Beginner Guide** button and follow the prompts to complete cloud drive login and sync mode settings.
 
-Upon success, you will see the Sync Vault dashboard.
+### Configure MCP (SSE)
+
+#### Claude Code CLI
+
+Add the following code in `.claude/mcp.json` (Note: change 3000 to the actual port):
+```json
+{
+  "mcpServers": {
+    "sync-vault-mcp": {
+      "type": "sse",
+      "url": "http://127.0.0.1:3000/sse"
+    }
+  }
+}
+```
+
+#### Claude Desktop
+
+> Since Claude Desktop only supports STDIO method to connect MCP Server, you can choose a bridge to connect Sync Vault MCP. Here you can choose sse-bridge.
+
+1. `npm install -g @mcpwizard/sse-bridge`
+2. In Claude Desktop [Settings] - [Developer], click the edit configuration button, copy and paste the following code.
+```json
+{
+  "mcpServers": {
+    "sync-vault-mcp": {
+      "command": "npx",
+      "args": [
+        "@mcpwizard/sse-bridge",
+        "http://127.0.0.1:3000/sse"
+      ]
+    }
+  }
+}
+```
+
+#### Cursor/Trae
+
+In Cursor/Trae's MCP settings, choose to manually add MCP Server (Sync Vault MCP defaults to `http://127.0.0.1:3000/sse`).
+
+```json
+{
+  "mcpServers": {
+    "sync-vault-mcp": {
+      "type": "sse",
+      "url": "http://127.0.0.1:3000/sse"
+    }
+  }
+}
+```
 
 ## 🗺️ Roadmap
 
@@ -105,12 +143,14 @@ Upon success, you will see the Sync Vault dashboard.
 - 🏠 Collaborative Editing
 - 🎨 Better User Experience
 - ⎔ Zotero Support
+- 🤖 AI Infrastructure
 
 ## 🔗 Quick Links
 - [📖 Documentation](https://kqiu.top/docs/)
 - [💬 Discussions](https://github.com/abcamus/obsidian-sync-vault-ce/discussions)
 - [🐛 Report Bug](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=bug_report.md)
 - [✨ Request Feature](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=feature_request.md)
+- [🥂 Pricing](https://kqiu.top/product/sync-vault/)
 
 ## ❤️ Special Thanks
 
