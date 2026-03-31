@@ -1,6 +1,6 @@
 {
 	"name": "sync-vault-community",
-	"version": "1.12.4",
+	"version": "1.12.8",
 	"description": "Professional cloud sync & VFS for Obsidian. Features zero-space VFS, 4K streaming, MCP AI engine, and P2P collaboration. Supports Baidu/Aliyun/Quark/WebDAV/S3.",
 	"main": "main.js",
 	"scripts": {
