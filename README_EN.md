@@ -32,12 +32,48 @@ Built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) Server
 
 - Compatible with MCP-supported clients such as Claude Code and Cursor.
 - Provides real-time context access via SSE (Server-Sent Events).
-- Tool capabilities:
-  - `list_cloud_files`
-  - `search_cloud_files`
-  - `read_cloud_file`
-  - `get_cloud_file_link`
-  - `get_cloud_media_code_block`
+
+#### 🛠️ MCP Tool Capabilities
+
+| Tool Name | Description | Note |
+| :--- | :--- | :--- |
+| `get_cloud_account_info` | Get cloud account and storage capacity info | |
+| `list_cloud_files` | List files and folders at a specified cloud path | |
+| `read_cloud_file` | Read cloud file content (supports streaming) | |
+| `create_cloud_file` | Create a new file or folder in the cloud | |
+| `delete_cloud_file` | Delete a cloud file or folder | |
+| `move_cloud_file` | Move a cloud file or folder | |
+| `rename_cloud_file` | Rename a cloud file or folder | |
+| `download_cloud_file` | Download a cloud file to local storage | |
+| `upload_cloud_file` | Upload a local file to the cloud | |
+| `semantic_search` | Global search based on semantics | Baidu Netdisk only |
+| `sharelink_set` | Set/Create a sharing link | Baidu Netdisk only |
+| `upload_by_url` | Upload via offline URL task | Baidu Netdisk only |
+
+### 💻 CLI Commands (1.13.0)
+
+Sync Vault provides Obsidian CLI commands for automation scripts and AI Agent workflows:
+
+| Command | Purpose | Common Parameters |
+| :--- | :--- | :--- |
+| `sync-vault:help` | Show CLI command help | `help=true` |
+| `sync-vault:list` | List cloud directory files (pagination/filter/recursive) | `path` `cloud` `limit` `offset` `type` `minSize` `modifiedAfter` `recursive` |
+| `sync-vault:search` | Search cloud files (with pagination/type filter) | `query` `cloud` `limit` `offset` `path` `type` |
+| `sync-vault:read` | Read cloud file content | `path` `cloud` `maxLength` |
+| `sync-vault:info` | Get account and storage status | `cloud` |
+| `sync-vault:doctor` | Diagnose Sync Vault health status | `cloud` |
+
+Common examples:
+
+```bash
+obsidian sync-vault:list path=/ cloud=aliyun limit=100 offset=0
+obsidian sync-vault:search query=obsidian cloud=quark type=markdown
+obsidian sync-vault:read path=/Notes/Welcome.md cloud=onedrive maxLength=8192
+obsidian sync-vault:info cloud=aliyun
+obsidian sync-vault:doctor cloud=aliyun
+```
+
+> Tip: all sub-commands support `help=true` to show command-specific usage.
 
 ### ✨ Backup
 

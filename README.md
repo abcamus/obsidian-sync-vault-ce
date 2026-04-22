@@ -32,12 +32,48 @@
 
 - 兼容 Claude Code、Cursor 等支持 MCP 的客户端。
 - 通过 SSE (Server-Sent Events) 提供实时上下文访问。
-- 工具调用能力
-  - `list_cloud_files`
-  - `search_cloud_files`
-  - `read_cloud_file`
-  - `get_cloud_file_link`
-  - `get_cloud_media_code_block`
+
+#### 🛠️ 工具调用能力 (MCP Tools)
+
+| 工具名称 | 功能描述 | 备注 |
+| :--- | :--- | :--- |
+| `get_cloud_account_info` | 获取云端账户及存储容量信息 | |
+| `list_cloud_files` | 列出云端指定路径的文件和文件夹 | |
+| `read_cloud_file` | 读取云端文件内容（支持流式读取） | |
+| `create_cloud_file` | 在云端创建新文件或文件夹 | |
+| `delete_cloud_file` | 删除云端文件或文件夹 | |
+| `move_cloud_file` | 移动云端文件或文件夹 | |
+| `rename_cloud_file` | 重命名云端文件或文件夹 | |
+| `download_cloud_file` | 下载云端文件到本地 | |
+| `upload_cloud_file` | 上传本地文件到云端 | |
+| `semantic_search` | 基于语义的全局搜索 | 仅限百度网盘 |
+| `sharelink_set` | 设置/创建分享链接 | 仅限百度网盘 |
+| `upload_by_url` | 通过离线 URL 任务上传 | 仅限百度网盘 |
+
+### 💻 CLI 命令（1.13.0）
+
+Sync Vault 提供 Obsidian CLI 命令，便于自动化脚本与 AI Agent 编排：
+
+| 命令 | 用途 | 常用参数 |
+| :--- | :--- | :--- |
+| `sync-vault:help` | 查看命令帮助 | `help=true` |
+| `sync-vault:list` | 列出云端目录（支持分页/过滤/递归） | `path` `cloud` `limit` `offset` `type` `minSize` `modifiedAfter` `recursive` |
+| `sync-vault:search` | 搜索云端文件（支持分页/类型过滤） | `query` `cloud` `limit` `offset` `path` `type` |
+| `sync-vault:read` | 读取云端文件内容 | `path` `cloud` `maxLength` |
+| `sync-vault:info` | 获取账号与容量信息（结构化状态） | `cloud` |
+| `sync-vault:doctor` | 诊断同步健康状态 | `cloud` |
+
+常用示例：
+
+```bash
+obsidian sync-vault:list path=/ cloud=aliyun limit=100 offset=0
+obsidian sync-vault:search query=obsidian cloud=quark type=markdown
+obsidian sync-vault:read path=/Notes/Welcome.md cloud=onedrive maxLength=8192
+obsidian sync-vault:info cloud=aliyun
+obsidian sync-vault:doctor cloud=aliyun
+```
+
+> 提示：所有子命令均支持 `help=true` 查看该命令参数。
 
 ### ✨ 备份
 
