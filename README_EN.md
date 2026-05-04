@@ -97,7 +97,7 @@ obsidian sync-vault:doctor cloud=aliyun
 
 Distributed collaborative editing, [Demo](https://github.com/user-attachments/assets/85d63239-2c5c-4d73-8774-f4ea2f93f426).
 
-## 📱 Supported Cloud Services (Continuously Updating)
+## 📱 Cloud Service Features
 
 | No. | Cloud Service | Supported Features |
 | :-- | :------------ | :----------------- |
