@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.7] - 2026-05-13
+
+* 修复：阿里云盘安卓 hls 播放问题。
+* 修复：桌面端退出协作后状态按钮消失。
+* 修复：受控模式错误上传 osvc 文件。
+* 新增：relay worker。
+* 优化：实时同步控制逻辑。
+
 ## [1.13.3] - 2026-05-04
 
 * 修复：XML Parser 解析坚果云 size 错误。
