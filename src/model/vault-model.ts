@@ -11,7 +11,7 @@ export class VaultModel {
     private static async buildFileTree(vault: Vault, folder: TFolder, callback?: (path: string, node: LocalFileNode) => void): Promise<LocalFileNode> {
         const children: LocalFileNode[] = [];
 
-        folder.children.forEach(async child => {
+        await Promise.all(folder.children.map(async child => {
             if (child instanceof TFolder) {
                 children.push(await this.buildFileTree(vault, child, callback));
                 /* 深度优先：最后处理目录节点 */
@@ -32,7 +32,7 @@ export class VaultModel {
                     callback(child.path, children[children.length - 1]);
                 }
             }
-        });
+        }));
 
         const folderStat = await vault.adapter.stat(folder.path);
 

@@ -1,6 +1,5 @@
 import { cloudDiskModel } from "../model/cloud-disk-model";
-import { sha256 } from '@noble/hashes/sha256';
-import { hmac } from '@noble/hashes/hmac';
+import { sha256 } from '@noble/hashes/sha2';
 import { createLogger } from "./logger";
 
 const logger = createLogger('encryption');
@@ -35,11 +34,6 @@ interface MagicInfo {
     algorithm: number;
     plainTextLength: number;
     contentHash: Uint8Array;
-}
-
-interface EncryptedData {
-    iv: string;
-    content: string;
 }
 
 export function crc16(data: Uint8Array): number {

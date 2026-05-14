@@ -90,19 +90,19 @@ export class S3Client {
                 corsRule.AllowedMethod.includes('DELETE')
             ) {
                 logger.info('CORS configuration looks good.');
-                new Notice('CORS is properly configured.');
+                new Notice('Cors is properly configured.');
                 this.initialized = true;
             } else {
                 logger.warn('CORS configuration is not properly set.');
-                new Notice('CORS is not properly configured.');
+                new Notice('Cors is not properly configured.');
             }
         } catch (err) {
             logger.error(`初始化 COS 客户端失败: ${err}`);
-            new Notice('Init COS client failed. Please check your CORS configuration.');
+            new Notice('Init cos client failed, please check your cors configuration.');
         }
     }
 
-    async uploadFile(content: Buffer | Uint8Array, key: string, mtime?: number): Promise<boolean> {
+    async uploadFile(content: Uint8Array, key: string, mtime?: number): Promise<boolean> {
         if (!this.initialized) {
             await this.init();
         }
@@ -140,7 +140,7 @@ export class S3Client {
         }
     }
 
-    async downloadToBuffer(key: string): Promise<Buffer | null> {
+    async downloadToBuffer(key: string): Promise<Uint8Array | null> {
         if (!this.initialized) {
             await this.init();
         }
@@ -200,7 +200,7 @@ export class S3Client {
                     // 优先使用元数据中的 mtime，如果没有则使用 object的 LastModified
                     lastModified: item.Metadata?.['mtime'] ?
                         new Date(item.Metadata['mtime']) :
-                        (new Date(item.LastModified) || new Date())
+                        new Date(item.LastModified || new Date())
                 });
             }
 
@@ -249,7 +249,7 @@ class S3DownloadService implements CloudDownloadService {
         if (!buffer) {
             return null;
         }
-        return buffer.toString('utf-8');
+        return buffer.toString();
     }
 
     async downloadFile(remoteFilePath: string, remoteFileInfo?: unknown): Promise<ArrayBuffer | null> {
@@ -402,7 +402,7 @@ class S3FileManagementService implements CloudFileManagementService {
 
     async mkdir(dirPath: string): Promise<void> {
         const remoteDirPath = util.path.join(cloudDiskModel.remoteRootPath, dirPath);
-        const success = await S3Client.getInstance().uploadFile(Buffer.from(''), `${remoteDirPath}/.keep`);
+        const success = await S3Client.getInstance().uploadFile(new Uint8Array(), `${remoteDirPath}/.keep`);
         if (!success) {
             throw new Error(`创建目录失败: ${dirPath}`);
         }

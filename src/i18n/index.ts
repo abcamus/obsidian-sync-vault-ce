@@ -1,8 +1,12 @@
 import en from './locales/en';
 import zh from './locales/zh';
-const locales: { [key: string]: unknown } = {
-    en,
-    zh,
+
+type LocaleValue = string | string[] | { [key: string]: LocaleValue };
+type LocaleRecord = Record<string, LocaleValue>;
+
+const locales: Record<string, LocaleRecord> = {
+    en: en as LocaleRecord,
+    zh: zh as LocaleRecord,
 };
 
 export class I18n {
@@ -15,7 +19,8 @@ export class I18n {
     }
 
     t(key: string, params?: Record<string, string>): string {
-        return this.getValue(key, params) || key;
+        const value = this.getValue(key, params);
+        return typeof value === 'string' ? value : key;
     }
 
     tArray(key: string): string[] {
@@ -23,29 +28,45 @@ export class I18n {
         return Array.isArray(value) ? value : [];
     }
 
-    private getValue(key: string, params?: Record<string, string>): any {
-        const keys = key.split('.');
-        let value: any = locales[this.locale];
+    private getValue(key: string, params?: Record<string, string>): string | string[] | undefined {
+        const raw = this.resolveValue(this.locale, key) ?? this.resolveValue('en', key);
+        if (typeof raw === 'string') {
+            return this.interpolate(raw, params);
+        }
+        if (Array.isArray(raw)) {
+            return raw;
+        }
+        return undefined;
+    }
 
-        for (const k of keys) {
-            if (value?.[k] === undefined) {
-                // en as fallback
-                value = locales['en'];
-                for (const fallbackKey of keys) {
-                    value = value?.[fallbackKey];
-                }
-                break;
+    private resolveValue(locale: string, key: string): LocaleValue | undefined {
+        const isRecord = (val: LocaleValue | undefined): val is Record<string, LocaleValue> => {
+            return !!val && typeof val === 'object' && !Array.isArray(val);
+        };
+
+        let value: LocaleValue | undefined = locales[locale];
+        for (const k of key.split('.')) {
+            if (!isRecord(value)) {
+                return undefined;
             }
             value = value[k];
+            if (value === undefined) {
+                return undefined;
+            }
         }
-
-        if (params && typeof value === 'string') {
-            Object.entries(params).forEach(([key, val]) => {
-                value = value.replace(`%{${key}}`, val);
-            });
-        }
-
         return value;
+    }
+
+    private interpolate(template: string, params?: Record<string, string>): string {
+        if (!params) {
+            return template;
+        }
+
+        let result = template;
+        Object.entries(params).forEach(([key, val]) => {
+            result = result.replace(`%{${key}}`, val);
+        });
+        return result;
     }
 
     setLocale(locale: string) {

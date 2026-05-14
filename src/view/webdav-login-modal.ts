@@ -19,14 +19,14 @@ export class WebDAVLoginModal extends Modal {
     onOpen() {
         const { contentEl } = this;
         contentEl.empty();
-        contentEl.createEl("h2", { text: "WebDAV Login" });
+        contentEl.createEl("h2", { text: "Login" });
 
         let url = cloudDiskModel.webdavUrl;
         let username = cloudDiskModel.webdavUsername;
         let password = cloudDiskModel.webdavPassword;
 
         new Setting(contentEl)
-            .setName("WebDAV server URL")
+            .setName("Server address")
             .addText((text) =>
                 text
                     .setValue(url)

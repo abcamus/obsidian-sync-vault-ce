@@ -33,9 +33,9 @@ export class S3ConfigModal extends Modal {
         // Region 配置
         new Setting(contentEl)
             .setName('Region')
-            .setDesc('Region for your AWS S3 bucket')
+            .setDesc('Aws bucket region')
             .addText(text => text
-                .setPlaceholder('us-east-1')
+                .setPlaceholder('Default is us-east-1')
                 .setValue(cloudDiskModel.s3Config.region || 'us-east-1')
                 .onChange(async (value) => {
                     cloudDiskModel.s3Config.region = value;

@@ -14,18 +14,20 @@ type MetaOperation = {
 export class MetaOperationQueue {
     private queue: MetaOperation[] = [];
     private isProcessing = false;
-    static queueObjs: { [key: string]: any } = {};
-    private fileMngService: CloudFileManagementService;
+    static queueObjs: Partial<Record<CloudDiskType, MetaOperationQueue>> = {};
+    private fileMngService!: CloudFileManagementService;
 
     /* single instance */
     static getMetaOperationQueue(cloudDiskType: CloudDiskType, fileMngService: CloudFileManagementService): MetaOperationQueue {
-        if (!MetaOperationQueue.queueObjs[cloudDiskType]) {
-            const queue = new MetaOperationQueue();
-            queue.fileMngService = fileMngService;
-            MetaOperationQueue.queueObjs[cloudDiskType] = queue;
+        const existing = MetaOperationQueue.queueObjs[cloudDiskType];
+        if (existing) {
+            return existing;
         }
 
-        return MetaOperationQueue.queueObjs[cloudDiskType];
+        const queue = new MetaOperationQueue();
+        queue.fileMngService = fileMngService;
+        MetaOperationQueue.queueObjs[cloudDiskType] = queue;
+        return queue;
     }
 
     /* add operation to queue */
@@ -100,8 +102,9 @@ export class MetaOperationQueue {
                     await this.fileMngService.mkdir(operation.from);
                     break;
 
-                default:
-                    throw new Error(`Unknown operation type: ${(operation as any).type}`);
+                default: {
+                    throw new Error('Unknown operation type');
+                }
             }
         } catch (error) {
             logger.error(`[MetaOperationQueue] Operation failed:`, error);

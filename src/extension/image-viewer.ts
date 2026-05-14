@@ -1,3 +1,4 @@
+import { createLogger } from '@/util/logger';
 import {
     ViewUpdate,
     PluginValue,
@@ -6,6 +7,8 @@ import {
     WidgetType,
     Decoration,
 } from '@codemirror/view';
+
+const logger = createLogger("ImagePreviewPlugin");
 
 class CloudImageWidget extends WidgetType {
     private isSelected = false;
@@ -18,29 +21,14 @@ class CloudImageWidget extends WidgetType {
         private view: EditorView
     ) {
         super();
-        this.selectionChangeHandler = this.updateSelectionState.bind(this);
+        this.selectionChangeHandler = () => this.updateSelectionState();
     }
 
     toDOM(): HTMLElement {
-        // const span = document.createElement("span");
-        // span.className = "baidu-image-mark";
-        // if (this.cursorInside) {
-        //     // 文字
-        //     const textDiv = document.createElement("div");
-        //     textDiv.textContent = this.originalText;
-        //     textDiv.style.opacity = "0.6";
-        //     textDiv.style.fontSize = "0.95em";
-        //     span.appendChild(textDiv);
-        // }
-
         // 图片
         const img = document.createElement("img");
         img.src = this.imgUrl;
-        img.style.maxWidth = "200px";
-        // img.style.maxHeight = "1.5em";
-        img.style.display = "block";
-        img.style.marginTop = "4px";
-        img.style.verticalAlign = "middle";
+        img.addClass("sync-vault-image-preview");
         return img;
     }
 
@@ -59,10 +47,12 @@ class CloudImageWidget extends WidgetType {
 
         // 只在点击时切换显示
         if (!this.isSelected) {
-            textElement.style.display = "inline";
+            textElement.removeClass("sync-vault-preview-text-hidden");
+            textElement.addClass("sync-vault-preview-text-visible");
             this.isSelected = true;
         } else {
-            textElement.style.display = "none";
+            textElement.removeClass("sync-vault-preview-text-visible");
+            textElement.addClass("sync-vault-preview-text-hidden");
             this.isSelected = false;
         }
     }
@@ -85,15 +75,13 @@ class ImagePreviewPlugin implements PluginValue {
     }
 
     update(update: ViewUpdate) {
-        // ...
         if (update.docChanged || update.viewportChanged || update.selectionSet) {
             this._decorations = this.buildDecorations(update.view);
         }
     }
 
     destroy() {
-        // ...
-        console.log('View destroyed.');
+        logger.info('View destroyed.');
     }
 
     private buildDecorations(view: EditorView) {
@@ -108,9 +96,8 @@ class ImagePreviewPlugin implements PluginValue {
         for (let { from, to } of view.visibleRanges) {
             const text = view.state.doc.sliceString(from, to);
             let match;
-            // console.log(`View text: ${text}`);
             while ((match = regex.exec(text)) !== null) {
-                console.log(`Image view matched`);
+                logger.debug(`Image view matched`);
                 const baiduPath = match[0];
                 const start = from + match.index;
                 const end = start + baiduPath.length;
@@ -118,7 +105,7 @@ class ImagePreviewPlugin implements PluginValue {
 
                 const cursorInside = selection.from <= end && selection.to >= start;
 
-                console.log(`Build decoration, cursorInside = ${cursorInside}`);
+                logger.debug    (`Build decoration, cursorInside = ${cursorInside}`);
                 widgets.push(
                     Decoration.widget({
                         widget: new CloudImageWidget(baiduPath, imgUrl, cursorInside, view),

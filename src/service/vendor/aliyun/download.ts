@@ -13,7 +13,7 @@ const logger = util.logger.createLogger('aliyun.download');
 const chunkSize = 6 * 1024 * 1024;
 
 async function getDownloadUrl(fileId: string): Promise<string | null> {
-    return SmartQueue.getInstance().enqueue(async () => {
+    return SmartQueue.getInstance().enqueue<string | null>(async () => {
         const driveId = (await cloudDiskModel.getInfo()).storage.drive_id;
         const downloadUrlRes = await requestUrl({
             url: AliNetdiskApi.download.get_download_url.url,
@@ -29,7 +29,17 @@ async function getDownloadUrl(fileId: string): Promise<string | null> {
             throw: false,
         });
 
-        return downloadUrlRes.json?.url;
+        const json: unknown = downloadUrlRes.json;
+        if (!json || typeof json !== 'object') {
+            return null;
+        }
+
+        if (!('url' in json)) {
+            return null;
+        }
+
+        const url = (json as { url?: unknown }).url;
+        return typeof url === 'string' ? url : null;
     }, `aliyun-download:getDownloadUrl:${fileId}`, TaskType.GET_DOWNLOAD_URL);
 }
 
@@ -70,7 +80,7 @@ export class AliyunDownloadService implements CloudDownloadService {
                 throw new Error(`无法获取下载链接`);
             }
         } catch (error) {
-            util.LogService.instance().logError(
+            void util.LogService.instance().logError(
                 new Error('download file failed'),
                 'downloadFile',
                 { remotePath: remoteFilePath }
@@ -119,8 +129,8 @@ export class AliyunDownloadService implements CloudDownloadService {
                 return new Uint8Array(await util.encryption.decrypt(u8Array)).buffer;
             }
             return u8Array.buffer;
-        } catch (error) {
-            util.LogService.instance().logError(
+        } catch {
+            void util.LogService.instance().logError(
                 new Error('decrypt file failed'),
                 'downloadFile',
                 { remotePath: remoteFilePath }

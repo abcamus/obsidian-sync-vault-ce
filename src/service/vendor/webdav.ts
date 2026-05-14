@@ -449,7 +449,7 @@ class WebdavFileManagementService implements CloudFileManagementService {
         }
     }
     async mkdir(dirPath: string): Promise<void> {
-        const result = WebDAVClient.getInstance().createFolder(dirPath);
+        const result = await WebDAVClient.getInstance().createFolder(dirPath);
         if (!result) {
             logger.error(`Create folder failed, ${dirPath}`);
             new Notice(`Create folder failed, ${dirPath}`);

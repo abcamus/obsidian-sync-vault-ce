@@ -177,12 +177,12 @@ export class SmartQueue {
 
         // 记录活动的 Promise
         this.activePromises.get(taskType)!.add(promise);
-        promise.finally(() => {
+        void promise.finally(() => {
             this.activePromises.get(taskType)!.delete(promise);
         });
 
         if (!this.isProcessing.get(taskType)) {
-            this.startQueueProcessor(taskType);
+            void this.startQueueProcessor(taskType);
         }
 
         return promise;
@@ -212,7 +212,7 @@ export class SmartQueue {
                 const result = await item.task();
                 item.resolve(result);
             } catch (error) {
-                await this.handleError(item, error);
+                await this.handleError(item, error as Error);
             } finally {
                 this.running.set(taskType, this.running.get(taskType)! - 1);
             }
@@ -272,7 +272,7 @@ export class SmartQueue {
                 setTimeout(() => {
                     this.queues.get(item.taskType)!.push(item);
                     if (!this.isProcessing.get(item.taskType)) {
-                        this.startQueueProcessor(item.taskType);
+                        void this.startQueueProcessor(item.taskType);
                     }
                 }, 5000);
             } else {

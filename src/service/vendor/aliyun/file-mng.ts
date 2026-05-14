@@ -11,6 +11,22 @@ import { QueryCache } from './query-cache';
 
 const logger = util.logger.createLogger('aliyun.file-mng');
 
+function getJsonMessage(json: unknown): string | undefined {
+    if (!json || typeof json !== 'object') {
+        return undefined;
+    }
+    const message = (json as Record<string, unknown>).message;
+    return typeof message === 'string' ? message : undefined;
+}
+
+function getJsonFileId(json: unknown): string | undefined {
+    if (!json || typeof json !== 'object') {
+        return undefined;
+    }
+    const fileId = (json as Record<string, unknown>).file_id;
+    return typeof fileId === 'string' ? fileId : undefined;
+}
+
 /* create folder recursively */
 export async function createDirectoryRecursive(dirPath: string): Promise<string> {
     // root folder
@@ -50,7 +66,16 @@ export async function createDirectoryRecursive(dirPath: string): Promise<string>
             })
         });
 
-        return response.json.file_id;
+        if (response.status !== 200) {
+            throw new Error(`create folder failed, status: ${response.status}, body: ${response.text}`);
+        }
+
+        const fileId = getJsonFileId(response.json as unknown);
+        if (!fileId) {
+            throw new Error('create folder failed, invalid response');
+        }
+
+        return fileId;
     } catch (error) {
         logger.error(`create folder failed, path: ${dirPath}, error: ${error}`);
         throw error;
@@ -82,7 +107,8 @@ async function renameFile(from: string, newName: string) {
         });
         logger.debug(`[renameFile] path: ${remoteSrc}, newName: ${newName}, response: ${JSON.stringify(response.json)}`);
         if (response.status !== 200) {
-            throw new Error(`rename file failed, response: ${response.json.message || 'unknown error'}`);
+            const message = getJsonMessage(response.json as unknown);
+            throw new Error(`rename file failed, response: ${message ?? response.text ?? 'unknown error'}`);
         }
     } catch (error) {
         logger.error(`rename file failed, error: ${error}`);
@@ -90,11 +116,11 @@ async function renameFile(from: string, newName: string) {
     }
 }
 
-export async function deleteFileById(fileId: string) {
+export async function deleteFileById(fileId: string): Promise<void> {
     const accessToken = cloudDiskModel.accessToken;
     const driveId = (await cloudDiskModel.getInfo()).storage.drive_id;
 
-    return SmartQueue.getInstance().enqueue(async () => {
+    return SmartQueue.getInstance().enqueue<void>(async () => {
         try {
             const response = await requestUrl({
                 ...AliNetdiskApi.file_mng.delete,
@@ -109,9 +135,9 @@ export async function deleteFileById(fileId: string) {
             });
             logger.debug(`[deleteFileById] fileId: ${fileId}, response: ${JSON.stringify(response.json)}`);
             if (response.status !== 200) {
-                throw new Error(`${response.json.message || 'unknown error'}`);
+                const message = getJsonMessage(response.json as unknown);
+                throw new Error(message ?? response.text ?? 'unknown error');
             }
-            return response.json;
         } catch (error) {
             logger.error(`delete file failed, error: ${error}`);
             throw error;
@@ -132,7 +158,7 @@ async function deleteFile(filePath: string) {
     await deleteFileById(fileInfo.file_id);
 }
 
-async function copyFile(from: string, to: string) {
+async function copyFile(from: string, to: string): Promise<void> {
     const accessToken = cloudDiskModel.accessToken;
     const remoteSrc = util.path.join(cloudDiskModel.remoteRootPath, from);
     const remoteDest = util.path.join(cloudDiskModel.remoteRootPath, to);
@@ -171,9 +197,9 @@ async function copyFile(from: string, to: string) {
         const response = await requestUrl(options);
         logger.debug(`[copyFile] from: ${remoteSrc}, to: ${remoteDest}, response: ${JSON.stringify(response.json)}`);
         if (response.status !== 200) {
-            throw new Error(`${response.json.message || 'unknown error'}`);
+            const message = getJsonMessage(response.json as unknown);
+            throw new Error(message ?? response.text ?? 'unknown error');
         }
-        return response.json;
     } catch (error) {
         logger.error(`copy file failed, error: ${error}`);
         throw error;
@@ -221,7 +247,8 @@ export async function moveFile(from: string, to: string) {
         });
         logger.debug(`[moveFile] from: ${from}, to: ${to}, response: ${JSON.stringify(response.json)}`);
         if (response.status !== 200) {
-            throw new Error(`${response.json.message || 'unknown error'}`);
+            const message = getJsonMessage(response.json as unknown);
+            throw new Error(message ?? response.text ?? 'unknown error');
         }
     } catch (error) {
         logger.error(`move file failed, error: ${error}`);
@@ -233,7 +260,7 @@ class AliyunFileMngHander implements CloudFileManagementService {
     async deleteFile(filePath: string): Promise<boolean> {
         try {
             await deleteFile(filePath);
-        } catch (error) {
+        } catch {
             return false;
         }
         return true;
@@ -269,7 +296,7 @@ export class AliyunFileManagementService implements CloudFileManagementService {
                 from: filePath,
             });
             return true;
-        } catch (eror) {
+        } catch {
             return false;
         }
     }

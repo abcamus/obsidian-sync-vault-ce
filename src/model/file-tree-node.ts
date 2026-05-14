@@ -1,9 +1,3 @@
-`
-A file tree is originally depicted by json.
-
-see doc/file-tree.json
-`
-
 import { SyncStatus, shouldUpload } from '@/model/sync-status';
 import { createLogger } from '@/util/logger';
 import { RemoteMeta, findRemoteFile, RemoteFileNode } from '@/model/meta-info';
@@ -205,7 +199,7 @@ export function checkLocalNodeSyncStatus(localNode: LocalFileNode, nodePath: str
         checkLocalFileNodeSyncStatus(localNode, remoteNode ? remoteNode : null);
 }
 
-export const updateLocalNodeSyncStatus = (currentPath: string[], node: LocalFileNode, remoteNode: RemoteFileNode) => {
+export const updateLocalNodeSyncStatus = (currentPath: string[], node: LocalFileNode, remoteNode: RemoteFileNode | null) => {
     const localPath = currentPath.length > 0 ? `${currentPath.join('/')}/${node.name}` : node.name;
 
     if (node.type === 'directory') {

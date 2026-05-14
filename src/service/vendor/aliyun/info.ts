@@ -18,6 +18,59 @@ interface AliyunFileItem {
     size: number;
 }
 
+function parseListResponse(json: unknown): { items: AliyunFileItem[]; next_marker: string } {
+    if (!json || typeof json !== 'object') {
+        throw new Error('Invalid list response');
+    }
+
+    const record = json as Record<string, unknown>;
+    const itemsRaw = record.items;
+    const nextMarkerRaw = record.next_marker;
+
+    if (!Array.isArray(itemsRaw)) {
+        throw new Error('Invalid list response');
+    }
+
+    const items: AliyunFileItem[] = itemsRaw.map((item) => {
+        if (!item || typeof item !== 'object') {
+            throw new Error('Invalid list response');
+        }
+
+        const it = item as Record<string, unknown>;
+        const name = it.name;
+        const type = it.type;
+        const fileId = it.file_id;
+        const createdAt = it.created_at;
+        const updatedAt = it.updated_at;
+        const size = it.size;
+
+        if (
+            typeof name !== 'string' ||
+            typeof type !== 'string' ||
+            typeof fileId !== 'string' ||
+            typeof createdAt !== 'string' ||
+            typeof updatedAt !== 'string' ||
+            typeof size !== 'number'
+        ) {
+            throw new Error('Invalid list response');
+        }
+
+        return {
+            name,
+            type,
+            file_id: fileId,
+            created_at: createdAt,
+            updated_at: updatedAt,
+            size,
+        };
+    });
+
+    return {
+        items,
+        next_marker: typeof nextMarkerRaw === 'string' ? nextMarkerRaw : '',
+    };
+}
+
 async function userInfo(): Promise<UserInfo> {
     const access_token = cloudDiskModel.accessToken;
     try {
@@ -33,12 +86,28 @@ async function userInfo(): Promise<UserInfo> {
 
         if (response.status !== 200) {
             logger.error({ error: response });
-            throw new Error(`${response.json.code}`);
+            const errJson: unknown = response.json;
+            const code = (errJson && typeof errJson === 'object')
+                ? (errJson as Record<string, unknown>).code
+                : undefined;
+            throw new Error(typeof code === 'string' ? code : `status: ${response.status}`);
         }
-        const data = response.json;
+
+        const data: unknown = response.json;
+        if (!data || typeof data !== 'object') {
+            throw new Error('Invalid user info response');
+        }
+
+        const record = data as Record<string, unknown>;
+        const id = record.id;
+        const name = record.name;
+        if (typeof id !== 'string' || typeof name !== 'string') {
+            throw new Error('Invalid user info response');
+        }
+
         const userInfo: UserInfo = {
-            user_id: data.id,
-            user_name: data.name,
+            user_id: id,
+            user_name: name,
             vip_type: 0,
         };
         return userInfo;
@@ -61,21 +130,45 @@ async function storageInfo(): Promise<StorageInfo> {
             ...AliNetdiskApi.info.get_space_info,
             headers: headers
         });
-        const spaceData = spaceResponse.json;
+        const spaceData: unknown = spaceResponse.json;
+
+        if (!spaceData || typeof spaceData !== 'object') {
+            throw new Error('Invalid space info response');
+        }
+
+        const personalSpaceInfo = (spaceData as Record<string, unknown>).personal_space_info;
+        if (!personalSpaceInfo || typeof personalSpaceInfo !== 'object') {
+            throw new Error('Invalid space info response');
+        }
+
+        const totalSize = (personalSpaceInfo as Record<string, unknown>).total_size;
+        const usedSize = (personalSpaceInfo as Record<string, unknown>).used_size;
+        if (typeof totalSize !== 'number' || typeof usedSize !== 'number') {
+            throw new Error('Invalid space info response');
+        }
 
         // 获取会员信息
         const driveResponse = await requestUrl({
             ...AliNetdiskApi.info.get_drive_info,
             headers: headers
         });
-        const driveInfo = driveResponse.json;
+        const driveInfo: unknown = driveResponse.json;
+
+        if (!driveInfo || typeof driveInfo !== 'object') {
+            throw new Error('Invalid drive info response');
+        }
+
+        const defaultDriveId = (driveInfo as Record<string, unknown>).default_drive_id;
+        if (typeof defaultDriveId !== 'string') {
+            throw new Error('Invalid drive info response');
+        }
 
         logger.debug(`[storageInfo] spaceData: ${JSON.stringify(spaceData)}`);
         logger.debug(`[storageInfo] driveInfo: ${JSON.stringify(driveInfo)}`);
         const storageInfo: StorageInfo = {
-            total: spaceData.personal_space_info.total_size,
-            used: spaceData.personal_space_info.used_size,
-            drive_id: driveInfo.default_drive_id,
+            total: totalSize,
+            used: usedSize,
+            drive_id: defaultDriveId,
             expire: false,
         };
 
@@ -116,8 +209,14 @@ export async function getFileInfoByPath(remoteFilePath: string): Promise<FileInf
             /* 防止429错误抛出异常，由SmartQueue处理 */
             throw: false,
         });
-        if (response.status === 200 && response.json.file_id) {
-            return response.json as FileInfo;
+        if (response.status === 200) {
+            const json: unknown = response.json;
+            if (json && typeof json === 'object') {
+                const fileId = (json as Record<string, unknown>).file_id;
+                if (typeof fileId === 'string' && fileId.length > 0) {
+                    return json as FileInfo;
+                }
+            }
         }
         if (response.status === 429) {
             logger.error(`[getFileInfoByPath] qps limit, remoteFilePath: ${remoteFilePath}, headers: ${JSON.stringify(response.headers)}`);
@@ -134,7 +233,7 @@ async function listFiles(parentFileId: string, limit = 100, nextMarker = ''): Pr
     const driveId = (await cloudDiskModel.getInfo()).storage.drive_id;
 
     /* 有qps限制，通过SmartQueue获取文件信息 */
-    return SmartQueue.getInstance().enqueue(async () => {
+    return SmartQueue.getInstance().enqueue<[FileEntry[], string]>(async () => {
         const headers = {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
@@ -153,14 +252,18 @@ async function listFiles(parentFileId: string, limit = 100, nextMarker = ''): Pr
         if (response.status !== 200) {
             throw new Error(`error: ${response.status}, response: ${JSON.stringify(response.json)}`);
         }
-        return [response.json['items'].map((item: AliyunFileItem) => ({
+
+        const json = parseListResponse(response.json as unknown);
+        const items: FileEntry[] = json.items.map((item) => ({
             path: item.name,
             isdir: item.type === 'folder',
             fsid: item.file_id,
             ctime: util.time.msToSec(new Date(item.created_at).getTime()),
             mtime: util.time.msToSec(new Date(item.updated_at).getTime()),
             size: item.size,
-        } as FileEntry)), response.json['next_marker']];
+        } as FileEntry));
+
+        return [items, json.next_marker];
     }, `listFiles:${parentFileId}`, TaskType.LIST);
 }
 

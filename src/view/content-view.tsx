@@ -62,7 +62,7 @@ export class SyncVaultPluginView extends ItemView {
             if (cloudDiskModel.webdavUrl === '' ||
                 cloudDiskModel.webdavUsername === '' ||
                 cloudDiskModel.webdavPassword === '') {
-                new Notice('WebDAV account not configured.');
+                new Notice('Account not configured.');
                 this.containerEl.children[1].createDiv({
                     text: `${this.plugin.settings.cloudDiskName} account not configured.`
                 });

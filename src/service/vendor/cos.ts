@@ -397,8 +397,48 @@ export class TencentCosClient {
 
         logger.debug('List objects response:', response);
 
+        interface CosCommonPrefix {
+            Prefix?: string;
+            prefix?: string;
+        }
+
+        interface CosObjectContent {
+            Key: string;
+            Size: string;
+            LastModified: string;
+            ETag?: string;
+            StorageClass?: string;
+            Owner?: {
+                ID?: string;
+                DisplayName?: string;
+            };
+            OWNER?: {
+                DisplayName?: string;
+            };
+        }
+
+        interface CosListBucketResultXml {
+            Name: string;
+            Prefix?: string;
+            Marker?: string;
+            MaxKeys?: string;
+            Delimiter?: string;
+            delimiter?: string;
+            IsTruncated: string;
+            NextMarker?: string;
+            Contents?: CosObjectContent | CosObjectContent[];
+            CommonPrefixes?: CosCommonPrefix | CosCommonPrefix[];
+            commonprefixes?: CosCommonPrefix | CosCommonPrefix[];
+            EncodingType?: string;
+            encodingtype?: string;
+        }
+
+        interface CosListObjectsXml {
+            ListBucketResult?: CosListBucketResultXml;
+        }
+
         // 解析 XML 响应
-        const xmlResult = await this.parseXmlResponse<any>(response.text);
+        const xmlResult = await this.parseXmlResponse<CosListObjectsXml>(response.text);
 
         if (!xmlResult.ListBucketResult) {
             throw new Error('Invalid response format');
@@ -412,16 +452,21 @@ export class TencentCosClient {
             Prefix: result.Prefix || '',
             Marker: result.Marker || '',
             MaxKeys: parseInt(result.MaxKeys || '1000'),
-            Delimiter: result.delimiter,
+            Delimiter: result.Delimiter ?? result.delimiter,
             IsTruncated: result.IsTruncated === 'true',
             NextMarker: result.NextMarker,
             Contents: [],
-            CommonPrefixes: result.commonprefixes ?
-                (Array.isArray(result.commonprefixes) ?
-                    result.commonprefixes.map((cp: any) => cp.prefix) :
-                    [result.commonprefixes.prefix]) :
-                undefined,
-            EncodingType: result.encodingtype
+            CommonPrefixes: (() => {
+                const commonPrefixes = result.CommonPrefixes ?? result.commonprefixes;
+                if (!commonPrefixes) {
+                    return undefined;
+                }
+                if (Array.isArray(commonPrefixes)) {
+                    return commonPrefixes.map((cp) => cp.Prefix ?? cp.prefix ?? '');
+                }
+                return [commonPrefixes.Prefix ?? commonPrefixes.prefix ?? ''];
+            })(),
+            EncodingType: result.EncodingType ?? result.encodingtype
         };
 
         // 处理 Contents
@@ -429,19 +474,20 @@ export class TencentCosClient {
             const contents = Array.isArray(result.Contents) ? result.Contents : [result.Contents];
 
             listResult.Contents = await Promise.all(
-                contents.map(async (content: any) => {
+                contents.map(async (content: CosObjectContent) => {
+                    const key = content.Key || '';
                     // 对于每个对象，获取详细的元数据
-                    const metadata = await this.getObjectMetadata(content.Key);
+                    const metadata = await this.getObjectMetadata(key);
 
                     return {
-                        Key: content.Key,
-                        Size: parseInt(content.Size),
+                        Key: key,
+                        Size: parseInt(content.Size || '0'),
                         LastModified: new Date(content.LastModified),
                         ETag: content.ETag ? content.ETag.replace(/"/g, '') : '',
                         StorageClass: content.StorageClass || 'STANDARD',
                         Owner: {
                             ID: content.Owner?.ID || '',
-                            DisplayName: content.OWNER?.DisplayName || ''
+                            DisplayName: content.Owner?.DisplayName || content.OWNER?.DisplayName || ''
                         },
                         Metadata: metadata
                     };
@@ -606,7 +652,7 @@ export class TencentCosClient {
         }
     }
 
-    async putObject(key: string, content: Buffer | Uint8Array, localMtime: string): Promise<void> {
+    async putObject(key: string, content: Uint8Array, localMtime: string): Promise<void> {
         logger.debug(`Uploading file to key: ${key} with mtime: ${localMtime}`);
         // const md5 = this.calculateMD5Hash(content);
         const path = `/${key}`;
@@ -643,7 +689,7 @@ export class TencentCosClient {
         }
     }
 
-    async getObject(key: string): Promise<Buffer | null> {
+    async getObject(key: string): Promise<Uint8Array | null> {
         logger.debug(`Getting object with key: ${key}`);
         const path = `/${key}`;
         const authorization = await this.generateSignature({
@@ -665,7 +711,7 @@ export class TencentCosClient {
         });
 
         if (response.status === 200) {
-            return Buffer.from(response.arrayBuffer);
+            return new Uint8Array(response.arrayBuffer);
         } else {
             throw new Error(`Failed to get object: ${response.status} ${response.text}`);
         }

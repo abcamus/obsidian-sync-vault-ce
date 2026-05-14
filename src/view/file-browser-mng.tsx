@@ -27,7 +27,7 @@ const FileBrowserManager: React.FC<FileBrowserManagerProps> = ({ plugin, vault }
             const filePath = currentPath.length > 0 ? currentPath.join('/') + '/' + file.name : file.name;
             const localFile = vault.getAbstractFileByPath(filePath);
             if (localFile instanceof TFile) {
-                plugin.app.workspace.getLeaf().openFile(localFile);
+                void plugin.app.workspace.getLeaf().openFile(localFile);
             }
         }
     }, [currentPath, handleNavigation]);

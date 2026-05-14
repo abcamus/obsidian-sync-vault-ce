@@ -107,7 +107,7 @@ async function authorize(method: oauthMethod, params?: Record<string, unknown>):
             throw new Error('code_verifier is empty, please authorize first');
         }
         try {
-            logger.info(`try to get access token, url: ${cloudAuth.baseUrls[method]}, code: ${params.code}`);
+            logger.info(`try to get access token, url: ${cloudAuth.baseUrls[method]}`);
             const response = await requestUrl({
                 url: cloudAuth.baseUrls[method],
                 method: 'POST',
@@ -127,14 +127,32 @@ async function authorize(method: oauthMethod, params?: Record<string, unknown>):
             if (response.status !== 200) {
                 throw new Error(`status: ${response.status}, body: ${response.text}`);
             }
-            const data = response.json;
+        
+            const json = response.json as unknown;
+
+            if (!json || typeof json !== 'object') {
+                throw new Error('Invalid token response');
+            }
+
+            const accessToken = (json as Record<string, unknown>).access_token;
+            const expiresInRaw = (json as Record<string, unknown>).expires_in;
+            const expiresIn = typeof expiresInRaw === 'number'
+                ? expiresInRaw
+                : (typeof expiresInRaw === 'string' && Number.isFinite(Number(expiresInRaw))
+                    ? Number(expiresInRaw)
+                    : null);
+
+            if (typeof accessToken !== 'string' || expiresIn === null) {
+                throw new Error('Invalid token response');
+            }
+
             return {
                 status: 'success',
-                access_token: data.access_token,
-                expires_at: new Date(Date.now() + secToMs(data.expires_in)).toISOString(),
+                access_token: accessToken,
+                expires_at: new Date(Date.now() + secToMs(expiresIn)).toISOString(),
             }
         } catch (error) {
-            logger.error(`获取access token失败, error: ${error}, clientId: ${cloudAuth.client_id}, codeVerifier: ${codeVerifier}, code: ${params.code}`);
+            logger.error(`获取access token失败, error: ${error}, clientId: ${cloudAuth.client_id}`);
             return {
                 status: 'failure',
             }
@@ -143,7 +161,7 @@ async function authorize(method: oauthMethod, params?: Record<string, unknown>):
             codeChallenge = '';
         }
     } else {
-        logger.error(`method: ${method} not supported, only support get_code and get_token`);
+        logger.error('method not supported, only support get_code and get_token');
         return {
             status: 'failure',
         }
@@ -185,7 +203,7 @@ async function checkAndRefreshToken(deviceName: string, deviceType: string): Pro
             throw new Error('刷新token失败');
         }
     } catch (error) {
-        logger.info('刷新token失败，需要重新授权');
+        logger.error('刷新token失败，需要重新授权', String(error));
         new Notice('更新授权失败，请重新授权');
         return {
             status: 'failure',

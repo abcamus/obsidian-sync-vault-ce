@@ -1,10 +1,12 @@
 // my-plugin.ts
+import { createLogger } from "@/util/logger";
 import { EditorSuggest, EditorPosition, Editor, EditorSuggestContext, EditorSuggestTriggerInfo } from "obsidian";
 import { cloudDiskModel } from "src/model/cloud-disk-model";
 import { checkLocalFileNodeSyncStatus, LocalFileNode } from "src/model/file-tree-node";
 import { SyncStatus } from "src/model/sync-status";
-import { Service } from "src/service";
 import { Snapshot } from "src/sync/snapshot";
+
+const logger = createLogger("CustomLinkSuggest");   
 
 export default class CustomLinkSuggest extends EditorSuggest<string> {
     triggerChars = ["#", "@"]; // 改为用 # 或 @ 触发链接补全
@@ -14,7 +16,7 @@ export default class CustomLinkSuggest extends EditorSuggest<string> {
         // 检查光标前是否有 # 或 @，并且不是在单词中间
         const match = line.substring(0, cursor.ch).match(/(?:#|@)([^\s#@]*)$/);
         if (match) {
-            console.log(`Suggestion matched: ${match[1]}`);
+            logger.debug(`Suggestion matched: ${match[1]}`);
             const startCh = cursor.ch - match[0].length;
             return {
                 start: { line: cursor.line, ch: startCh },
@@ -22,7 +24,7 @@ export default class CustomLinkSuggest extends EditorSuggest<string> {
                 query: match[1] || ""
             };
         }
-        console.log(`Suggestion not matched`);
+        logger.debug(`Suggestion not matched`);
         return null;
     }
 

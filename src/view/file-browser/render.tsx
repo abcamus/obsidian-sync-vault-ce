@@ -164,7 +164,7 @@ const renderFileModified = (file: LocalFileNode) => {
     );
 };
 
-const renderFileSyncStatus = (file: LocalFileNode, onClick: (action: 'upload' | 'download' | 'stop' | null, node: LocalFileNode) => void, isSyncing: boolean, syncProgress?: SyncProgress) => {
+const renderFileSyncStatus = (file: LocalFileNode, onClick: (action: 'upload' | 'download' | 'stop' | null, node: LocalFileNode) => Promise<void>, isSyncing: boolean, syncProgress?: SyncProgress) => {
     if (file.syncStatus === SyncStatus.FullySynced) {
         return <div className='file-sync-status-placeholder'></div>;
     }

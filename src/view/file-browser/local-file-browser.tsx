@@ -95,15 +95,17 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
     const loadFolderContents = useCallback(async (targetPath?: string[]) => {
         setLoadingState(prev => ({ ...prev, isLoading: true }));
 
-        if (!fileState.rootNode || !fileState.remoteMeta) {
+        const rootNode = fileState.rootNode;
+        const remoteMeta = fileState.remoteMeta;
+        if (!rootNode || !remoteMeta) {
             setLoadingState(prev => ({ ...prev, isLoading: false }));
             return;
         }
         const pathToLoad = targetPath || currentPathRef.current;
 
         try {
-            const localNodes: LocalFileNode[] = pathToLoad.length === 0 ? fileState.rootNode?.children || [] : findFolderByPath(fileState.rootNode, pathToLoad)?.children || [];
-            const remoteNodes = metaInfo.getRemoteContentsByPath(fileState.remoteMeta, pathToLoad);
+            const localNodes: LocalFileNode[] = pathToLoad.length === 0 ? rootNode.children || [] : findFolderByPath(rootNode, pathToLoad)?.children || [];
+            const remoteNodes = metaInfo.getRemoteContentsByPath(remoteMeta, pathToLoad);
             const mergedContents = new Map<string, LocalFileNode>();
             localNodes.forEach(item => {
                 mergedContents.set(item.name, item);
@@ -122,10 +124,10 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                 } else {
                     const localFile = mergedContents.get(item.name)!;
                     const localFilePath = util.path.join(pathToLoad.join('/'), localFile.name);
-                    const remoteNode = metaInfo.findRemoteFile(fileState.remoteMeta!, localFilePath);
-                    updateLocalNodeSyncStatus(pathToLoad, localFile, remoteNode!);
+                    const remoteNode = metaInfo.findRemoteFile(remoteMeta, localFilePath);
+                    updateLocalNodeSyncStatus(pathToLoad, localFile, remoteNode);
                     logger.debug(`[loadFolderContents] resolving item: ${item.name}, status: ${localFile.syncStatus}, children: ${localFile?.children?.length}, remoteChildren: ${item?.children?.length}`);
-                    insertNodeAt(fileState.rootNode!, localFilePath, localFile);
+                    insertNodeAt(rootNode, localFilePath, localFile);
                 }
             });
 
@@ -221,8 +223,8 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                     return;
                 }
                 logger.info('CloudDiskModel not initialized yet, waiting...');
-                setTimeout(async () => {
-                    await loadRemoteMeta(retryCount + 1);
+                setTimeout(() => {
+                    void loadRemoteMeta(retryCount + 1);
                 }, 1000);
                 return;
             }
@@ -264,7 +266,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
     /* 加载meta */
     useEffect(() => {
         if (loadingState.isLoadingRemoteMeta) {
-            loadRemoteMeta();
+            void loadRemoteMeta();
         }
     }, [loadingState.isLoadingRemoteMeta]);
 
@@ -272,7 +274,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
     useEffect(() => {
         if (!loadingState.isLoadingRemoteMeta && loadingState.isLoadingRootNode) {
             logger.info('Loading local root node...');
-            loadRootNode();
+            void loadRootNode();
         }
     }, [loadingState.isLoadingRemoteMeta, loadingState.isLoadingRootNode]);
 
@@ -304,7 +306,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
             }
             setSyncState(prev => ({ ...prev, isAutoSync: false }));
         }
-        asyncHandleAutoSync();
+        void asyncHandleAutoSync();
     }, [syncState.isAutoSync]);
 
     useEffect(() => {
@@ -343,7 +345,8 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                 size: (file instanceof TFile) ? file.stat.size : localNode.size,
             };
 
-            const remoteNode = fileState.remoteMeta!.children?.find(child => child.name === file.name);
+            const remoteMeta = fileState.remoteMeta;
+            const remoteNode = remoteMeta ? metaInfo.findRemoteFile(remoteMeta, file.path) : null;
             logger.debug('Remote node mtime: ', remoteNode?.mtime);
             const newStatus = checkLocalFileNodeSyncStatus(newLocalNode, remoteNode ? remoteNode : null);
             logger.debug(`[onFileModify] status, from: ${localNode.syncStatus}, to: ${newStatus}`);
@@ -352,14 +355,14 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
             insertNodeAt(fileState.rootNode, file.path, newLocalNode);
 
             /* 在非加密模式下，如果文件在远端存在，则需要上传 */
-            if (metaInfo.findRemoteFile(fileState.remoteMeta!, file.path) && shouldUpload(newStatus)) {
+            if (remoteNode && shouldUpload(newStatus)) {
                 const uploadResult = await handleUpload(file.path);
                 if (!uploadResult) {
                     logger.error(`upload file failed: ${file.path}`);
                 }
 
                 /* 更新current视图 */
-                loadFolderContents();
+                loadFolderContents().catch((e: Error) => logger.error(e.message));
             }
         };
 
@@ -408,7 +411,12 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
 
             logger.debug(`[onFileCreate] ${file instanceof TFile ? 'file' : 'folder'} create: ${file.name}, at: ${file.path}, mtime: ${file instanceof TFile ? file.stat.mtime : null}`);
 
-            insertNodeAt(fileState.rootNode!, file.path, {
+            if (!fileState.rootNode) {
+                logger.error('rootNode is null, maybe rootNode is broken');
+                return;
+            }
+
+            insertNodeAt(fileState.rootNode, file.path, {
                 name: file.name,
                 type: file instanceof TFile ? 'file' : 'directory',
                 syncStatus: SyncStatus.LocalCreated,
@@ -417,7 +425,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                 mtime: file instanceof TFile ? new Date(file.stat.mtime) : new Date(),
                 children: [],
             });
-            loadFolderContents();
+            loadFolderContents().catch((e: Error) => logger.error(e.message));
         };
 
         // 重命名文件，更新local root，再更新远端文件，最后更新remote meta
@@ -430,20 +438,25 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                 logger.debug(`[onFileRename] syncing, ignore file rename event: ${file.name}, old: ${oldPath}, new: ${file.path}`);
                 return;
             }
-            renameNode(fileState.rootNode!, oldPath, file.path);
+            if (!fileState.rootNode) {
+                logger.error('rootNode is null, maybe rootNode is broken');
+                return;
+            }
+
+            renameNode(fileState.rootNode, oldPath, file.path);
             try {
-                if (metaInfo.findRemoteFile(fileState.remoteMeta!, oldPath)) {
+                if (fileState.remoteMeta && metaInfo.findRemoteFile(fileState.remoteMeta, oldPath)) {
                     if (util.path.dirname(oldPath) === util.path.dirname(file.path)) {
-                        Service.fileMng.renameFile(oldPath, file.name);
+                        Service.fileMng.renameFile(oldPath, file.name).catch((e: Error) => logger.error(`Rename file failed: ${e.message}`));
                     } else {
-                        Service.fileMng.moveFile(oldPath, file.path);
+                        Service.fileMng.moveFile(oldPath, file.path).catch((e: Error) => logger.error(`Move file failed: ${e.message}`));
                     }
-                    metaInfo.renameMetaNode(fileState.remoteMeta!, oldPath, file.path);
+                    metaInfo.renameMetaNode(fileState.remoteMeta, oldPath, file.path);
                 }
             } catch (error) {
                 logger.error(`Error renaming file: ${error}, old: ${oldPath}, new: ${file.path}`);
             }
-            loadFolderContents();
+            loadFolderContents().catch((e: Error) => logger.error(`Load folder view error: ${e.message}`));
         }
 
         vault.on('modify', onFileModify);
@@ -460,7 +473,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
     }, [vault, loadFolderContents, syncState.isDownloading, syncState.isAutoSync]);
 
     useEffect(() => {
-        loadFolderContents();
+        void loadFolderContents();
     }, [loadFolderContents]);
 
     const findFolderByPath = (node: LocalFileNode | null, path: string[]): LocalFileNode | undefined => {
@@ -475,11 +488,17 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
         const localFile = vault.getAbstractFileByPath(localPath);
         let syncResult = true;
         const fileState = fileStateRef.current;
+        const rootNode = fileState.rootNode;
+        const remoteMeta = fileState.remoteMeta;
 
         if (!localFile) {
             throw new Error(`File not found: ${localPath}`);
         }
-        const currentNode = findNodeAt(fileState.rootNode!, localPath);
+        if (!rootNode) {
+            throw new Error('rootNode is null');
+        }
+
+        const currentNode = findNodeAt(rootNode, localPath);
         if (!currentNode) {
             throw new Error(`node not found during upload: ${localPath}`);
         }
@@ -516,8 +535,10 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                     // 更新单个文件的同步状态
                     currentNode.syncStatus = SyncStatus.FullySynced;
                     logger.debug(`[handleUpload] synced: ${localPath}, node: ${JSON.stringify(currentNode)}`);
-                    insertNodeAt(fileState.rootNode!, localPath, currentNode);
-                    updateRemoteMetaAfterSync(currentNode, localPath, fileState.remoteMeta!, 'local');
+                    insertNodeAt(rootNode, localPath, currentNode);
+                    if (remoteMeta) {
+                        updateRemoteMetaAfterSync(currentNode, localPath, remoteMeta, 'local');
+                    }
                 }
 
                 return result;
@@ -588,12 +609,17 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                 syncingFiles: new Set(prev.syncingFiles).add(localPath),
             }));
 
-            const remoteFileNode = metaInfo.findRemoteFile(fileState.remoteMeta!, localPath);
+            const { remoteMeta, rootNode } = fileStateRef.current;
+            if (!remoteMeta || !rootNode) {
+                throw new Error('download failed, remote meta not loaded');
+            }
+
+            const remoteFileNode = metaInfo.findRemoteFile(remoteMeta, localPath);
             if (!remoteFileNode) {
                 throw new Error(`download failed, remote meta not found: ${localPath}`);
             }
 
-            const localNode = findNodeAt(fileState.rootNode!, localPath);
+            const localNode = findNodeAt(rootNode, localPath);
 
             if (remoteFileNode.type === 'file' && shouldDownload(localNode?.syncStatus || SyncStatus.RemoteCreated)) {
                 setSyncState(prev => ({
@@ -614,7 +640,10 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                         }));
                         if (status && newNode) {
                             newNode.syncStatus = SyncStatus.FullySynced;
-                            insertNodeAt(fileState.rootNode!, path, newNode);
+                            const rootNode = fileStateRef.current.rootNode;
+                            if (rootNode) {
+                                insertNodeAt(rootNode, path, newNode);
+                            }
                         }
                     });
             } else {

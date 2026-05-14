@@ -16,11 +16,11 @@ export class SftpLoginModal extends Modal {
     onOpen() {
         const { contentEl } = this;
         contentEl.empty();
-        contentEl.createEl('h2', { text: 'FTP Configuration' });
+        contentEl.createEl('h2', { text: 'FTP configuration' });
 
         // FTP 服务器地址
         new Setting(contentEl)
-            .setName('FTP Server')
+            .setName('FTP server')
             .addText(text => text
                 .setValue(cloudDiskModel.ftpConfig.server || '')
                 .onChange(async (value) => {
@@ -29,7 +29,7 @@ export class SftpLoginModal extends Modal {
 
         // FTP 端口
         new Setting(contentEl)
-            .setName('FTP Port')
+            .setName('FTP port')
             .addText(text => text
                 .setValue(cloudDiskModel.ftpConfig.port?.toString() || '21')
                 .onChange(async (value) => {
@@ -38,7 +38,7 @@ export class SftpLoginModal extends Modal {
 
         // FTP 用户名
         new Setting(contentEl)
-            .setName('FTP Username')
+            .setName('FTP username')
             .addText(text => text
                 .setValue(cloudDiskModel.ftpConfig.username || '')
                 .onChange(async (value) => {
@@ -47,7 +47,7 @@ export class SftpLoginModal extends Modal {
 
         // FTP 密码
         const passwordSetting = new Setting(contentEl)
-            .setName('FTP Password')
+            .setName('FTP password')
             .addText(text => {
                 text.inputEl.type = 'password';
                 text
@@ -78,7 +78,7 @@ export class SftpLoginModal extends Modal {
 
         // 远程目录路径
         new Setting(contentEl)
-            .setName('FTP Remote Path')
+            .setName('FTP remote path')
             .addText(text => text
                 .setValue(cloudDiskModel.ftpConfig.remotePath || '/')
                 .onChange(async (value) => {

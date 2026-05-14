@@ -114,7 +114,6 @@ export class LogService {
 
     async openLogFile(): Promise<void> {
         const filePath = `${this.logFolderPath}/${this.currentLogFile}`;
-        console.info(`open log file: ${filePath}`);
         if (await this.app.vault.adapter.exists(filePath)) {
             const content = await this.app.vault.adapter.read(filePath);
         
@@ -123,7 +122,7 @@ export class LogService {
             const tempFileName = `temp-log-${date.toISOString().split('T')[0]}.md`;
             let tempFile = this.app.vault.getFileByPath(tempFileName);
             if (tempFile) {
-                await this.app.vault.delete(tempFile);
+                await this.app.fileManager.trashFile(tempFile);
             }
             tempFile = await this.app.vault.create(tempFileName, content);
             if (tempFile) {

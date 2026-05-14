@@ -10,8 +10,13 @@ const logger = createLogger('cloud-disk-model');
 
 function validateRemoteMeta(metaContent: string): boolean {
 	try {
-		const meta = JSON.parse(metaContent);
-		return meta.name === 'remoteRoot' && Array.isArray(meta.children);
+		const meta: unknown = JSON.parse(metaContent) as unknown;
+		if (!meta || typeof meta !== 'object') {
+			return false;
+		}
+
+		const record = meta as Record<string, unknown>;
+		return record.name === 'remoteRoot' && Array.isArray(record.children);
 	} catch (error) {
 		logger.error('validateRemoteMeta failed', error);
 		return false;

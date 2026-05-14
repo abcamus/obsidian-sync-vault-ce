@@ -314,7 +314,8 @@ export class LabeledSettingTab extends PluginSettingTab {
             );
 
         const cloudDiskListContainer = contentEl.createDiv({ cls: 'cloud-disk-list' });
-        const onSelectCloudDisk = async (type: CloudDiskType, cloudName: string) => {
+
+        const onSelectCloudDiskAsync = async (type: CloudDiskType, cloudName: string) => {
             if (cloudName !== this.plugin.settings.cloudDiskName) {
                 const message = cloudName;
                 new Notice(i18n.t('settingTab.cloudDisk.switchTo', { message }));
@@ -322,7 +323,7 @@ export class LabeledSettingTab extends PluginSettingTab {
                 this.plugin.settings.cloudDiskName = cloudName;
                 cloudDiskModel.reset();
                 await this.plugin.saveSettings();
-                this.plugin.closeContentView();
+                void this.plugin.closeContentView();
                 if (type === CloudDiskType.Webdav) {
                     WebDAVClient.createClient({
                         url: cloudDiskModel.webdavUrl,
@@ -333,6 +334,11 @@ export class LabeledSettingTab extends PluginSettingTab {
                 renderCloudDiskList(type, cloudName, onSelectCloudDisk, cloudDiskListContainer);
             }
         };
+
+        const onSelectCloudDisk = (type: CloudDiskType, cloudName: string): void => {
+            void onSelectCloudDiskAsync(type, cloudName);
+        };
+
         renderCloudDiskList(
             this.plugin.settings.selectedCloudDisk || CloudDiskType.Aliyun,
             this.plugin.settings.cloudDiskName,
@@ -413,7 +419,7 @@ export class LabeledSettingTab extends PluginSettingTab {
             );
 
         new Setting(this.syncModeSettingContainer)
-            .setName('Skip large files (unit: MB)')
+            .setName('Skip large files')
             .addText(text => text
                 .setValue(">=")
                 .setDisabled(true)
@@ -518,7 +524,7 @@ export class LabeledSettingTab extends PluginSettingTab {
             .addButton(button => button
                 .setButtonText(i18n.t('settingTab.menuUpgradeAndHelp.log.openLogFile'))
                 .onClick(() => {
-                    util.LogService.instance().openLogFile();
+                    void util.LogService.instance().openLogFile();
                 })
             );
     }

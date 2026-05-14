@@ -16,11 +16,11 @@ export class SimpleQueue {
           const result = await task();
           resolve(result);
         } catch (error) {
-          reject(error);
+          reject(error as Error);
         }
       });
 
-      this.processQueue();
+      void this.processQueue();
     });
   }
 

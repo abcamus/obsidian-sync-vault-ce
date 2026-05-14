@@ -112,27 +112,25 @@
   border: 1px solid #eee;
 }
 
+.sync-vault-image-preview {
+  max-width: 200px;
+  display: block;
+  margin-top: 4px;
+  vertical-align: middle;
+}
+
+.sync-vault-preview-text-hidden {
+  display: none;
+}
+
+.sync-vault-preview-text-visible {
+  display: inline;
+}
+
 .sync-vault-size-limit-prefix {
   text-align: right !important;
   border: none !important;
   background-color: transparent !important;
-}
-
-.sync-progress-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  /* min-width: 150px; */
-}
-
-.sync-progress-circle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  position: relative;
-  overflow: visible;
-  /* 修改为 visible，让色环可见 */
-  background: var(--background-secondary);
 }
 
 /* 旋转的色环 */
@@ -678,7 +676,8 @@
 .cloud-video-play-icon svg {
   width: 40px;
   height: 40px;
-  margin-left: 4px; /* 让三角形在视觉上更居中 */
+  margin-left: 4px;
+  /* 让三角形在视觉上更居中 */
 }
 
 .cloud-video-play-overlay:hover .cloud-video-play-icon {
@@ -1040,7 +1039,8 @@
 
 .cloud-disk-breadcrumbs {
   flex: 1;
-  width: 0; /* Critical for flex child scrolling */
+  width: 0;
+  /* Critical for flex child scrolling */
   display: flex;
   align-items: center;
   overflow-x: auto;
@@ -1282,7 +1282,7 @@ canvas {
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .cloud-drive-home .drive-name {
