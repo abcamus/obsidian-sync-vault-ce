@@ -19,7 +19,7 @@ type oauthMethod = 'get_code' | 'get_token';
 
 interface CloudOAuthParams {
     method: oauthMethod;
-    extra_params?: Record<string, any>;
+    extra_params?: Record<string, unknown>;
 }
 
 let currentAuthState = '';
@@ -55,7 +55,7 @@ class CloudAuthAPI {
         if (!CloudAuthAPI.instances[cloudType]) {
             CloudAuthAPI.instances[cloudType] = new CloudAuthAPI(cloudType);
         }
-        return CloudAuthAPI.instances[cloudType]!;
+        return CloudAuthAPI.instances[cloudType];
     }
 
     async buildQueryCodeUrl(params: CloudOAuthParams): Promise<URL> {
@@ -84,7 +84,7 @@ class CloudAuthAPI {
     }
 }
 
-async function authorize(method: oauthMethod, params?: Record<string, any>): Promise<CheckTokenResult> {
+async function authorize(method: oauthMethod, params?: Record<string, unknown>): Promise<CheckTokenResult> {
     let url;
 
     const cloudAuth = CloudAuthAPI.createAuthManager(cloudDiskModel.selectedCloudDisk);

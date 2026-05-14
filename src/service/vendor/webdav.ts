@@ -117,7 +117,7 @@ export class WebDAVClient {
         for (let i = 0; i < allElements.length; i++) {
             const el = allElements[i];
             if (el.localName === "response") {
-                responses.push(el as Element);
+                responses.push(el);
             }
         }
 
@@ -415,7 +415,7 @@ class WebdavFileManagementService implements CloudFileManagementService {
     async deleteFileById(fileId: string): Promise<void> {
         await this.deleteFile(fileId);
     }
-    async copyFile(from: string, to: string): Promise<any> {
+    async copyFile(from: string, to: string): Promise<unknown> {
         const client = WebDAVClient.getInstance();
         const remoteFromAddr = util.path.join(cloudDiskModel.remoteRootPath, from);
         const remoteToAddr = util.path.join(cloudDiskModel.remoteRootPath, to);

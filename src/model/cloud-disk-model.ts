@@ -115,7 +115,7 @@ class CloudDiskModel {
 	async initBasicInfo() {
 		const user = await Service.info.userInfo();
 		if (user === null) {
-			new Notice('初始化网盘信息失败');
+			new Notice('Init cloud disk information failed');
 			return;
 		}
 
@@ -123,7 +123,7 @@ class CloudDiskModel {
 		if (cloudDiskModel.selectedCloudDisk !== CloudDiskType.Webdav) {
 			storage = await Service.info.storageInfo();
 			if (storage === null) {
-				new Notice(`Init cloud disk failed.`);
+				new Notice('Init cloud disk failed');
 				return;
 			}
 		}
@@ -148,16 +148,16 @@ class CloudDiskModel {
 		if (this.remoteMeta === null) {
 			let metaContent = await Service.download.downloadFileAsString(remoteMetaPath);
 			if (metaContent === null || !validateRemoteMeta(metaContent)) {
-				logger.debug(`no remote meta found at: ${remoteMetaPath}, build a new one`);
+				logger.debug(`No remote meta found at: ${remoteMetaPath}, build a new one`);
 				metaContent = JSON.stringify({
 					name: 'remoteRoot',
 					children: [],
 				});
 			}
 
-			this.remoteMeta = JSON.parse(metaContent);
+			this.remoteMeta = JSON.parse(metaContent) as RemoteMeta;
 		}
-		return this.remoteMeta!;
+		return this.remoteMeta;
 	}
 
 	async getLocalFileContent(localPath: string): Promise<Uint8Array | null> {

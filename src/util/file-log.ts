@@ -46,7 +46,7 @@ export class LogService {
         }
     }
 
-    async logError(error: Error, context: string, details?: any): Promise<void> {
+    async logError(error: Error, context: string, details?: unknown): Promise<void> {
         if (!cloudDiskModel.logMode) {
             return;
         }
@@ -70,7 +70,7 @@ export class LogService {
         }
     }
 
-    async logInfo(message: string, context: string, details?: any): Promise<void> {
+    async logInfo(message: string, context: string, details?: unknown): Promise<void> {
         if (!cloudDiskModel.logMode) {
             return;
         }
@@ -94,7 +94,7 @@ export class LogService {
         }
     }
 
-    private formatInfoEntry(message: string, context: string, details?: any): string {
+    private formatInfoEntry(message: string, context: string, details?: unknown): string {
         return `## [${this.getTimeString()}] ℹ️ ${context}\n`
             + `### 信息\n`
             + `\`\`\`\n${message}\n\`\`\`\n`
@@ -102,7 +102,7 @@ export class LogService {
             + `---\n`;
     }
 
-    private formatLogEntry(error: Error, context: string, details?: any): string {
+    private formatLogEntry(error: Error, context: string, details?: unknown): string {
         return `## [${this.getTimeString()}] ❌ ${context}\n`
             + `### 错误信息\n`
             + `\`\`\`\n${error.message}\n\`\`\`\n`

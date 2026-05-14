@@ -252,7 +252,7 @@ class S3DownloadService implements CloudDownloadService {
         return buffer.toString('utf-8');
     }
 
-    async downloadFile(remoteFilePath: string, remoteFileInfo?: any): Promise<ArrayBuffer | null> {
+    async downloadFile(remoteFilePath: string, remoteFileInfo?: unknown): Promise<ArrayBuffer | null> {
         const buffer = await S3Client.getInstance().downloadToBuffer(remoteFilePath);
         if (!buffer) {
             return null;
@@ -381,7 +381,7 @@ class S3FileManagementService implements CloudFileManagementService {
         }
     }
 
-    async copyFile(from: string, to: string): Promise<any> {
+    async copyFile(from: string, to: string): Promise<void> {
         const remoteFrom = util.path.join(cloudDiskModel.remoteRootPath, from);
         const remoteTo = util.path.join(cloudDiskModel.remoteRootPath, to);
         const success = await S3Client.getInstance().copyObject(remoteFrom, remoteTo);

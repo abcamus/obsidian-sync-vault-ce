@@ -107,6 +107,17 @@
   /* 添加最小宽度 */
 }
 
+.sync-vault-cloud-image {
+  max-width: 400px;
+  border: 1px solid #eee;
+}
+
+.sync-vault-size-limit-prefix {
+  text-align: right !important;
+  border: none !important;
+  background-color: transparent !important;
+}
+
 .sync-progress-container {
   display: flex;
   align-items: center;

@@ -48,7 +48,7 @@ export class SyncVaultPluginView extends ItemView {
             } else {
                 statusItem.append(statusItem.createDiv({ text: `${i18n.t('settingTab.cloudDisk.volume')}: N/A` }));
             }
-        }, (rejectReason: any) => {
+        }, (rejectReason: unknown) => {
             statusItem.append(statusItem.createDiv({ text: i18n.t('settingTab.cloudDisk.getInfoFailed') }));
         });
     }

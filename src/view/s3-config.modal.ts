@@ -17,7 +17,7 @@ export class S3ConfigModal extends Modal {
     onOpen() {
         const { contentEl } = this;
         contentEl.empty();
-        contentEl.createEl('h2', { text: 'S3 Configuration' });
+        contentEl.createEl('h2', { text: 'S3 configuration' });
 
         // Endpoint 配置
         new Setting(contentEl)
@@ -33,7 +33,7 @@ export class S3ConfigModal extends Modal {
         // Region 配置
         new Setting(contentEl)
             .setName('Region')
-            .setDesc('The AWS region for your S3 bucket')
+            .setDesc('Region for your AWS S3 bucket')
             .addText(text => text
                 .setPlaceholder('us-east-1')
                 .setValue(cloudDiskModel.s3Config.region || 'us-east-1')
@@ -43,7 +43,7 @@ export class S3ConfigModal extends Modal {
 
         // Access Key ID
         new Setting(contentEl)
-            .setName('Access Key ID')
+            .setName('Access key ID')
             .setDesc('The access key ID for your S3 account')
             .addText(text => text
                 .setValue(cloudDiskModel.s3Config.accessKeyId || '')
@@ -53,8 +53,8 @@ export class S3ConfigModal extends Modal {
 
         // Secret Access Key
         const secretKeySetting = new Setting(contentEl)
-            .setName('Secret Access Key')
-            .setDesc('The secret access key for your S3 account')
+            .setName('Secret access key')
+            .setDesc('Secret access key for your S3 account')
             .addText(text => {
                 text
                     .setValue(cloudDiskModel.s3Config.secretAccessKey || '')
@@ -86,7 +86,8 @@ export class S3ConfigModal extends Modal {
 
         // Bucket 名称
         new Setting(contentEl)
-            .setName('bucket')
+            .setName('Bucket name')
+            .setDesc('S3 bucket name for storing files')
             .addText(text => text
                 .setValue(cloudDiskModel.s3Config.bucket || '')
                 .onChange(async (value) => {
@@ -96,7 +97,7 @@ export class S3ConfigModal extends Modal {
         // 测试连接按钮
         new Setting(contentEl)
             .addButton(btn => btn
-                .setButtonText('Test Connection')
+                .setButtonText('Test connection')
                 .setCta()
                 .onClick(async () => {
                     try {
@@ -115,7 +116,7 @@ export class S3ConfigModal extends Modal {
             .addButton(btn => btn
                 .setButtonText('Save')
                 .setCta()
-                .onClick(async () => {
+                .onClick(() => {
                     const client = S3Client.getInstance();
                     client.updateConfig(cloudDiskModel.s3Config);
                     this.onSubmit(cloudDiskModel.s3Config);

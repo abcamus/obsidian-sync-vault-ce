@@ -92,7 +92,7 @@ export class AliyunDownloadService implements CloudDownloadService {
             const sliceData = await SmartQueue.getInstance().enqueue(async () => {
                 logger.debug(`[downloadFile] 下载文件, request time: ${new Date().toLocaleString()}`);
                 const response = await requestUrl({
-                    url: downloadUrl!,
+                    url: downloadUrl,
                     headers: {
                         'Range': 'bytes=' + rangeStart + '-' + rangeEnd,
                         'Referer': 'https://www.aliyundrive.com/',

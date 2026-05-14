@@ -1,7 +1,7 @@
 
 export interface CloudDownloadService {
     downloadFileAsString(remoteFilePath: string): Promise<string | null>;
-    downloadFile(remoteFilePath: string, remoteFileInfo?: any): Promise<ArrayBuffer | null>;
+    downloadFile(remoteFilePath: string, remoteFileInfo?: unknown): Promise<ArrayBuffer | null>;
 }
 
 export interface CloudUploadService {
@@ -18,7 +18,7 @@ export interface CloudFileManagementService {
     renameFile(from: string, newName: string): Promise<void>;
     deleteFile(filePath: string): Promise<boolean>;
     deleteFileById(fileId: string): Promise<void>;
-    copyFile(from: string, to: string): Promise<any>;
+    copyFile(from: string, to: string): Promise<unknown>;
     moveFile(from: string, to: string): Promise<void>;
     mkdir(dirPath: string): Promise<void>;
 }

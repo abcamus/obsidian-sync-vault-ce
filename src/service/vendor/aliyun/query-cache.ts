@@ -1,5 +1,5 @@
 export class QueryCache {
-    private cache: Record<string, any> = {};
+    private cache: Record<string, string> = {};
     static instance: QueryCache;
 
     static getInstance() {
@@ -13,7 +13,7 @@ export class QueryCache {
         return this.cache[key];
     }
 
-    set(key: string, value: any) {
+    set(key: string, value: string) {
         this.cache[key] = value;
     }
 

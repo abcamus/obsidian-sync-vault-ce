@@ -1,6 +1,6 @@
 import en from './locales/en';
 import zh from './locales/zh';
-const locales: { [key: string]: any } = {
+const locales: { [key: string]: unknown } = {
     en,
     zh,
 };
@@ -15,7 +15,7 @@ export class I18n {
     }
 
     t(key: string, params?: Record<string, string>): string {
-        return this.getValue(key, params) as string || key;
+        return this.getValue(key, params) || key;
     }
 
     tArray(key: string): string[] {
@@ -23,9 +23,9 @@ export class I18n {
         return Array.isArray(value) ? value : [];
     }
 
-    private getValue(key: string, params?: Record<string, string>): string {
+    private getValue(key: string, params?: Record<string, string>): any {
         const keys = key.split('.');
-        let value = locales[this.locale];
+        let value: any = locales[this.locale];
 
         for (const k of keys) {
             if (value?.[k] === undefined) {

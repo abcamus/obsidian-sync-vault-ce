@@ -3,7 +3,6 @@ import { App, Notice, PluginSettingTab, setIcon, Setting } from "obsidian";
 import { i18n } from "src/i18n";
 import { cloudDiskModel, FtpConfig, S3Config } from "@/model/cloud-disk-model";
 import { CloudDiskType } from "@/types";
-import { checkVersion, UpgradeModal } from "@/util/upgrade";
 
 import * as util from '../util';
 import { WebDAVLoginModal } from "./webdav-login-modal";
@@ -111,7 +110,9 @@ function renderCloudDiskList(
             cls: `cloud-disk-option${selectedName === option.name ? ' selected' : ''}`,
             attr: { 'data-type': option.type }
         });
-        item.createDiv({ cls: 'cloud-disk-logo' }).innerHTML = option.logo;
+        const logoDiv = item.createDiv({ cls: 'cloud-disk-logo' });
+        const svgEl = new DOMParser().parseFromString(option.logo, 'image/svg+xml').documentElement;
+        logoDiv.appendChild(svgEl);
         item.createSpan({ text: option.name, cls: 'cloud-disk-name' });
         item.onclick = () => onSelect(option.type, option.name);
     });
@@ -263,7 +264,7 @@ export class LabeledSettingTab extends PluginSettingTab {
                                     name: result.username,
                                     password: result.password,
                                 };
-                                this.plugin.saveSettings().then(() => {
+                                void this.plugin.saveSettings().then(() => {
                                     new Notice(`${this.plugin.settings.cloudDiskName} login`);
                                     button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
                                 });
@@ -279,7 +280,7 @@ export class LabeledSettingTab extends PluginSettingTab {
                                     username: result.username,
                                     password: result.password,
                                 };
-                                this.plugin.saveSettings().then(() => {
+                                void this.plugin.saveSettings().then(() => {
                                     new Notice(`${this.plugin.settings.cloudDiskName} login`);
                                     button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
                                 });
@@ -287,7 +288,7 @@ export class LabeledSettingTab extends PluginSettingTab {
                         }).open();
                     } else if (cloudDiskModel.selectedCloudDisk === CloudDiskType.S3) {
                         new S3ConfigModal(this.app, (result: S3Config) => {
-                            this.plugin.saveSettings().then(() => {
+                            void this.plugin.saveSettings().then(() => {
                                 // TODO: save settings
                                 this.plugin.settings.s3Account = {
                                     accessKeyId: result.accessKeyId,
@@ -296,7 +297,7 @@ export class LabeledSettingTab extends PluginSettingTab {
                                     endpoint: result.endpoint,
                                     bucket: result.bucket,
                                 };
-                                this.plugin.saveSettings().then(() => {
+                                void this.plugin.saveSettings().then(() => {
                                     new Notice(`${this.plugin.settings.cloudDiskName} login`);
                                     button.setButtonText(i18n.t('settingTab.accessToken.revoke'));
                                 });
@@ -417,9 +418,7 @@ export class LabeledSettingTab extends PluginSettingTab {
                 .setValue(">=")
                 .setDisabled(true)
                 .then(t => {
-                    t.inputEl.style.textAlign = "right";
-                    t.inputEl.style.border = "none";
-                    t.inputEl.style.backgroundColor = "transparent";
+                    t.inputEl.addClass('sync-vault-size-limit-prefix');
                 })
             )
             .addText(text => text
@@ -505,41 +504,6 @@ export class LabeledSettingTab extends PluginSettingTab {
         new Setting(contentEl)
             .setHeading()
             .setName(i18n.t('settingTab.menuUpgradeAndHelp.title'));
-
-        new Setting(contentEl)
-            .setName(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.title'))
-            .addButton(button => {
-                button.buttonEl.style.cursor = 'pointer';
-                return button
-                    .setButtonText(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.checkUpdate'))
-                    .onClick(async () => {
-                        const originalText = button.buttonEl.textContent;
-                        button.setButtonText(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.checking'));
-                        button.buttonEl.disabled = true;
-
-                        try {
-                            const currentVersion = this.plugin.manifest.version;
-                            logger.debug(`当前版本: ${currentVersion}`);
-                            const { hasUpdate, releaseInfo } = await checkVersion(currentVersion);
-                            logger.debug(releaseInfo);
-
-                            if (hasUpdate && releaseInfo) {
-                                new Notice(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.updateAvailable'));
-                                new UpgradeModal(this.app, releaseInfo, this.plugin.manifest).open();
-                            } else {
-                                new Notice(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.latestVersion'));
-                            }
-                        } catch (error) {
-                            logger.error('检查更新失败:', error);
-                            new Notice(i18n.t('settingTab.menuUpgradeAndHelp.upgrade.checkFailed'));
-                        } finally {
-                            // 恢复按钮状态
-                            button.setButtonText(originalText || '');
-                            button.buttonEl.disabled = false;
-                        }
-                    });
-            })
-            .descEl.createEl('a', { text: 'click to view sync vault pro', attr: { href: 'https://kqiu.top/docs/', target: '_blank' } });
 
         new Setting(contentEl)
             .setName(i18n.t('settingTab.menuUpgradeAndHelp.log.title'))

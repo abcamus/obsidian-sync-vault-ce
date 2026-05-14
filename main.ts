@@ -3,7 +3,7 @@ import { Plugin, Workspace, Notice } from 'obsidian';
 import { cloudDiskModel } from "@/model/cloud-disk-model";
 import { DEFAULT_SETTINGS, SyncVaultPluginSetting } from '@/model/setting';
 import { SyncVaultPluginView, CLOUD_DISK_VIEW } from "@/view/content-view";
-import { CloudDiskType, getCloudDiskName } from '@/types';
+import { getCloudDiskName } from '@/types';
 import { Service } from '@/service';
 import * as util from '@/util';
 import { i18n } from '@/i18n';
@@ -18,11 +18,11 @@ export default class SyncVaultPlugin extends Plugin {
 	currentView: string = CLOUD_DISK_VIEW;
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, (await this.loadData()) as SyncVaultPluginSetting);
 		const vaultName = this.app.vault.getName();
 		this.settings.syncPath = vaultName; // force the syncPath the same as vault name
 		cloudDiskModel.autoMode = this.settings.downloadStrategy === 'autoOnLoad';
-		cloudDiskModel.selectedCloudDisk = this.settings.selectedCloudDisk as CloudDiskType;
+		cloudDiskModel.selectedCloudDisk = this.settings.selectedCloudDisk;
 		cloudDiskModel.password = this.settings.password;
 		cloudDiskModel.remoteRootPath = this.settings.syncPath;
 		cloudDiskModel.accessToken = this.settings.accessToken;
@@ -57,7 +57,7 @@ export default class SyncVaultPlugin extends Plugin {
 
 	async saveSettings() {
 		cloudDiskModel.autoMode = this.settings.downloadStrategy === 'autoOnLoad';
-		cloudDiskModel.selectedCloudDisk = this.settings.selectedCloudDisk as CloudDiskType;
+		cloudDiskModel.selectedCloudDisk = this.settings.selectedCloudDisk;
 		cloudDiskModel.remoteRootPath = this.settings.syncPath;
 		cloudDiskModel.password = this.settings.password;
 		cloudDiskModel.accessToken = this.settings.accessToken;
@@ -77,14 +77,14 @@ export default class SyncVaultPlugin extends Plugin {
 		const currentDate = new Date(); // 获取当前日期
 
 		// 比较日期
-		logger.debug(`expiryDate: ${expiryDate}, currentDate: ${currentDate}`);
+		logger.debug(`expiryDate: ${expiryDate.toISOString()}, currentDate: ${currentDate.toISOString()}`);
 		return expiryDate.getTime() <= currentDate.getTime();
 	}
 
 	async checkAndRefreshToken(): Promise<boolean> {
 		const tokenExpiredAt = this.settings.expiryAt;
 		if (this.isTokenExpired(tokenExpiredAt)) {
-			logger.info('access token expired');
+			logger.info('Access token expired');
 			return false;
 		}
 		return true;
@@ -111,14 +111,16 @@ export default class SyncVaultPlugin extends Plugin {
 
 		this.registerInterval(
 			/* 每分钟检查一次token */
-			window.setInterval(async () => await this.checkAndRefreshTokenInterval(), 1000 * 60)
+			window.setInterval(() => {
+				void this.checkAndRefreshTokenInterval();
+			}, 1000 * 60)
 		);
 
 		this.addSettingTab(new LabeledSettingTab(this.app, this));
 
-		this.addRibbonIcon('cloud', i18n.t('plugin.title'), async (evt) => {
+		this.addRibbonIcon('cloud', i18n.t('plugin.title'), async () => {
 			const { workspace } = this.app;
-			this.toggleView(workspace);
+			await this.toggleView(workspace);
 		});
 
 		this.registerView(
@@ -134,13 +136,13 @@ export default class SyncVaultPlugin extends Plugin {
 					const data = await Service.auth.authorize('get_token', { 'code': code, 'state': state });
 					const { access_token, expires_at } = data;
 					if (!access_token || !expires_at) {
-						new Notice('acquire access token failed');
+						new Notice('Acquire access token failed');
 						return;
 					}
 					this.settings.accessToken = access_token;
 					this.settings.expiryAt = expires_at;
 					logger.debug(`access token: ${access_token}, expires_at: ${expires_at}`);
-					this.saveSettings();
+					void this.saveSettings();
 					new Notice(i18n.t('plugin.authorize.success'));
 				}
 			}
@@ -159,8 +161,7 @@ export default class SyncVaultPlugin extends Plugin {
 					// 这里只做占位演示
 					img.src = "https://placehold.co/600x400/e5e7eb/000?text=BD+Image&font=roboto";
 					img.alt = "百度网盘图片";
-					img.style.maxWidth = "400px";
-					img.style.border = "1px solid #eee";
+					img.addClass('sync-vault-cloud-image');
 				}
 			});
 		});
@@ -173,8 +174,8 @@ export default class SyncVaultPlugin extends Plugin {
 	async openContentView(workspace: Workspace) {
 		try {
 			const leaf = workspace.getLeftLeaf(false);
-			await leaf?.setViewState({ type: this.currentView, active: true });
 			if (leaf) {
+				await leaf.setViewState({ type: this.currentView, active: true });
 				await workspace.revealLeaf(leaf);
 			}
 
@@ -193,58 +194,60 @@ export default class SyncVaultPlugin extends Plugin {
 		const leaves = workspace.getLeavesOfType(this.currentView);
 
 		if (leaves.length === 0) {
-			this.openContentView(workspace);
+			await this.openContentView(workspace);
 		} else {
 			/* focus on current view */
-			workspace.revealLeaf(leaves[0]);
+			await workspace.revealLeaf(leaves[0]);
 		}
 	}
 
-	async onunload() {
+	onunload() {
 		logger.info('exiting...');
 
-		try {
-			const queue = util.SmartQueue.getInstance();
-			const stats = queue.getQueueStats();
+		void (async () => {
+			try {
+				const queue = util.SmartQueue.getInstance();
+				const stats = queue.getQueueStats();
 
-			// 计算所有类型的活动任务和待处理任务总数
-			const totalActive = Object.values(stats).reduce(
-				(sum, typeStats) => sum + typeStats.activePromises, 0
-			);
-			const totalPending = Object.values(stats).reduce(
-				(sum, typeStats) => sum + typeStats.queueLength, 0
-			);
-
-			if (totalActive > 0 || totalPending > 0) {
-				// 按任务类型输出详细信息
-				const details = Object.entries(stats)
-					.map(([type, typeStats]) =>
-						`- ${type}:\n` +
-						`  活动任务: ${typeStats.activePromises}\n` +
-						`  待处理: ${typeStats.queueLength}`
-					)
-					.join('\n');
-
-				logger.debug(
-					`等待任务队列完成:\n` +
-					`总计:\n` +
-					`- 活动任务: ${totalActive}\n` +
-					`- 待处理任务: ${totalPending}\n\n` +
-					`详细信息:\n${details}`
+				// 计算所有类型的活动任务和待处理任务总数
+				const totalActive = Object.values(stats).reduce(
+					(sum, typeStats) => sum + typeStats.activePromises, 0
+				);
+				const totalPending = Object.values(stats).reduce(
+					(sum, typeStats) => sum + typeStats.queueLength, 0
 				);
 
-				await queue.shutdown();
-			}
+				if (totalActive > 0 || totalPending > 0) {
+					// 按任务类型输出详细信息
+					const details = Object.entries(stats)
+						.map(([type, typeStats]) =>
+							`- ${type}:\n` +
+							`  活动任务: ${typeStats.activePromises}\n` +
+							`  待处理: ${typeStats.queueLength}`
+						)
+						.join('\n');
 
-		} catch (error) {
-			logger.error('关闭任务队列失败:', error);
-		}
+					logger.debug(
+						`等待任务队列完成:\n` +
+						`总计:\n` +
+						`- 活动任务: ${totalActive}\n` +
+						`- 待处理任务: ${totalPending}\n\n` +
+						`详细信息:\n${details}`
+					);
+
+					await queue.shutdown();
+				}
+
+			} catch (error) {
+				logger.error('关闭任务队列失败:', error);
+			}
+		})();
 
 		logger.info('Bye!');
 	}
 
 	async authorize(callback: (isAuthorized: boolean) => void): Promise<void> {
-		logger.info('start authorize');
+		logger.info('Start authorize');
 		await Service.auth.authorize('get_code');
 		/* TODO: notify */
 		if (callback) {

@@ -1,7 +1,7 @@
 type SimpleQueueTask<T> = () => Promise<T>;
 
 export class SimpleQueue {
-  private queue: SimpleQueueTask<any>[] = [];
+  private queue: SimpleQueueTask<unknown>[] = [];
   private isProcessing = false;
 
   /**

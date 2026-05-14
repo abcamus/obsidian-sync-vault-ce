@@ -103,7 +103,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
 
         try {
             const localNodes: LocalFileNode[] = pathToLoad.length === 0 ? fileState.rootNode?.children || [] : findFolderByPath(fileState.rootNode, pathToLoad)?.children || [];
-            const remoteNodes = metaInfo.getRemoteContentsByPath(fileState.remoteMeta!, pathToLoad);
+            const remoteNodes = metaInfo.getRemoteContentsByPath(fileState.remoteMeta, pathToLoad);
             const mergedContents = new Map<string, LocalFileNode>();
             localNodes.forEach(item => {
                 mergedContents.set(item.name, item);
@@ -330,7 +330,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                 return;
             }
 
-            const localNode = findNodeAt(fileState.rootNode!, file.path);
+            const localNode = findNodeAt(fileState.rootNode, file.path);
             if (!localNode) {
                 logger.error(`node: ${file.path} not found, maybe rootNode is broken`);
                 return;
@@ -349,7 +349,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
             logger.debug(`[onFileModify] status, from: ${localNode.syncStatus}, to: ${newStatus}`);
             newLocalNode.syncStatus = newStatus;
 
-            insertNodeAt(fileState.rootNode!, file.path, newLocalNode);
+            insertNodeAt(fileState.rootNode, file.path, newLocalNode);
 
             /* 在非加密模式下，如果文件在远端存在，则需要上传 */
             if (metaInfo.findRemoteFile(fileState.remoteMeta!, file.path) && shouldUpload(newStatus)) {

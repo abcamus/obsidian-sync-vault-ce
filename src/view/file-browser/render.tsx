@@ -72,7 +72,7 @@ const formatDate = (date: Date | undefined) => {
  * @returns 同步状态图标
  */
 export const getSyncStatusIcon = (syncStatus: SyncStatus, remoteEncrypt: boolean | undefined, onSyncClick: (action: 'upload' | 'download' | 'stop' | null) => void) => {
-    const renderIcon = (icon: JSX.Element, title: string, action: 'upload' | 'download' | 'stop' | null) => (
+    const renderIcon = (icon: React.JSX.Element, title: string, action: 'upload' | 'download' | 'stop' | null) => (
         <Tooltip title={title} arrow>
             {React.cloneElement(icon, {
                 onClick: () => onSyncClick(action),
@@ -82,7 +82,7 @@ export const getSyncStatusIcon = (syncStatus: SyncStatus, remoteEncrypt: boolean
         </Tooltip>
     );
 
-    const statusIcon = (icon: JSX.Element, lock = false) => {
+    const statusIcon = (icon: React.JSX.Element, lock = false) => {
         return (
             <StyledIcon $hoverable={false}>
                 {icon}
@@ -179,7 +179,9 @@ const renderFileSyncStatus = (file: LocalFileNode, onClick: (action: 'upload' | 
                     {syncProgress.completed}/{syncProgress.total}
                 </span>
             ) : (
-                getSyncStatusIcon(file.syncStatus, file.remoteEncrypt, (action) => onClick(action, file))
+                getSyncStatusIcon(file.syncStatus, file.remoteEncrypt, (action) => {
+                    void onClick(action, file);
+                })
             )}
         </div>
     );

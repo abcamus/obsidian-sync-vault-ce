@@ -161,7 +161,7 @@ export function renameMetaNode(root: RemoteMeta, from: string, to: string) {
     return true;
 }
 
-function processChildren(children: any[]): LocalFileNode[] {
+function processChildren(children: RemoteFileNode[]): LocalFileNode[] {
     return children?.map((child): LocalFileNode => (
         {
             name: child.name,

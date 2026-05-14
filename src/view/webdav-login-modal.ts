@@ -19,14 +19,14 @@ export class WebDAVLoginModal extends Modal {
     onOpen() {
         const { contentEl } = this;
         contentEl.empty();
-        contentEl.createEl("h2", { text: "WebDAV 登录" });
+        contentEl.createEl("h2", { text: "WebDAV Login" });
 
         let url = cloudDiskModel.webdavUrl;
         let username = cloudDiskModel.webdavUsername;
         let password = cloudDiskModel.webdavPassword;
 
         new Setting(contentEl)
-            .setName("WebDAV 服务器地址")
+            .setName("WebDAV server URL")
             .addText((text) =>
                 text
                     .setValue(url)
@@ -35,19 +35,19 @@ export class WebDAVLoginModal extends Modal {
             );
 
         new Setting(contentEl)
-            .setName("用户名")
+            .setName("Username")
             .addText((text) =>
                 text
-                    .setPlaceholder("用户名")
+                    .setPlaceholder("Username")
                     .setValue(username)
                     .onChange((value) => (username = value))
             );
 
         new Setting(contentEl)
-            .setName("密码")
+            .setName("Password")
             .addText((text) => {
                 text
-                    .setPlaceholder("密码")
+                    .setPlaceholder("Password")
                     .setValue(password)
                     .onChange((value) => (password = value));
                 if (text.inputEl) {
@@ -58,11 +58,11 @@ export class WebDAVLoginModal extends Modal {
         new Setting(contentEl)
             .addButton((btn) =>
                 btn
-                    .setButtonText("登录")
+                    .setButtonText("Login")
                     .setCta()
                     .onClick(() => {
                         if (!url || !username || !password) {
-                            new Notice("请填写所有字段");
+                            new Notice("Please fill in all fields");
                             return;
                         }
                         this.result = { url, username, password };

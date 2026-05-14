@@ -17,9 +17,9 @@ interface RateLimit {
 }
 
 interface QueueItem {
-    task: () => Promise<any>;
-    resolve: (value: any) => void;
-    reject: (error: any) => void;
+    task: () => Promise<unknown>;
+    resolve: (value: unknown) => void;
+    reject: (error: unknown) => void;
     priority: number;
     retryCount: number;
     taskId: string;
@@ -34,7 +34,7 @@ export class SmartQueue {
     private isProcessing: Map<TaskType, boolean> = new Map();
     private running: Map<TaskType, number> = new Map();
     private isShuttingDown = false;
-    private activePromises: Map<TaskType, Set<Promise<any>>> = new Map();
+    private activePromises: Map<TaskType, Set<Promise<unknown>>> = new Map();
     private readonly SHUTDOWN_TIMEOUT = 30000; // 30s timeout
 
     /**
@@ -211,7 +211,7 @@ export class SmartQueue {
 
                 const result = await item.task();
                 item.resolve(result);
-            } catch (error: any) {
+            } catch (error) {
                 await this.handleError(item, error);
             } finally {
                 this.running.set(taskType, this.running.get(taskType)! - 1);
@@ -262,7 +262,7 @@ export class SmartQueue {
         return queue.shift() || null;
     }
 
-    private async handleError(item: QueueItem, error: any) {
+    private async handleError(item: QueueItem, error: Error) {
         if (error?.message?.includes('403')) {
             logger.info(`task: ${item.taskId} 403, retry: ${item.retryCount}, message: ${error.message}`);
             if (item.retryCount < 5) {
@@ -295,14 +295,24 @@ export class SmartQueue {
     }
 
     // 获取队列状态
-    getQueueStats() {
-        const stats: Record<string, any> = {};
+    getQueueStats(): Record<TaskType, {
+        queueLength: number;
+        running: number;
+        activePromises: number;
+        isProcessing: boolean;
+    }> {
+        const stats = {} as Record<TaskType, {
+            queueLength: number;
+            running: number;
+            activePromises: number;
+            isProcessing: boolean;
+        }>;
         Object.values(TaskType).forEach(type => {
             stats[type] = {
                 queueLength: this.queues.get(type)!.length,
-                running: this.running.get(type),
+                running: this.running.get(type) || 0,
                 activePromises: this.activePromises.get(type)!.size,
-                isProcessing: this.isProcessing.get(type)
+                isProcessing: this.isProcessing.get(type) || false
             };
         });
         return stats;
