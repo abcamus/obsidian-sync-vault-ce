@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.8] - 2026-05-15
+
+* 修复：lint
+* 优化：看板协作按钮点击后进入协作管理视图。
+
 ## [1.13.7] - 2026-05-13
 
 * 修复：阿里云盘安卓 hls 播放问题。
