@@ -12,6 +12,7 @@
   <a href="https://github.com/abcamus/obsidian-sync-vault-ce/releases"><img src="https://img.shields.io/github/downloads/abcamus/obsidian-sync-vault-ce/total?style=flat-square" alt="Total Downloads"></a>
   <br>
   <a href="https://kqiu.top"><img src="https://img.shields.io/badge/Official%20Site-Visit-blue?style=flat-square" alt="Official Site"></a>
+  <a href="https://discord.gg/GT6B8keY"><img src="https://img.shields.io/badge/Discord-Join%20Community-7289DA?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
 </p>
 
 <p align="center">
@@ -183,6 +184,7 @@ In Cursor/Trae's MCP settings, choose to manually add MCP Server (Sync Vault MCP
 - 🤖 AI Infrastructure
 
 ## 🔗 Quick Links
+- [💬 Discord](https://discord.gg/GT6B8keY)
 - [📖 Documentation](https://kqiu.top/docs/)
 - [💬 Discussions](https://github.com/abcamus/obsidian-sync-vault-ce/discussions)
 - [🐛 Report Bug](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=bug_report.md)

@@ -12,6 +12,7 @@
   <a href="https://github.com/abcamus/obsidian-sync-vault-ce/releases"><img src="https://img.shields.io/github/downloads/abcamus/obsidian-sync-vault-ce/total?style=flat-square" alt="Total Downloads"></a>
   <br>
   <a href="https://kqiu.top"><img src="https://img.shields.io/badge/官网-点击访问-blue?style=flat-square" alt="访问官网"></a>
+  <a href="https://discord.gg/GT6B8keY"><img src="https://img.shields.io/badge/Discord-加入社区-7289DA?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
 </p>
 
 <p align="center">
@@ -185,6 +186,7 @@ obsidian sync-vault:doctor cloud=aliyun
 - 🤖 AI Infra
 
 ## 🔗 Quick Links
+- [💬 Discord](https://discord.gg/GT6B8keY)
 - [📖 Documentation](https://kqiu.top/docs/)
 - [💬 Discussions](https://github.com/abcamus/obsidian-sync-vault-ce/discussions)
 - [🐛 Report Bug](https://github.com/abcamus/obsidian-sync-vault-ce/issues/new?template=bug_report.md)
