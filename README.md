@@ -1,7 +1,7 @@
-<h1 align="center">🌟 Sync Vault</h1>
+# 🌟 Sync Vault
 
 <p align="center">
-  <a href="./README_EN.md">English</a>
+  <a href="./README_ZH.md">中文</a>
 </p>
 
 <p align="center">
@@ -11,61 +11,61 @@
   <a href="https://github.com/abcamus/obsidian-sync-vault-ce/releases"><img src="https://img.shields.io/github/v/release/abcamus/obsidian-sync-vault-ce?include_prereleases&style=flat-square" alt="Latest Release"></a>
   <a href="https://github.com/abcamus/obsidian-sync-vault-ce/releases"><img src="https://img.shields.io/github/downloads/abcamus/obsidian-sync-vault-ce/total?style=flat-square" alt="Total Downloads"></a>
   <br>
-  <a href="https://kqiu.top"><img src="https://img.shields.io/badge/官网-点击访问-blue?style=flat-square" alt="访问官网"></a>
-  <a href="https://discord.gg/GT6B8keY"><img src="https://img.shields.io/badge/Discord-加入社区-7289DA?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://kqiu.top"><img src="https://img.shields.io/badge/Official%20Site-Visit-blue?style=flat-square" alt="Official Site"></a>
+  <a href="https://discord.gg/GT6B8keY"><img src="https://img.shields.io/badge/Discord-Join%20Community-7289DA?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
 </p>
 
 <p align="center">
-  连接 TB 级网盘与 Obsidian AI 大脑，跨设备免本地存储轻松同步、链接一切资源。
+  The missing bridge between your 10 TB cloud drive and your AI brain. Access, sync, and link everything—images, PDFs, audio, video—across devices without filling up local storage.
 </p>
 
-## 主要功能简介
+## Key Features
 
-### 🔗 链接笔记和云盘资源
+### 🔗 Link Notes and Cloud Resources
 
-> 基于文件ID和文件路径生成链接，经插件渲染后集成到Obsidian笔记中。
+> Generate links based on file ID and path, integrated into Obsidian notes after rendering.
 
-- `[]()` 格式链接云盘资源。
-- `![]()` 格式嵌入云盘资源。
+- `[]()` format to link cloud resources.
+- `![]()` format to embed cloud resources.
 
 ### 🤖 MCP Server
 
-内置 [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) Server，允许 LLM / AI Agent 直接读取和操作网盘中的文件。
+Built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) Server, allowing LLMs / AI Agents to directly access and operate on files in your Cloud Storage.
 
-- 兼容 Claude Code、Cursor 等支持 MCP 的客户端。
-- 通过 SSE (Server-Sent Events) 提供实时上下文访问。
+- Compatible with MCP-supported clients such as Claude Code and Cursor.
+- Provides real-time context access via SSE (Server-Sent Events).
 
-#### 🛠️ 工具调用能力 (MCP Tools)
+#### 🛠️ MCP Tool Capabilities
 
-| 工具名称 | 功能描述 | 备注 |
+| Tool Name | Description | Note |
 | :--- | :--- | :--- |
-| `get_cloud_account_info` | 获取云端账户及存储容量信息 | |
-| `list_cloud_files` | 列出云端指定路径的文件和文件夹 | |
-| `read_cloud_file` | 读取云端文件内容（支持流式读取） | |
-| `create_cloud_file` | 在云端创建新文件或文件夹 | |
-| `delete_cloud_file` | 删除云端文件或文件夹 | |
-| `move_cloud_file` | 移动云端文件或文件夹 | |
-| `rename_cloud_file` | 重命名云端文件或文件夹 | |
-| `download_cloud_file` | 下载云端文件到本地 | |
-| `upload_cloud_file` | 上传本地文件到云端 | |
-| `semantic_search` | 基于语义的全局搜索 | 仅限百度网盘 |
-| `sharelink_set` | 设置/创建分享链接 | 仅限百度网盘 |
-| `upload_by_url` | 通过离线 URL 任务上传 | 仅限百度网盘 |
+| `get_cloud_account_info` | Get cloud account and storage capacity info | |
+| `list_cloud_files` | List files and folders at a specified cloud path | |
+| `read_cloud_file` | Read cloud file content (supports streaming) | |
+| `create_cloud_file` | Create a new file or folder in the cloud | |
+| `delete_cloud_file` | Delete a cloud file or folder | |
+| `move_cloud_file` | Move a cloud file or folder | |
+| `rename_cloud_file` | Rename a cloud file or folder | |
+| `download_cloud_file` | Download a cloud file to local storage | |
+| `upload_cloud_file` | Upload a local file to the cloud | |
+| `semantic_search` | Global search based on semantics | Baidu Netdisk only |
+| `sharelink_set` | Set/Create a sharing link | Baidu Netdisk only |
+| `upload_by_url` | Upload via offline URL task | Baidu Netdisk only |
 
-### 💻 CLI 命令（1.13.0）
+### 💻 CLI Commands (1.13.0)
 
-Sync Vault 提供 Obsidian CLI 命令，便于自动化脚本与 AI Agent 编排：
+Sync Vault provides Obsidian CLI commands for automation scripts and AI Agent workflows:
 
-| 命令 | 用途 | 常用参数 |
+| Command | Purpose | Common Parameters |
 | :--- | :--- | :--- |
-| `sync-vault:help` | 查看命令帮助 | `help=true` |
-| `sync-vault:list` | 列出云端目录（支持分页/过滤/递归） | `path` `cloud` `limit` `offset` `type` `minSize` `modifiedAfter` `recursive` |
-| `sync-vault:search` | 搜索云端文件（支持分页/类型过滤） | `query` `cloud` `limit` `offset` `path` `type` |
-| `sync-vault:read` | 读取云端文件内容 | `path` `cloud` `maxLength` |
-| `sync-vault:info` | 获取账号与容量信息（结构化状态） | `cloud` |
-| `sync-vault:doctor` | 诊断同步健康状态 | `cloud` |
+| `sync-vault:help` | Show CLI command help | `help=true` |
+| `sync-vault:list` | List cloud directory files (pagination/filter/recursive) | `path` `cloud` `limit` `offset` `type` `minSize` `modifiedAfter` `recursive` |
+| `sync-vault:search` | Search cloud files (with pagination/type filter) | `query` `cloud` `limit` `offset` `path` `type` |
+| `sync-vault:read` | Read cloud file content | `path` `cloud` `maxLength` |
+| `sync-vault:info` | Get account and storage status | `cloud` |
+| `sync-vault:doctor` | Diagnose Sync Vault health status | `cloud` |
 
-常用示例：
+Common examples:
 
 ```bash
 obsidian sync-vault:list path=/ cloud=aliyun limit=100 offset=0
@@ -75,115 +75,113 @@ obsidian sync-vault:info cloud=aliyun
 obsidian sync-vault:doctor cloud=aliyun
 ```
 
-> 提示：所有子命令均支持 `help=true` 查看该命令参数。
+> Tip: all sub-commands support `help=true` to show command-specific usage.
 
-### ✨ 备份
+### ✨ Backup
 
-[介绍](https://mp.weixin.qq.com/s/zct07eny-LcMTiYjb49k9w)
+[Introduction](https://mp.weixin.qq.com/s/zct07eny-LcMTiYjb49k9w)
 
-- 轻松上传资料到多种网盘。
-- 自由切换云端仓库，备份资料到多个目录。
+- Easily upload data to various cloud drives.
+- Freely switch cloud vaults and backup data to multiple directories.
 
-### 🔄 多设备自动同步
+### 🔄 Multi-device Auto Sync
 
-[百度网盘双向同步演示](https://github.com/user-attachments/assets/fbc8c22a-9de2-42c4-b676-753007e5e031)
+[Baidu Netdisk Bi-directional Sync Demo](https://github.com/user-attachments/assets/fbc8c22a-9de2-42c4-b676-753007e5e031)
 
-- 支持双向同步和单向同步，自动识别文件删除 & 移动操作。
-- 内容冲突自动合并。
-- 文件删除可恢复。
-- 忽略大文件，按照正则表达式忽略对应名字文件。
-- 同步第三方插件和主题。
-- Markdown 文件端到端加密。
+- Supports bi-directional and one-way sync, automatically identifies file deletion & move operations.
+- Automatic merge of content conflicts.
+- File deletion is recoverable.
+- Ignore large files, ignore files by name using regular expressions.
+- Sync third-party plugins and themes.
+- End-to-end encryption for Markdown files.
 
-### 🤝 多人协同编辑
+### 🤝 Collaborative Editing
 
-分布式多人协同编辑，[演示](https://github.com/user-attachments/assets/85d63239-2c5c-4d73-8774-f4ea2f93f426)。
+Distributed collaborative editing, [Demo](https://github.com/user-attachments/assets/85d63239-2c5c-4d73-8774-f4ea2f93f426).
 
+## 📱 Cloud Service Features
 
-## 📱 云服务能力表
+| No. | Cloud Service | Supported Features |
+| :-- | :------------ | :----------------- |
+| 1 | Baidu Netdisk | Backup, Sync, Online Image Preview, Online PDF Reading, Video Playback, Audio Playback, Cloud Link |
+| 2 | OneDrive | Backup, Sync, Online Image Preview, Online PDF Reading, Audio Playback, Video Playback, Cloud Link |
+| 3 | Aliyun Drive | Backup, Sync, Online Image Preview, Online PDF Reading, Audio Playback, Video Playback, Cloud Link |
+| 4 | 115 Drive | Online Image Preview, Online PDF Reading, Audio Playback, Video Playback, Cloud Link |
+| 5 | Quark Drive | Backup, Sync, Online Image Preview, Online PDF Reading, Cloud Link |
+| 6 | Tencent COS | Backup, Sync |
+| 7 | Nutstore | Backup, Sync |
+| 8 | InfiniCloud | Backup, Sync |
+| 9 | 123 Pan | Backup, Sync |
 
-| 编号  | 云服务         | 支持的功能                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| :-- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | 百度网盘        | 备份、同步、图片预览、PDF阅读、视频播放、音频播放、网盘超链接 |
-| 2   | OneDrive    | 备份、同步、图片预览、PDF阅读、音频播放、视频播放、网盘超链接                                                                                                                                                                                                                                                                                                                                                                                   |
-| 3   | 阿里云盘        | 备份、同步、图片预览、PDF阅读、音频播放、视频播放、网盘超链接                                                                                                                                                                                                                                                                                                                                                                                        |
-| 4   | 115网盘       | 图片预览、PDF阅读、音频播放、视频播放、网盘超链接                                                                                                                                                                                                                                                                                                                                                                                                  |
-| 5   | 夸克网盘        | 备份、同步、图片预览、PDF阅读、网盘超链接                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 6   | 腾讯COS       | 备份、同步                                                                                                                                                                                                                                                                                                                                                                                                           |
-| 7   | 坚果云         | 备份、同步                                                                                                                                                                                                                                                                                                                                                                                                           |
-| 8   | InfiniCloud | 备份、同步                                                                                                                                                                                                                                                                                                                                                                                                           |
-| 9   | 123云盘       | 备份、同步                                                                                                                                                                                                                                                                                                                                                                                                           |
+## ⚙️ Installation and Usage
 
+### Install from Plugin Market
 
-## ⚙️ 安装和使用
+Search for `sync vault ce` in the plugin market, or [click here](https://obsidian.md/plugins?id=sync-vault-ce) to install quickly.
 
-### 从插件市场安装
+### Get Started
 
-插件市场搜索 `sync vault ce`，或 [点击链接](https://obsidian.md/plugins?id=sync-vault-ce) 快速安装。
+1. Click the ☁️ icon in the sidebar to open the dashboard, then find the "Beginner Guide" button in the Quick Actions card.
+2. Click the **Beginner Guide** button and follow the prompts to complete cloud drive login and sync mode settings.
 
-### 开始使用
-
-1. 点击侧边栏 ☁️ 图标，打开看板后，在快捷操作卡片找到新手引导按钮。
-2. 点击 **新手引导** 按钮，按照提示完成网盘登陆和同步模式设置。
-
-### 配置MCP(SSE)
+### Configure MCP (SSE)
 
 #### Claude Code CLI
 
-  在 `.claude/mcp.json` 中添加如下代码(注：3000修改为实际的端口)：
-  ```json
-  {
-    "mcpServers": {
-      "sync-vault-mcp": {
-        "type": "sse",
-          "url": "http://127.0.0.1:3000/sse"
-        }
+Add the following code in `.claude/mcp.json` (Note: change 3000 to the actual port):
+```json
+{
+  "mcpServers": {
+    "sync-vault-mcp": {
+      "type": "sse",
+      "url": "http://127.0.0.1:3000/sse"
     }
   }
-  ```
+}
+```
 
 #### Claude Desktop
 
-> Claude Desktop由于只支持 STDIO 方式接入MCP Server，可选择桥接器转接 Sync Vault MCP，这里可以选择 sse-bridge。
+> Since Claude Desktop only supports STDIO method to connect MCP Server, you can choose a bridge to connect Sync Vault MCP. Here you can choose sse-bridge.
 
 1. `npm install -g @mcpwizard/sse-bridge`
-2. 在 Claude Desktop 【设置】-【开发者】中点击编辑配置按钮，复制粘贴以下代码。
-  ```json
-  {
-    "mcpServers": {
-      "sync-vault-mcp": {
-        "command": "npx",
-        "args": [
-          "@mcpwizard/sse-bridge",
-          "http://127.0.0.1:3000/sse"
-        ]
-      }
+2. In Claude Desktop [Settings] - [Developer], click the edit configuration button, copy and paste the following code.
+```json
+{
+  "mcpServers": {
+    "sync-vault-mcp": {
+      "command": "npx",
+      "args": [
+        "@mcpwizard/sse-bridge",
+        "http://127.0.0.1:3000/sse"
+      ]
     }
   }
-  ```
+}
+```
 
 #### Cursor/Trae
 
-在 Cursor/Trae 的MCP设置中，选择手动添加 MCP Server（Sync Vault MCP 默认 `http://127.0.0.1:3000/sse`）。
+In Cursor/Trae's MCP settings, choose to manually add MCP Server (Sync Vault MCP defaults to `http://127.0.0.1:3000/sse`).
 
 ```json
 {
   "mcpServers": {
     "sync-vault-mcp": {
       "type": "sse",
-        "url": "http://127.0.0.1:3000/sse"
-      }
+      "url": "http://127.0.0.1:3000/sse"
+    }
   }
 }
 ```
 
 ## 🗺️ Roadmap
 
-- 🌐 更多云服务
-- 🏠 多人协同
-- 🎨 更好的用户体验
-- ⎔ 支持Zotero
-- 🤖 AI Infra
+- 🌐 More Cloud Services
+- 🏠 Collaborative Editing
+- 🎨 Better User Experience
+- ⎔ Zotero Support
+- 🤖 AI Infrastructure
 
 ## 🔗 Quick Links
 - [💬 Discord](https://discord.gg/GT6B8keY)

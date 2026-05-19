@@ -1,9 +1,9 @@
 {
 	"id": "sync-vault-ce",
 	"name": "Sync Vault",
-	"version": "1.13.9",
+	"version": "1.13.10",
 	"minAppVersion": "1.5.8",
-	"description": "Professional cloud sync & VFS for Obsidian. Features zero-space VFS, 4K streaming, MCP AI engine, and P2P collaboration. Supports Baidu/Aliyun/Quark/WebDAV/S3.",
+	"description": "Professional cloud sync & VFS. Features zero-space VFS, 4K streaming, MCP AI engine, and P2P collaboration. Supports Baidu/Aliyun/Quark/WebDAV/S3.",
 	"author": "Camus Qiu",
 	"authorUrl": "https://kqiu.top",
 	"fundingUrl": "https://kqiu.top/product/sync-vault/",

@@ -1,6 +1,5 @@
 // cos-client.ts
 import { requestUrl } from 'obsidian';
-import * as CryptoJS from 'crypto-js';
 import { XMLParser } from "fast-xml-parser";
 
 import * as util from '@/util';
@@ -133,13 +132,17 @@ export class TencentCosClient {
             .join('');
     }
 
-    private sha1Hash(data: string): string {
-        return CryptoJS.SHA1(data).toString(CryptoJS.enc.Hex);
+    private async sha1Hash(data: string): Promise<string> {
+        const encoder = new TextEncoder();
+        const dataUint8 = encoder.encode(data);
+        const hashBuffer = await crypto.subtle.digest('SHA-1', dataUint8);
+        return Array.from(new Uint8Array(hashBuffer))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
     }
 
     private calculateMD5Hash(content: string): string {
-        const md5Hash = CryptoJS.MD5(content);
-        return CryptoJS.enc.Base64.stringify(md5Hash);
+        return util.md5.calculateMD5Base64(content);
     }
 
 
@@ -195,11 +198,11 @@ export class TencentCosClient {
         logger.debug({ httpString });
 
         // 8. 生成 StringToSign
-        const sha256Hash = this.sha1Hash(httpString);
+        const sha1Hash = await this.sha1Hash(httpString);
         const stringToSign = [
             'sha1',
             keyTime,
-            sha256Hash,
+            sha1Hash,
             ''  // 以空行结尾
         ].join('\n');
 
