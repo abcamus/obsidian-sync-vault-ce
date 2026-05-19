@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.10] - 2026-05-19
+
+* Fix: Clicking virtual files in the collaboration view failed to trigger hydration.
+* Fix: Incorrect display of the innermost folder in multi-level virtual directories.
+* Improve: Added more detailed error messages to the sync log view.
+
 ## [1.13.9] - 2026-05-18
 
 * Fix: cli list cache incorrect.
