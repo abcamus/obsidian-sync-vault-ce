@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.14.3] - 2026-05-30
+
+* 修复：OneDrive 播放中文路径音乐问题。
+* 修复：重启插件后，未自动登陆当前网盘。
+* 修复：播放百度网盘视频有时出现“文件未找到错误”。
+* 优化：合并 webrtc datachannel 和 relay 协议层。
+
+* Fixed: Issue with playing music files containing Chinese characters in OneDrive paths.
+* Fixed: Plugin not automatically logging into the current cloud drive after restart.
+* Fixed: Occasional "File not found" error when playing videos from Baidu Cloud Drive.
+* Optimized: Merged WebRTC DataChannel and relay protocol layers.
+
 # [1.14.0] - 2026-05-22
 
 * **Enhanced Multimedia Experience**: The video player now features a native frame capture (snapshot) capability. Interaction has been improved with intuitive hotkeys: `Space` for play/pause toggling, and `Left/Right Arrows` for precise 5-second seeking.
