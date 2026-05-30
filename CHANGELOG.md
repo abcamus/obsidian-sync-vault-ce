@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.14.4] - 2026-05-30
+
+* 修复：腾讯COS header字段未兼容Android。
+* 修复：夸克网盘缓存问题导致未识别指纹数据。
+
+* Fixed: Tencent COS header fields were not compatible with Android.
+* Fixed: Quark cloud drive cache issue caused failure to recognize fingerprint data.
+
 # [1.14.3] - 2026-05-30
 
 * 修复：OneDrive 播放中文路径音乐问题。
