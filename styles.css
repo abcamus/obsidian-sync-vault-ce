@@ -127,9 +127,9 @@
 }
 
 .sync-vault-size-limit-prefix {
-  text-align: right !important;
-  border: none !important;
-  background-color: transparent !important;
+  text-align: right;
+  border: none;
+  background-color: transparent;
 }
 
 /* 旋转的色环 */
@@ -214,11 +214,11 @@
 .video-player-main-container.web-fullscreen .cloud-video-wrapper,
 .video-player-main-container.web-fullscreen .cloud-video-container,
 .video-player-main-container.web-fullscreen .cloud-video-player-wrapper {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: none !important;
-  aspect-ratio: auto !important;
-  border-radius: 0 !important;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+  border-radius: 0;
 }
 
 
@@ -1599,7 +1599,7 @@ canvas {
 }
 
 .sync-vault-cloud-status {
-  position: absolute !important;
+  position: absolute;
 }
 
 /* dashboard */
@@ -2099,31 +2099,31 @@ canvas {
 
 /* 全局控制所有WebVTT字幕样式（::cue 专用伪元素） */
 ::cue {
-  color: #ffffff !important;
-  font-size: clamp(16px, 2.5vw, 20px) !important;
+  color: #ffffff;
+  font-size: clamp(16px, 2.5vw, 20px);
   /* 响应式字体，适配不同屏幕 */
-  font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", sans-serif !important;
+  font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", sans-serif;
   /* 扩展中文字体兼容，增加西文字体兜底 */
-  font-weight: 500 !important;
-  line-height: 1.6 !important;
-  text-align: center !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6) !important;
+  font-weight: 500;
+  line-height: 1.6;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6);
 
-  background-color: rgba(0, 0, 0, 0.6) !important;
-  background-clip: text !important;
-  padding: 6px 14px !important;
-  border-radius: 8px !important;
-  box-decoration-break: clone !important;
+  background-color: rgba(0, 0, 0, 0.6);
+  background-clip: text;
+  padding: 6px 14px;
+  border-radius: 8px;
+  box-decoration-break: clone;
 
-  white-space: pre-wrap !important;
-  word-wrap: break-word !important;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 ::cue(.custom-subtitle) {
-  color: #ffdf00 !important;
-  background-color: rgba(0, 0, 0, 0.7) !important;
-  font-weight: 600 !important;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.7) !important;
+  color: #ffdf00;
+  background-color: rgba(0, 0, 0, 0.7);
+  font-weight: 600;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.7);
 }
 
 video {
@@ -2137,34 +2137,34 @@ video {
 track {
   display: block;
   position: absolute;
-  bottom: 80px !important;
+  bottom: 80px;
   left: 0;
   right: 0;
-  margin: 0 auto !important;
-  max-width: 90% !important;
+  margin: 0 auto;
+  max-width: 90%;
   pointer-events: none;
 }
 
 @media (max-width: 768px) {
   ::cue {
-    font-size: clamp(14px, 3vw, 18px) !important;
-    padding: 4px 10px !important;
-    border-radius: 6px !important;
+    font-size: clamp(14px, 3vw, 18px);
+    padding: 4px 10px;
+    border-radius: 6px;
   }
 
   track {
-    bottom: 60px !important;
-    max-width: 95% !important;
+    bottom: 60px;
+    max-width: 95%;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   ::cue {
-    background-color: rgba(0, 0, 0, 0.7) !important;
+    background-color: rgba(0, 0, 0, 0.7);
   }
 
   ::cue(.custom-subtitle) {
-    background-color: rgba(0, 0, 0, 0.8) !important;
+    background-color: rgba(0, 0, 0, 0.8);
   }
 }
 
