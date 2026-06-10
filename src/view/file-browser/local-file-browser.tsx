@@ -223,7 +223,7 @@ const LocalFileBrowser: React.FC<FileBrowserProps> = ({ vault, currentPath, onFi
                     return;
                 }
                 logger.info('CloudDiskModel not initialized yet, waiting...');
-                setTimeout(() => {
+                window.setTimeout(() => {
                     void loadRemoteMeta(retryCount + 1);
                 }, 1000);
                 return;

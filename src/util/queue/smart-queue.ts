@@ -118,7 +118,7 @@ export class SmartQueue {
                         await Promise.race([
                             Promise.all(Array.from(promises)),
                             new Promise((_, reject) => {
-                                setTimeout(() => {
+                                window.setTimeout(() => {
                                     reject(new Error(`${type} tasks shutdown timeout`));
                                 }, this.SHUTDOWN_TIMEOUT);
                             })
@@ -269,7 +269,7 @@ export class SmartQueue {
                 item.retryCount++;
                 item.priority++;
                 // 延迟后重新加入队列
-                setTimeout(() => {
+                window.setTimeout(() => {
                     this.queues.get(item.taskType)!.push(item);
                     if (!this.isProcessing.get(item.taskType)) {
                         void this.startQueueProcessor(item.taskType);
@@ -284,7 +284,7 @@ export class SmartQueue {
     }
 
     private wait(ms: number): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => window.setTimeout(resolve, ms));
     }
 
     private getCurrentQPS(): number {

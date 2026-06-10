@@ -26,7 +26,7 @@ class CloudImageWidget extends WidgetType {
 
     toDOM(): HTMLElement {
         // 图片
-        const img = document.createElement("img");
+        const img = window.activeDocument.createElement("img");
         img.src = this.imgUrl;
         img.addClass("sync-vault-image-preview");
         return img;

@@ -59,9 +59,9 @@ export class SimpleQueue {
 
   waitUntilEmpty(): Promise<void> {
     return new Promise((resolve) => {
-      const interval = setInterval(() => {
+      const interval = window.setInterval(() => {
         if (this.isEmpty) {
-          clearInterval(interval);
+          window.clearInterval(interval);
           resolve();
         }
       }, 100);

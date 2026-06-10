@@ -53,7 +53,7 @@ export class MetaOperationQueue {
                 const operation = this.queue[0];
                 await this.processOperation(operation);
                 this.queue.shift(); // 移除已处理的操作
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise(resolve => window.setTimeout(resolve, 100));
             }
         } catch (error) {
             logger.error('[MetaOperationQueue] Error processing queue:', error);
