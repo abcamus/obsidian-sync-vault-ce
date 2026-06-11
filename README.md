@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/abcamus-obsidian-sync-vault-ce-badge.png)](https://mseep.ai/app/abcamus-obsidian-sync-vault-ce)
+
 # 🌟 Sync Vault
 
 <p align="center">
