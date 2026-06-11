@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.14.6] - 2026-06-11
+
+* 优化：大文件下载进度提示。
+* 修复：vfs 模式下点击 wiki 链接自动触发补水。
+
+* Optimization: Added download progress indicator for large files.  
+* Fix: Resolved automatic refill trigger when clicking wiki links in VFS mode.
+
 # [1.14.5] - 2026-06-08
 
 * 优化：华为手机云盘浏览器全屏显示。
