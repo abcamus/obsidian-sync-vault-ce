@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [2.0.0] - 2026-06-23
+
+## 核心架构升级
+
+* 统一 Global State 管理：引入 GlobalStateManager（Yjs + IndexedDB），统一记录每次成功同步时的本地/远端元数据快照，作为所有同步状态判定的基准线
+* 手动同步和自动同步迁移到基于 baseline 的增量判定，精准识别本地修改、远端修改和冲突，消除全量对比的性能开销
+* 优化事件管理器
+* 大量性能优化：
+    - 支持阿里云盘秒传
+    - 优化阿里云盘小文件上传效率
+    - 优化百度网盘小文件上传效率
+    - 优化视频标注索引性能
+    - 优化阿里云盘文件快照性能
+
+## Core Architecture Upgrade
+
+* Unified Global State Management: Introduced GlobalStateManager (Yjs + IndexedDB) to uniformly record local/remote metadata snapshots after each successful sync, serving as the baseline for all sync state determinations
+* Manual and auto sync migrated to incremental detection based on baseline, accurately identifying local modifications, remote modifications, and conflicts, eliminating the performance overhead of full comparisons
+* Optimized Event Manager
+* Significant performance optimizations:
+    - Support for Alibaba Cloud Disk rapid upload
+    - Optimized small file upload efficiency for Alibaba Cloud Disk
+    - Optimized small file upload efficiency for Baidu Cloud Disk
+    - Optimized video annotation indexing performance
+    - Optimized Alibaba Cloud Disk file snapshot performance
+
 # [1.14.7] - 2026-06-12
 
 * 优化：同步报告显示。
