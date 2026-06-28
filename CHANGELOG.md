@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [2.0.1] - 2026-06-28
+
+* 修复：诊断报告的磁盘空间计算错误，移除已废弃的同步主题、插件相关字段 #29
+* 修复：外链图片加载被拦截的问题
+* 优化：自动链接转换插件的错误处理与日志输出
+* 修复：部分类型定义与接口参数不匹配的问题
+
+- Fix: Disk space calculation error in diagnostic report; remove deprecated sync theme and plugin-related fields #29
+- Fix: External images blocked from loading
+- Improve: Error handling and log output in auto-link conversion plugin
+- Fix: Type definitions and interface parameter mismatches
+
 # [2.0.0] - 2026-06-23
 
 ## 核心架构升级
