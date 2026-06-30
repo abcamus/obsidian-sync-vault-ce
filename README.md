@@ -19,6 +19,10 @@
   The missing bridge between your 10 TB cloud drive and your AI brain. Access, sync, and link everything—images, PDFs, audio, video—across devices without filling up local storage.
 </p>
 
+<p align="center">
+  <img src="assets/demo.png" alt="Sync Vault Demo">
+</p>
+
 ## Key Features
 
 ### 🔗 Link Notes and Cloud Resources

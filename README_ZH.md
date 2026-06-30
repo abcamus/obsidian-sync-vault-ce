@@ -19,6 +19,10 @@
   连接 TB 级网盘与 Obsidian AI 大脑，跨设备免本地存储轻松同步、链接一切资源。
 </p>
 
+<p align="center">
+  <img src="assets/demo.png" alt="Sync Vault Demo">
+</p>
+
 ## 主要功能简介
 
 ### 🔗 链接笔记和云盘资源
