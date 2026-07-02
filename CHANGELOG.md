@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [2.0.2] - 2026-07-02
+
+* 优化：国际化支持
+* 优化：dry run 报告
+
+- Improve: Internationalization (i18n) support
+- Improve: Dry run report
+
+
 # [2.0.1] - 2026-06-28
 
 * 修复：诊断报告的磁盘空间计算错误，移除已废弃的同步主题、插件相关字段 #29
