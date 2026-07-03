@@ -49,8 +49,10 @@ jobs:
               })
             });
 
+            const respBody = await response.text();
             if (!response.ok) {
-              console.log('LLM API failed, falling back to simple reply');
+              console.log(`LLM API failed: ${response.status} ${response.statusText}`);
+              console.log(`Response body: ${respBody}`);
               const fallback = `感谢你提交 Issue！请提供以下信息以便我们更快速地定位问题：
 
               - Sync Vault 插件版本（设置 → 插件选项 → Sync Vault）
@@ -78,7 +80,7 @@ jobs:
               return;
             }
 
-            const data = await response.json();
+            const data = JSON.parse(respBody);
             const result = JSON.parse(data.choices[0].message.content);
 
             // 2. Apply labels
