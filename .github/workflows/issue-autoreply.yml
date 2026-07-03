@@ -13,7 +13,7 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            const { data: issue } = context.payload.issue;
+            const issue = context.payload.issue;
             const title = issue.title;
             const body = (issue.body || '').slice(0, 3000);
 
