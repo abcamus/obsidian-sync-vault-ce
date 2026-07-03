@@ -1,11 +1,11 @@
-name: Auto Reply to Issues
+name: Auto Reply & Analyze Issues
 
 on:
   issues:
     types: [opened]
 
 jobs:
-  auto-reply:
+  analyze-and-reply:
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -13,29 +13,103 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            const message = `感谢你提交 Issue！请提供以下信息以便我们更快速地定位问题：
+            const { data: issue } = context.payload.issue;
+            const title = issue.title;
+            const body = (issue.body || '').slice(0, 3000);
 
-            - Sync Vault 插件版本（可在设置 → 插件选项 → Sync Vault 中查看）
-            - Obsidian 版本（帮助 → 关于）
-            - 操作系统及版本
-            - 错误日志或截图
-            - 复现步骤
+            // 1. Ask LLM to analyze the issue
+            const prompt = `你是一个 Obsidian 插件 "Sync Vault" 的社区支持助手。
+            Analyze this GitHub issue and respond in JSON format only:
+
+            {
+              "category": "bug|feature|question|docs|other",
+              "labels": ["bug", "enhancement", "question", "documentation"],
+              "summary_cn": "中文一句话总结",
+              "summary_en": "English one-line summary",
+              "reply_cn": "中文回复（如已了解问题或给出临时建议）",
+              "reply_en": "English response"
+            }
+
+            Choose labels from: bug, enhancement, question, documentation, needs-clarity.
+            Pick the most relevant 1-2 labels. If info is insufficient, include "needs-clarity".
+
+            Issue title: ${title}
+            Issue body: ${body}`;
+
+            const response = await fetch('https://models.inference.ai.azure.com/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`
+              },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [{ role: 'user', content: prompt }],
+                response_format: { type: 'json_object' }
+              })
+            });
+
+            if (!response.ok) {
+              console.log('LLM API failed, falling back to simple reply');
+              const fallback = `感谢你提交 Issue！请提供以下信息以便我们更快速地定位问题：
+
+              - Sync Vault 插件版本（设置 → 插件选项 → Sync Vault）
+              - Obsidian 版本（帮助 → 关于）
+              - 操作系统及版本
+              - 错误日志或截图
+              - 复现步骤
+
+              ---
+
+              Thank you for submitting this issue! To help us resolve it faster, please provide:
+
+              - Sync Vault plugin version
+              - Obsidian version
+              - OS and version
+              - Error logs or screenshots
+              - Steps to reproduce`;
+
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: fallback
+              });
+              return;
+            }
+
+            const data = await response.json();
+            const result = JSON.parse(data.choices[0].message.content);
+
+            // 2. Apply labels
+            const validLabels = ['bug', 'enhancement', 'question', 'documentation', 'needs-clarity'];
+            const labelsToAdd = (result.labels || []).filter(l => validLabels.includes(l));
+            if (labelsToAdd.length > 0) {
+              await github.rest.issues.addLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: labelsToAdd
+              });
+            }
+
+            // 3. Post intelligent reply
+            const reply = `${result.summary_cn}
+
+            > ${result.reply_cn || ''}
 
             ---
 
-            Thank you for submitting this issue! To help us resolve it faster, please provide the following information:
+            ${result.summary_en}
 
-            - Sync Vault plugin version (Settings → Plugin Options → Sync Vault)
-            - Obsidian version (Help → About)
-            - Operating system and version
-            - Error logs or screenshots
-            - Steps to reproduce
+            > ${result.reply_en || ''}
 
-            > 🤖 This is an automated response. Please provide the above information so we can assist you better.`;
+            ---
+            🤖 Auto-classified as: ${result.category}`;
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: message
+              body: reply
             });
