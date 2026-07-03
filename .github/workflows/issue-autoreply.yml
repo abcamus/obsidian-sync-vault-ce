@@ -1,0 +1,41 @@
+name: Auto Reply to Issues
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  auto-reply:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const message = `感谢你提交 Issue！请提供以下信息以便我们更快速地定位问题：
+
+            - Sync Vault 插件版本（可在设置 → 插件选项 → Sync Vault 中查看）
+            - Obsidian 版本（帮助 → 关于）
+            - 操作系统及版本
+            - 错误日志或截图
+            - 复现步骤
+
+            ---
+
+            Thank you for submitting this issue! To help us resolve it faster, please provide the following information:
+
+            - Sync Vault plugin version (Settings → Plugin Options → Sync Vault)
+            - Obsidian version (Help → About)
+            - Operating system and version
+            - Error logs or screenshots
+            - Steps to reproduce
+
+            > 🤖 This is an automated response. Please provide the above information so we can assist you better.`;
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
