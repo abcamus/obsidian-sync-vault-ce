@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [2.0.3] - 2026-07-03
+
+* 修复：类型断言 lint 错误
+* 新增：Issue 自动回复与分析（GitHub Models AI）
+
+- Fix: Unnecessary type assertion lint errors
+- Add: Issue auto-reply and analysis (GitHub Models AI)
+
+
 # [2.0.2] - 2026-07-02
 
 * 优化：国际化支持

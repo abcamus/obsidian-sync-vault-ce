@@ -261,7 +261,7 @@ async function listFiles(parentFileId: string, limit = 100, nextMarker = ''): Pr
             ctime: util.time.msToSec(new Date(item.created_at).getTime()),
             mtime: util.time.msToSec(new Date(item.updated_at).getTime()),
             size: item.size,
-        } as FileEntry));
+        }));
 
         return [items, json.next_marker];
     }, `listFiles:${parentFileId}`, TaskType.LIST);

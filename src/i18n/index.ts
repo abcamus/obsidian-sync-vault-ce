@@ -5,8 +5,8 @@ type LocaleValue = string | string[] | { [key: string]: LocaleValue };
 type LocaleRecord = Record<string, LocaleValue>;
 
 const locales: Record<string, LocaleRecord> = {
-    en: en as LocaleRecord,
-    zh: zh as LocaleRecord,
+    en,
+    zh,
 };
 
 export class I18n {
