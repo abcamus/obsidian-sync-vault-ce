@@ -1,5 +1,1 @@
 blank_issues_enabled: false
-contact_links:
-  - name: "\U0001F4CB 诊断测试 / Diagnostic"
-    url: https://example.com
-    about: 如果看到此项，说明 config.yml 已被 GitHub 读取 / If you see this, config.yml is being read

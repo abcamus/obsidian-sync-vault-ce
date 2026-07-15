@@ -1,0 +1,54 @@
+name: Feature Request
+description: 建议一个新功能 / Suggest an idea for this project
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: "\U0001F4AC 相关的问题 / Is your feature request related to a problem?"
+      description: 清晰简洁地描述你遇到的问题 / A clear and concise description of what the problem is.
+      placeholder: 每次...的时候很麻烦 / I'm always frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "\U0001F4A1 期望的解决方案 / Describe the solution you'd like"
+      description: 你希望发生什么 / What do you want to happen?
+      placeholder: 希望能有一个...功能 / I'd like a feature that...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "\U0001F4A1 替代方案 / Describe alternatives you've considered"
+      description: 你考虑过的其他解决方案 / Any alternative solutions or features you've considered.
+      placeholder: 我试过手动...但... / I tried doing X manually but...
+
+  - type: dropdown
+    id: cloud-disk
+    attributes:
+      label: "\u2601\uFE0F 相关的云盘 / Related Cloud Disk"
+      description: 这个功能与哪个云盘相关？/ Which cloud disk is this related to?
+      options:
+        - Aliyun (阿里云盘)
+        - Baidu (百度网盘)
+        - Quark (夸克网盘)
+        - 115 (115云盘)
+        - OneDrive
+        - WebDAV
+        - S3 / COS / R2
+        - Nutstore (坚果云)
+        - InfiniCloud
+        - 通用 / General
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "\U0001F4DD 其他上下文 / Additional Context"
+      description: 添加其他信息或截图 / Add any other context or screenshots here.
+      placeholder: 截图、参考链接等 / Screenshots, reference links, etc.
