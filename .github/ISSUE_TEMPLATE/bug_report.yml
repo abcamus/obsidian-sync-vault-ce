@@ -1,0 +1,105 @@
+name: Bug Report
+description: 报告问题以帮助我们改进 / Report a bug to help us improve
+labels: [bug]
+body:
+  - type: textarea
+    id: debug-report
+    attributes:
+      label: "\U0001F4CB Debug Report"
+      description: |
+        **必填** 请先导出调试报告再粘贴至此：
+
+        1. 在 Obsidian 中打开 **设置 → 维护与调试**
+        2. 找到「Debug 文件日志」开关
+        3. 点击右侧的 **「导出报告」** 按钮
+        4. 返回此处按 Cmd+V / Ctrl+V 粘贴
+
+        **Required:** Export the debug report first:
+
+        1. Open Obsidian **Settings → Maintenance & Debug**
+        2. Locate "Debug File Logging" toggle
+        3. Click the **"Export Report"** button next to it
+        4. Come back and paste here (Cmd+V / Ctrl+V)
+      placeholder: 请在此粘贴调试报告 / Paste debug report here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "\U0001F41E 问题描述 / Describe the Bug"
+      description: 清晰简洁地描述你遇到的问题 / A clear and concise description of what the bug is.
+      placeholder: 发生了什么？/ What happened?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: cloud-disk
+    attributes:
+      label: "\u2601\uFE0F 云盘类型 / Cloud Disk"
+      description: 你正在使用的云盘 / Which cloud disk are you using?
+      options:
+        - Aliyun (阿里云盘)
+        - Baidu (百度网盘)
+        - Quark (夸克网盘)
+        - 115 (115云盘)
+        - OneDrive
+        - WebDAV
+        - S3 / COS / R2
+        - Nutstore (坚果云)
+        - InfiniCloud
+    validations:
+      required: true
+
+  - type: dropdown
+    id: sync-mode
+    attributes:
+      label: "\U0001F504 同步模式 / Sync Mode"
+      options:
+        - Auto (自动)
+        - Restricted (受控)
+        - Live (实时协作)
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "\U0001F3C1 复现步骤 / To Reproduce"
+      description: 描述重现问题的步骤 / Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. See error
+      value: "1.\n2.\n3."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "\u2705 预期行为 / Expected Behavior"
+      description: 你期望发生什么 / What did you expect to happen?
+      placeholder: 应该发生的事情...
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "\u274C 实际行为 / Actual Behavior"
+      description: 实际发生了什么 / What actually happened?
+      placeholder: 实际发生的事情...
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "\U0001F4F7 截图 / Screenshots"
+      description: 如果可以，添加截图帮助描述问题 / If applicable, add screenshots to help explain your problem.
+      placeholder: 拖拽图片到此区域 / Drag & drop images here
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "\U0001F4DD 其他上下文 / Additional Context"
+      description: 其他有助于排查问题的信息 / Any other context that might help diagnose the issue.
+      placeholder: 日志、错误消息等 / Logs, error messages, etc.
