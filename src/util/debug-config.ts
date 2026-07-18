@@ -88,7 +88,7 @@ export class DebugManager {
             return next;
         }
 
-        Object.entries(obj as Record<string, unknown>).forEach(([key, value]) => {
+        Object.entries(obj).forEach(([key, value]) => {
             if (typeof value === 'boolean') {
                 next[key] = value;
             }

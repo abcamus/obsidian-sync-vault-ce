@@ -1,5 +1,5 @@
 import SyncVaultPlugin from "main";
-import { App, Notice, PluginSettingTab, setIcon, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, setIcon, Setting, type SettingDefinitionItem } from "obsidian";
 import { i18n } from "src/i18n";
 import { cloudDiskModel, FtpConfig, S3Config } from "@/model/cloud-disk-model";
 import { CloudDiskType } from "@/types";
@@ -128,6 +128,18 @@ export class LabeledSettingTab extends PluginSettingTab {
     constructor(app: App, plugin: SyncVaultPlugin) {
         super(app, plugin);
         this.plugin = plugin;
+    }
+
+    getSettingDefinitions(): SettingDefinitionItem[] {
+        return [
+            { name: i18n.t('settingTab.label.vaultInfo'), desc: i18n.t('settingTab.vault.title'), searchable: true },
+            { name: i18n.t('settingTab.cloudService.title'), desc: i18n.t('settingTab.cloudService.desc'), searchable: true },
+            { name: i18n.t('settingTab.menuSyncConfig.uploadStrategy.title'), desc: i18n.t('settingTab.menuSyncConfig.uploadStrategy.desc'), searchable: true },
+            { name: i18n.t('settingTab.menuSyncConfig.downloadStrategy.title'), desc: i18n.t('settingTab.menuSyncConfig.downloadStrategy.desc'), searchable: true },
+            { name: i18n.t('settingTab.key.title'), desc: i18n.t('settingTab.key.desc'), searchable: true },
+            { name: i18n.t('settingTab.menuSyncConfig.encryptMode.title'), desc: i18n.t('settingTab.menuSyncConfig.encryptMode.desc'), searchable: true },
+            { name: i18n.t('settingTab.menuUpgradeAndHelp.log.title'), desc: i18n.t('settingTab.menuUpgradeAndHelp.log.desc'), searchable: true },
+        ];
     }
 
     display(): void {

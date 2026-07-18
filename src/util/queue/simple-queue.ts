@@ -16,7 +16,7 @@ export class SimpleQueue {
           const result = await task();
           resolve(result);
         } catch (error) {
-          reject(error as Error);
+          reject(error instanceof Error ? error : new Error(String(error)));
         }
       });
 

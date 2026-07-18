@@ -6,8 +6,8 @@
 	"scripts": {
 		"dev": "node esbuild.config.mjs watch",
 		"encrypt": "ts-node tools/encrypt-modules.ts",
-		"build": "tsc -p tsconfig.build.json -noEmit -skipLibCheck && node esbuild.config.mjs production && npm run checksum",
-		"build:dev": "tsc -p tsconfig.build.json -noEmit -skipLibCheck && node esbuild.config.mjs development",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"build:dev": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs development",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
 		"release": "npm run version && npm run build && python3 ./tools/release.py",
 		"deploy": "python3 ./tools/deploy.py --reload-cmd 'obsidian plugin:reload id=sync-vault-ce'",
