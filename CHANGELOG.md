@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [2.4.0] - 2026-08-19
+
+* 新增：云服务工作台，支持拖拽布局、6 个数据组件和预设方案。
+* 新增：Dashboard 实时活动、视频标注统计、云链接和协作卡片，展示在线设备与已连接设备。
+* 新增：Dashboard 搜索支持本地与云端文件操作、文件类型图标、百度网盘语义搜索，以及搜索历史管理。
+* 新增：AI 卡片升级为 MCP 接入面板，支持查看连接数、启停连接、控制写入权限和复制配置。
+* 优化：同步卡片支持启停、空运行和重置基线；云链接支持缩略图、云端体积汇总和全量查看。
+* 修复：信令连接自动追加 room 参数，修复部分 P2P 连接失败问题。
+* 修复：本地视频与云端共用播放历史机制，避免残留定时器污染播放记录。
+* 优化：窗口缩放期间降低玻璃和阴影重绘开销，提升 Dashboard 调整大小时的流畅度。
+
+- New: Cloud service workbench with drag-and-drop layout, six data widgets and presets.
+- New: Dashboard activity, video annotation statistics, cloud links and collaboration cards, including online and connected devices.
+- New: Dashboard search actions for local and cloud files, file-type icons, Baidu Netdisk semantic search and search history management.
+- New: AI card redesigned as an MCP access panel with connection counts, enable/disable controls, write-permission controls and configuration copying.
+- Improvement: Sync cards now support enable/disable, dry runs and baseline reset; cloud links now provide thumbnails, cloud-size summaries and a full-list modal.
+- Fix: Signaling connections now append the room parameter automatically, fixing some P2P connection failures.
+- Fix: Local videos now share playback history with cloud videos, preventing leftover timers from polluting playback records.
+- Improvement: Reduced glass and shadow redraw work while resizing windows for smoother Dashboard resizing.
+
 # [2.0.3] - 2026-07-03
 
 * 修复：类型断言 lint 错误
