@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "scripts/**/*",
+    "test/**/*",
+    "github_release/**/*",
+    "gitee_release/**/*"
+  ]
+}
