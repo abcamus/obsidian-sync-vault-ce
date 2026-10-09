@@ -19,6 +19,7 @@
     "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "lib": [
       "DOM",
