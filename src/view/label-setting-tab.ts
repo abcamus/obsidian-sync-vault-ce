@@ -176,7 +176,7 @@ export class LabeledSettingTab extends PluginSettingTab {
         setIcon(tabButton.createDiv({ cls: 'cloud-settings-tab-icon' }), icon);
 
         // 添加标签名称
-        tabButton.createEl('span', { cls: 'cloud-settings-tab-name', text: name });
+        tabButton.createSpan({ cls: 'cloud-settings-tab-name', text: name });
 
         // 创建对应的内容容器
         this.contentArea.createDiv({
